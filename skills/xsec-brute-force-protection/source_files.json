@@ -1,0 +1,56 @@
+{
+  "slug": "brute-force-protection",
+  "title": "暴力破解防护缺失",
+  "description": "登录、密码、账号密码接口缺少频率限制或锁定策略的低影响验证方法。",
+  "source_files": [
+    {
+      "title": "OA登录存在爆破",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/OA登录存在爆破_539477fa.md",
+      "filename": "OA登录存在爆破_539477fa.md",
+      "instances": 1,
+      "risk_distribution": "未标注:1",
+      "document_count": 1
+    },
+    {
+      "title": "密码存在爆破",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/密码存在爆破_0890556c.md",
+      "filename": "密码存在爆破_0890556c.md",
+      "instances": 1,
+      "risk_distribution": "未标注:1",
+      "document_count": 1
+    },
+    {
+      "title": "登录存在爆破",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/登录存在爆破_1714a7a4.md",
+      "filename": "登录存在爆破_1714a7a4.md",
+      "instances": 32,
+      "risk_distribution": "中危:28, 高危:3, 低危:1",
+      "document_count": 32
+    },
+    {
+      "title": "短信验证码爆破",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/短信验证码爆破_ffd8b60c.md",
+      "filename": "短信验证码爆破_ffd8b60c.md",
+      "instances": 1,
+      "risk_distribution": "低危:1",
+      "document_count": 1
+    },
+    {
+      "title": "账号密码暴力破解",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/账号密码暴力破解_62eff73c.md",
+      "filename": "账号密码暴力破解_62eff73c.md",
+      "instances": 3,
+      "risk_distribution": "中危:3",
+      "document_count": 3
+    }
+  ],
+  "total_instances": 38,
+  "risk_distribution_text": [
+    "OA登录存在爆破: 未标注:1",
+    "密码存在爆破: 未标注:1",
+    "登录存在爆破: 中危:28, 高危:3, 低危:1",
+    "短信验证码爆破: 低危:1",
+    "账号密码暴力破解: 中危:3"
+  ],
+  "index": 22
+}

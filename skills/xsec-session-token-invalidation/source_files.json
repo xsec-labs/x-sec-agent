@@ -1,0 +1,56 @@
+{
+  "slug": "session-token-invalidation",
+  "title": "会话与Token失效缺陷",
+  "description": "退出登录、修改密码、注销、过期后 Cookie/Token 仍可使用的生命周期验证方法。",
+  "source_files": [
+    {
+      "title": "Cookie不失效",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/Cookie不失效_a2761746.md",
+      "filename": "Cookie不失效_a2761746.md",
+      "instances": 3,
+      "risk_distribution": "未标注:2, 中危:1",
+      "document_count": 3
+    },
+    {
+      "title": "Token未正确失效",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/Token未正确失效_bc31831f.md",
+      "filename": "Token未正确失效_bc31831f.md",
+      "instances": 1,
+      "risk_distribution": "未标注:1",
+      "document_count": 1
+    },
+    {
+      "title": "Token退出不失效",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/Token退出不失效_55704fc0.md",
+      "filename": "Token退出不失效_55704fc0.md",
+      "instances": 2,
+      "risk_distribution": "中危:2",
+      "document_count": 1
+    },
+    {
+      "title": "Token退出不失效中",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/Token退出不失效中_5a354de3.md",
+      "filename": "Token退出不失效中_5a354de3.md",
+      "instances": 1,
+      "risk_distribution": "未标注:1",
+      "document_count": 1
+    },
+    {
+      "title": "退出登录后Token不失效",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/退出登录后Token不失效_332f1d86.md",
+      "filename": "退出登录后Token不失效_332f1d86.md",
+      "instances": 1,
+      "risk_distribution": "中危:1",
+      "document_count": 1
+    }
+  ],
+  "total_instances": 8,
+  "risk_distribution_text": [
+    "Cookie不失效: 未标注:2, 中危:1",
+    "Token未正确失效: 未标注:1",
+    "Token退出不失效: 中危:2",
+    "Token退出不失效中: 未标注:1",
+    "退出登录后Token不失效: 中危:1"
+  ],
+  "index": 8
+}

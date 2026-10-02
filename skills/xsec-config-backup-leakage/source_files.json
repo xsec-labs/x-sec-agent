@@ -1,0 +1,38 @@
+{
+  "slug": "config-backup-leakage",
+  "title": "配置文件与备份文件泄露",
+  "description": "配置文件、备份文件、环境文件暴露导致敏感信息泄露的检查方法。",
+  "source_files": [
+    {
+      "title": "后台备份文件泄露",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/后台备份文件泄露_ba740c2f.md",
+      "filename": "后台备份文件泄露_ba740c2f.md",
+      "instances": 1,
+      "risk_distribution": "未标注:1",
+      "document_count": 1
+    },
+    {
+      "title": "配置文件泄露敏感信息",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/配置文件泄露敏感信息_1acdc0df.md",
+      "filename": "配置文件泄露敏感信息_1acdc0df.md",
+      "instances": 1,
+      "risk_distribution": "高危:1",
+      "document_count": 1
+    },
+    {
+      "title": "配置文件泄露敏感数据",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/配置文件泄露敏感数据_aef23a21.md",
+      "filename": "配置文件泄露敏感数据_aef23a21.md",
+      "instances": 2,
+      "risk_distribution": "高危:2",
+      "document_count": 2
+    }
+  ],
+  "total_instances": 4,
+  "risk_distribution_text": [
+    "后台备份文件泄露: 未标注:1",
+    "配置文件泄露敏感信息: 高危:1",
+    "配置文件泄露敏感数据: 高危:2"
+  ],
+  "index": 31
+}

@@ -1,0 +1,20 @@
+{
+  "slug": "password-policy",
+  "title": "不安全密码策略",
+  "description": "密码复杂度、历史密码、默认密码、重置策略等密码策略缺陷的评估方法。",
+  "source_files": [
+    {
+      "title": "不安全的密码策略",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/不安全的密码策略_2275bcd1.md",
+      "filename": "不安全的密码策略_2275bcd1.md",
+      "instances": 7,
+      "risk_distribution": "高危:3, 中危:2, 低危:2",
+      "document_count": 7
+    }
+  ],
+  "total_instances": 7,
+  "risk_distribution_text": [
+    "不安全的密码策略: 高危:3, 中危:2, 低危:2"
+  ],
+  "index": 21
+}

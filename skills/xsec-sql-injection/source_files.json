@@ -1,0 +1,20 @@
+{
+  "slug": "sql-injection",
+  "title": "SQL注入",
+  "description": "SQL 注入从参数识别、对照验证、最小化利用到风险定级的系统方法。",
+  "source_files": [
+    {
+      "title": "SQL注入",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/SQL注入_99acebea.md",
+      "filename": "SQL注入_99acebea.md",
+      "instances": 30,
+      "risk_distribution": "高危:24, 未标注:6",
+      "document_count": 30
+    }
+  ],
+  "total_instances": 30,
+  "risk_distribution_text": [
+    "SQL注入: 高危:24, 未标注:6"
+  ],
+  "index": 11
+}

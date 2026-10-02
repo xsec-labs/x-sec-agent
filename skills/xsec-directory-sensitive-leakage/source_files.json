@@ -1,0 +1,38 @@
+{
+  "slug": "directory-sensitive-leakage",
+  "title": "目录浏览与敏感目录泄露",
+  "description": "目录浏览、敏感目录、目录泄露导致文件暴露的验证方法。",
+  "source_files": [
+    {
+      "title": "敏感目录泄露",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/敏感目录泄露_69e66ed2.md",
+      "filename": "敏感目录泄露_69e66ed2.md",
+      "instances": 19,
+      "risk_distribution": "中危:14, 高危:2, 低危:2, 未标注:1",
+      "document_count": 19
+    },
+    {
+      "title": "目录泄露",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/目录泄露_54868ce4.md",
+      "filename": "目录泄露_54868ce4.md",
+      "instances": 4,
+      "risk_distribution": "中危:4",
+      "document_count": 4
+    },
+    {
+      "title": "目录浏览",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/目录浏览_1a785ceb.md",
+      "filename": "目录浏览_1a785ceb.md",
+      "instances": 3,
+      "risk_distribution": "中危:3",
+      "document_count": 3
+    }
+  ],
+  "total_instances": 26,
+  "risk_distribution_text": [
+    "敏感目录泄露: 中危:14, 高危:2, 低危:2, 未标注:1",
+    "目录泄露: 中危:4",
+    "目录浏览: 中危:3"
+  ],
+  "index": 30
+}

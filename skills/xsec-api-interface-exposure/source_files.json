@@ -1,0 +1,47 @@
+{
+  "slug": "api-interface-exposure",
+  "title": "接口与接口文档泄露",
+  "description": "API、SOAP、接口文档、调试接口等暴露导致攻击面扩大的测试方法。",
+  "source_files": [
+    {
+      "title": "API接口泄露",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/API接口泄露_d12dcf6a.md",
+      "filename": "API接口泄露_d12dcf6a.md",
+      "instances": 1,
+      "risk_distribution": "高危:1",
+      "document_count": 1
+    },
+    {
+      "title": "Soap接口泄露",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/Soap接口泄露_7691d416.md",
+      "filename": "Soap接口泄露_7691d416.md",
+      "instances": 6,
+      "risk_distribution": "低危:4, 未标注:2",
+      "document_count": 3
+    },
+    {
+      "title": "wispath接口",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/wispath接口_058bba1a.md",
+      "filename": "wispath接口_058bba1a.md",
+      "instances": 2,
+      "risk_distribution": "低危:2",
+      "document_count": 2
+    },
+    {
+      "title": "接口文档泄露",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/接口文档泄露_85557565.md",
+      "filename": "接口文档泄露_85557565.md",
+      "instances": 2,
+      "risk_distribution": "中危:2",
+      "document_count": 2
+    }
+  ],
+  "total_instances": 11,
+  "risk_distribution_text": [
+    "API接口泄露: 高危:1",
+    "Soap接口泄露: 低危:4, 未标注:2",
+    "wispath接口: 低危:2",
+    "接口文档泄露: 中危:2"
+  ],
+  "index": 3
+}

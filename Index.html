@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>xSecAgent Skills 编排流程图</title>
+  <style>
+    :root {
+      --ink: #171717;
+      --muted: #656b76;
+      --line: #d8dde7;
+      --paper: #f6f8fb;
+      --surface: #ffffff;
+      --teal: #0f766e;
+      --blue: #2563eb;
+      --violet: #7c3aed;
+      --amber: #b45309;
+      --rose: #be123c;
+      --green: #15803d;
+      --cyan: #0891b2;
+      --charcoal: #27272a;
+      --shadow: 0 18px 44px rgba(23, 23, 23, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(37, 99, 235, 0.06) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(15, 118, 110, 0.05) 1px, transparent 1px),
+        var(--paper);
+      background-size: 34px 34px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 42px 0 72px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      color: #f8fafc;
+      background: #171717;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: clamp(26px, 5vw, 56px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, rgba(15, 118, 110, 0.32), transparent 42%),
+        linear-gradient(280deg, rgba(190, 18, 60, 0.26), transparent 48%),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 74px);
+      pointer-events: none;
+    }
+
+    .hero > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: #b7f7ea;
+      font-size: 13px;
+      font-weight: 760;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 34px;
+      height: 2px;
+      background: #b7f7ea;
+    }
+
+    h1 {
+      max-width: 880px;
+      margin: 0;
+      font-size: clamp(34px, 6vw, 68px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 820px;
+      margin: 20px 0 0;
+      color: #d9e5ea;
+      font-size: clamp(15px, 2vw, 19px);
+      line-height: 1.75;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .metric {
+      min-height: 96px;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(8px);
+    }
+
+    .metric strong {
+      display: block;
+      color: #ffffff;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 10px;
+      color: #c9d4dd;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 18px;
+      margin: 20px 0 30px;
+    }
+
+    .intro-panel {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: 0 10px 28px rgba(23, 23, 23, 0.05);
+    }
+
+    .intro-panel h2,
+    .legend h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .intro-panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.72;
+      font-size: 14px;
+    }
+
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      min-height: 36px;
+      gap: 10px;
+      color: #333740;
+      font-size: 13px;
+    }
+
+    .swatch {
+      flex: 0 0 auto;
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      background: var(--accent);
+    }
+
+    .flow {
+      position: relative;
+      margin-top: 28px;
+    }
+
+    .stage {
+      position: relative;
+      display: grid;
+      grid-template-columns: 88px minmax(0, 1fr);
+      gap: 18px;
+      min-height: 164px;
+    }
+
+    .stage:not(:last-child) {
+      padding-bottom: 28px;
+    }
+
+    .rail {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .rail::after {
+      content: "";
+      position: absolute;
+      top: 64px;
+      bottom: 0;
+      width: 2px;
+      background: var(--line);
+    }
+
+    .stage:last-child .rail::after {
+      display: none;
+    }
+
+    .stage-number {
+      position: sticky;
+      top: 18px;
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      width: 64px;
+      height: 64px;
+      color: #ffffff;
+      background: var(--accent);
+      border: 5px solid var(--paper);
+      border-radius: 50%;
+      box-shadow: 0 16px 32px rgba(23, 23, 23, 0.16);
+      font-size: 20px;
+      font-weight: 840;
+    }
+
+    .stage-panel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line));
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .stage-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 7px;
+      background: var(--accent);
+    }
+
+    .stage-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      padding: 24px 24px 18px 30px;
+      border-bottom: 1px solid #edf0f5;
+    }
+
+    .stage-kicker {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .stage-title {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 34px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .stage-desc {
+      margin: 12px 0 0;
+      max-width: 820px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.72;
+    }
+
+    .stage-meta {
+      display: grid;
+      gap: 8px;
+      min-width: 210px;
+      align-content: start;
+    }
+
+    .meta-pill {
+      border: 1px solid #e6eaf0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #fbfcfe;
+    }
+
+    .meta-pill b {
+      display: block;
+      margin-bottom: 4px;
+      color: #2a2f37;
+      font-size: 12px;
+    }
+
+    .meta-pill span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .skill-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 18px 24px 24px 30px;
+    }
+
+    .skill {
+      position: relative;
+      min-height: 146px;
+      padding: 15px 15px 14px;
+      border: 1px solid #e5e9f0;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 8px 22px rgba(23, 23, 23, 0.045);
+    }
+
+    .skill::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 8px 8px 0 0;
+    }
+
+    .skill-id {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .skill-title {
+      margin: 0;
+      color: #20242b;
+      font-size: 15px;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    .skill-trigger {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .skill-trigger b {
+      color: #363b45;
+    }
+
+    .skill-env {
+      margin-top: 10px;
+      padding-top: 9px;
+      border-top: 1px dashed #d9dee8;
+      color: #4f5663;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .unlock {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 24px 0 30px;
+      padding: 12px 14px;
+      color: #2f343c;
+      background: color-mix(in srgb, var(--accent) 9%, #ffffff);
+      border: 1px solid color-mix(in srgb, var(--accent) 20%, #dbe2ea);
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .unlock-mark {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--accent);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .footer-note {
+      margin-top: 34px;
+      padding: 22px;
+      border: 1px solid #dce2ea;
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    code {
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: #eef2f8;
+      color: #2a3442;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.93em;
+    }
+
+    @media (max-width: 980px) {
+      .metrics,
+      .intro,
+      .stage-head {
+        grid-template-columns: 1fr;
+      }
+
+      .skill-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .stage-meta {
+        min-width: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 680px) {
+      .page {
+        width: min(100% - 20px, 1180px);
+        padding-top: 18px;
+      }
+
+      .hero {
+        padding: 26px 20px;
+      }
+
+      .metrics,
+      .legend-grid,
+      .stage-meta,
+      .skill-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stage {
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: 10px;
+      }
+
+      .stage-number {
+        width: 42px;
+        height: 42px;
+        border-width: 3px;
+        font-size: 15px;
+      }
+
+      .rail::after {
+        top: 42px;
+      }
+
+      .stage-head,
+      .skill-grid {
+        padding-left: 18px;
+        padding-right: 16px;
+      }
+
+      .unlock {
+        margin-left: 18px;
+        margin-right: 16px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .page {
+        width: 100%;
+        padding: 0;
+      }
+
+      .hero,
+      .stage-panel,
+      .intro-panel,
+      .skill {
+        box-shadow: none;
+      }
+
+      .stage-number {
+        position: relative;
+        top: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">Authorized Web Pentest Orchestration</div>
+      <h1>xSecAgent Skills 从观察到解锁的纵向编排图</h1>
+      <p class="hero-copy">
+        这张图把仓库中的 37 个 skill 放入同一条自上而下的授权测试流水线：
+        先做环境发现和被动采集，再根据登录、API、文件、AI、敏感信息等观察信号解锁专项子代理，
+        每个子代理只测试一个 skill，结果再回写状态账本触发下一层。
+      </p>
+      <div class="metrics" aria-label="流程摘要">
+        <div class="metric"><strong>37</strong><span>全部 skills 已纳入流程图</span></div>
+        <div class="metric"><strong>7</strong><span>阶段从侦查到报告自上而下展开</span></div>
+        <div class="metric"><strong>1:1</strong><span>一个触发 skill 对应一个子代理</span></div>
+        <div class="metric"><strong>Gate</strong><span>必须满足授权、scope、工件、环境条件</span></div>
+      </div>
+    </section>
+
+    <section class="intro" aria-label="编排介绍">
+      <div class="intro-panel">
+        <h2>读图方式</h2>
+        <p>
+          每个阶段是一层“解锁门”。左侧圆点表示阶段顺序，右侧节点表示该阶段可能启动的 skill。
+          节点里的“触发”是观察信号，“环境”是必须存在的测试条件。
+          没有满足环境时，节点只记录为 idle、waiting 或 blocked，不会派发子代理。
+        </p>
+      </div>
+      <div class="intro-panel legend">
+        <h2>颜色分组</h2>
+        <div class="legend-grid" id="legendGrid"></div>
+      </div>
+    </section>
+
+    <section class="flow" id="flow" aria-label="skills 纵向流程图"></section>
+
+    <section class="footer-note">
+      <strong>安全边界：</strong>
+      这份图只描述授权 Web 安全测试编排。所有节点都必须在 scope、速率、账号、测试数据和禁止动作边界内运行；
+      passive hook 的命中只是候选，只有专项 skill 完成最小化验证并生成证据后才进入问题清单。
+    </section>
+  </main>
+
+  <script>
+    const stages = [
+      {
+        key: "recon",
+        accent: "#0f766e",
+        kicker: "Stage 01",
+        title: "环境发现与公开面侦查",
+        desc: "从目标可达性、站点画像、API 路径、目录扫描和公开响应入手。这里的目标不是直接下结论，而是产出后续节点能消费的 observations、artifacts 和 passive findings。",
+        trigger: "target_reachable / site_profile / api_base_path",
+        environment: "已确认授权 scope，browser traffic adapter 与 passive hook 可用",
+        unlock: "发现登录框、API 文档、敏感目录、管理端、版本、明文传输或前端源码线索后，进入对应专项分支。",
+        skills: [
+          ["xsec-transport-security-plaintext-tls", "明文传输与 TLS 弱配置", "HTTP、TLS、混合内容、Secure Cookie 缺失", "目标 URL、传输层响应、TLS/证书观测"],
+          ["xsec-version-info-exposure", "版本信息泄露", "Server/X-Powered-By、默认页、框架版本", "响应头、scout summary、页面截图"],
+          ["xsec-directory-sensitive-leakage", "目录浏览与敏感目录泄露", "目录索引、敏感目录、对象存储清单", "DirSearch 结果或目录响应"],
+          ["xsec-config-backup-leakage", "配置与备份文件泄露", ".env、备份包、Git/SVN、数据库备份", "scope 内候选文件，允许最小化下载/解压"],
+          ["xsec-api-interface-exposure", "接口与接口文档泄露", "Swagger、OpenAPI、Knife4j、WSDL", "API 文档入口或定义文件可访问"],
+          ["xsec-middleware-unauth-management", "中间件与管理端暴露", "Actuator、Nacos、监控、配置中心、console", "候选管理端在授权 scope 内"],
+          ["xsec-unauth-access", "未授权访问", "HTML/JS 提取接口 path 后匿名访问疑似受保护资源", "前端资产、API host、匿名响应；登录态存在时补对照"],
+          ["xsec-client-hardcoded-secret", "客户端硬编码敏感信息", "source map、JS 配置、硬编码凭据、客户端包", "可访问或已授权分析客户端资源"]
+        ]
+      },
+      {
+        key: "auth",
+        accent: "#b45309",
+        kicker: "Stage 02",
+        title: "登录面与认证防护",
+        desc: "只有发现登录框、密码字段、认证 API 或后台登录入口时才进入这一层。弱口令、爆破防护、验证码/OTP、用户名枚举都需要授权边界和低频策略。",
+        trigger: "login_form_detected / auth_endpoint_detected",
+        environment: "存在可交互登录框或可重放认证接口",
+        unlock: "若用户提供凭据或弱口令验证成功，保存 browser_state 并解锁登录后测试；若遇到验证码、锁定或风控，记录 blocked。",
+        skills: [
+          ["weak-pass-check", "弱口令检测", "登录框、密码字段、认证 API、后台登录入口", "授权字典、速率、锁定和验证码策略明确"],
+          ["xsec-brute-force-protection", "暴力破解防护缺失", "失败登录基线、验证码缺失、密码喷洒面", "允许少量失败登录，约定停止条件"],
+          ["xsec-captcha-otp-defect", "验证码与 OTP 机制缺陷", "图形验证码、短信/邮箱 OTP、通知发送", "授权测试手机号/邮箱/账号或测试环境"],
+          ["xsec-account-enumeration-leakage", "用户名枚举", "存在账号和不存在账号响应差异", "有授权存在账号；锁定差异检测放在后期"],
+          ["xsec-cookie-security-flags", "Cookie 安全属性缺失", "Set-Cookie、登录态 Cookie、rememberMe", "捕获 Cookie 下发响应或登录态"]
+        ]
+      },
+      {
+        key: "post-auth",
+        accent: "#2563eb",
+        kicker: "Stage 03",
+        title: "登录后状态、会话与权限边界",
+        desc: "获得有效登录态后才解锁这一层。重点检查浏览器端存储、JWT、旧令牌失效、密码策略、CSRF 与对象级访问控制。",
+        trigger: "authenticated_session_obtained / post_login_surface_available",
+        environment: "有效 browser_state、测试账号、只读受保护接口",
+        unlock: "发现 ID 型资源、JWT、rememberMe、状态变更接口或密码管理流程后，继续解锁权限、会话和策略节点。",
+        skills: [
+          ["xsec-browser-sensitive-storage", "浏览器端敏感信息存储", "LocalStorage、SessionStorage、IndexedDB、Cookie 中有敏感值", "可读取目标 origin 的浏览器存储快照"],
+          ["xsec-jwt-security", "JWT 安全", "JWT、Bearer Token、Authorization header", "完整令牌和低影响受保护接口"],
+          ["xsec-session-token-invalidation", "会话与 Token 失效缺陷", "退出、改密、注销、刷新令牌、rememberMe", "旧令牌快照和可恢复失效事件"],
+          ["xsec-access-control-idor", "权限边界与 IDOR 检测", "ID 型资源、多角色、403/401 边界", "有效登录态；双账号测试需同级或不同角色账号"],
+          ["xsec-password-policy", "不安全密码策略", "注册、改密、重置、首次登录改密", "可控测试账号，动作可恢复"],
+          ["xsec-password-storage-return", "密码明文处理与返回", "密码出现在请求、响应、缓存、记住密码", "授权测试账号和受控临时口令"],
+          ["xsec-csrf-protection-missing", "CSRF 防护缺失", "Cookie 会话下的状态变更表单/API", "可逆低影响动作和受控跨站页面"],
+          ["xsec-cors-misconfiguration", "CORS 跨域配置缺陷", "Origin 反射、ACAC=true、跨站可读", "可重放 API 请求和受控测试 Origin"]
+        ]
+      },
+      {
+        key: "api-param",
+        accent: "#7c3aed",
+        kicker: "Stage 04",
+        title: "API、参数与服务端处理面",
+        desc: "从 request corpus、API inventory 和表单动作里筛出可重放、低影响、带参数的请求。这里更像精密仪表：先有基线，再做最小化差异验证。",
+        trigger: "parameterized_request_detected / search_or_filter_form_detected",
+        environment: "可重放请求、参数基线、响应可比较，所有流量走 proxy",
+        unlock: "SQL 报错会反向提示 SQL 注入候选；路径、URL 代取和加密样本会进入对应专项。",
+        skills: [
+          ["xsec-sql-injection", "SQL 注入", "搜索、筛选、分页、排序、报表、详情参数", "低影响请求基线和响应对照"],
+          ["xsec-sql-error-info-leak", "SQL 错误与语句信息泄露", "SQL/ORM/数据库错误回显", "被动命中或低影响错误响应"],
+          ["xsec-error-path-leakage", "错误回显与路径泄露", "详细异常、绝对路径、堆栈、默认错误页", "目标返回给客户端的错误证据"],
+          ["xsec-insecure-crypto", "不安全加密方式", "弱算法、固定 IV、前端可逆加密、编码冒充加密", "密文样本、代码位置或样本对"],
+          ["xsec-ssrf-methodology", "SSRF 服务端请求伪造", "URL 代取、Webhook、回调、远程导入", "授权回连监听或安全测试目标"],
+          ["xsec-internal-network-leakage", "内网地址与网络信息泄露", "内网 IP、内部主机名、回源地址、端口线索", "对外可见泄露来源；不主动扫描内网"]
+        ]
+      },
+      {
+        key: "file-ai",
+        accent: "#be123c",
+        kicker: "Stage 05",
+        title: "文件、内容渲染与 AI 对话面",
+        desc: "文件上传/下载、路径参数、富文本、预览组件和 AI 对话会制造新的输入输出通道。只有控件或接口真实存在时才进入测试。",
+        trigger: "file_upload_api / file_download_endpoint / llm_chat_interface",
+        environment: "测试账号、无害测试文件、可观察输出位置或 AI 对话场景",
+        unlock: "文件名回显可解锁 XSS；对象存储凭据可解锁云密钥；AI 输出若进入前端渲染也会进入 XSS 分支。",
+        skills: [
+          ["xsec-file-upload-security", "文件上传安全缺陷", "头像、附件、富文本、导入、对象存储直传", "允许上传无害测试文件"],
+          ["xsec-file-download-access-control", "文件下载访问控制缺陷", "下载、预览、导出、附件 ID、签名 URL", "当前账号自有文件或第二账号测试文件"],
+          ["xsec-path-traversal", "路径遍历与文件遍历", "filename、path、预览、静态文件路由", "安全载荷和自有/公开测试文件"],
+          ["xsec-xss-methodology-42", "XSS 跨站脚本", "搜索回显、富文本、DOM sink、文件名、AI 输出渲染", "可控输入和可观察输出，存储型需可清理"],
+          ["xsec-llm-prompt-security", "提示词泄露与提示词绕过", "聊天、RAG、流式模型、工具调用、输出注入", "存在 AI/LLM 场景，只发送无害测试提示"]
+        ]
+      },
+      {
+        key: "passive",
+        accent: "#0891b2",
+        kicker: "Stage 06",
+        title: "被动命中与高价值凭据复核",
+        desc: "passive hook 和客户端分析会持续产出候选命中。这里把候选按 target_skill 分组、去重、脱敏，再交给专项节点做最小化证明。",
+        trigger: "passive_findings_available / passive_secret_match",
+        environment: "已生成 evidence/passive/*-passive-findings.jsonl",
+        unlock: "有效 AK/SK、私钥、Webhook、SQL 报错、路径或内网线索会成为组合漏洞分析的输入。",
+        skills: [
+          ["xsec-passive-scanning", "被动扫描总入口", "passive findings 已落盘，需要分组路由", "request_id、pattern_id、match_hash、脱敏 preview"],
+          ["xsec-object-storage-bucket", "对象存储桶安全检测", "passive_object_storage_bucket_detected、OSS/COS/OBS/S3 host", "bucket host 在授权 scope 内；写入 canary 需单独授权"],
+          ["xsec-shiro-attack-detection", "Shiro 弱 Key 与利用链检测", "passive_shiro_cookie_detected", "仅 passive 发现 rememberMe/deleteMe 后触发"],
+          ["xsec-cloud-secret-leakage", "云密钥与私钥泄露", "AK/SK、STS、私钥、对象存储凭据、Webhook", "疑似凭据和来源证据；只读或隔离验证"]
+        ]
+      },
+      {
+        key: "chain",
+        accent: "#15803d",
+        kicker: "Stage 07",
+        title: "组合链路、报告与收敛",
+        desc: "当多个 validated issue、关键 win 或高价值 passive 命中彼此支撑时，最后进入链路分析。目标是判断风险是否能闭合，而不是为了升危扩大取数。",
+        trigger: "multiple_validated_issues / issue_plus_key_win",
+        environment: "status ledger、报告索引、已验证或强候选问题",
+        unlock: "输出组合链路报告、优先整改建议和最终 evidence pack。",
+        skills: [
+          ["xsec-vulnerability-chain-analysis", "组合漏洞链路与风险升级", "弱认证、信息泄露、未授权、越权、会话问题可串联", "status.json、report_index、wins、validated issues"]
+        ]
+      }
+    ];
+
+    const legend = [
+      ["#0f766e", "公开面侦查"],
+      ["#b45309", "登录与认证"],
+      ["#2563eb", "登录后状态"],
+      ["#7c3aed", "API 与参数"],
+      ["#be123c", "文件与 AI"],
+      ["#0891b2", "被动复核"],
+      ["#15803d", "组合分析"]
+    ];
+
+    const flow = document.getElementById("flow");
+    const legendGrid = document.getElementById("legendGrid");
+
+    legendGrid.innerHTML = legend.map(([color, label]) => `
+      <div class="legend-item" style="--accent:${color}">
+        <span class="swatch"></span>
+        <span>${label}</span>
+      </div>
+    `).join("");
+
+    flow.innerHTML = stages.map((stage, index) => `
+      <article class="stage" style="--accent:${stage.accent}">
+        <div class="rail"><div class="stage-number">${String(index + 1).padStart(2, "0")}</div></div>
+        <div class="stage-panel">
+          <div class="stage-head">
+            <div>
+              <p class="stage-kicker">${stage.kicker}</p>
+              <h2 class="stage-title">${stage.title}</h2>
+              <p class="stage-desc">${stage.desc}</p>
+            </div>
+            <div class="stage-meta">
+              <div class="meta-pill"><b>触发入口</b><span>${stage.trigger}</span></div>
+              <div class="meta-pill"><b>前置环境</b><span>${stage.environment}</span></div>
+            </div>
+          </div>
+          <div class="unlock"><span class="unlock-mark">↓</span><span>${stage.unlock}</span></div>
+          <div class="skill-grid">
+            ${stage.skills.map(skill => `
+              <section class="skill">
+                <p class="skill-id">${skill[0]}</p>
+                <h3 class="skill-title">${skill[1]}</h3>
+                <p class="skill-trigger"><b>触发：</b>${skill[2]}</p>
+                <p class="skill-env"><b>环境：</b>${skill[3]}</p>
+              </section>
+            `).join("")}
+          </div>
+        </div>
+      </article>
+    `).join("");
+  </script>
+</body>
+</html>

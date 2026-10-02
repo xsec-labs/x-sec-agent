@@ -1,0 +1,38 @@
+{
+  "slug": "account-enumeration",
+  "title": "账号枚举与账号泄露",
+  "description": "用户名、邮箱、测试账号、账号存在性枚举与泄露的识别方法。",
+  "source_files": [
+    {
+      "title": "测试账号泄露",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/测试账号泄露_8e45654b.md",
+      "filename": "测试账号泄露_8e45654b.md",
+      "instances": 1,
+      "risk_distribution": "低危:1",
+      "document_count": 1
+    },
+    {
+      "title": "用户名枚举",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/用户名枚举_e048e67f.md",
+      "filename": "用户名枚举_e048e67f.md",
+      "instances": 78,
+      "risk_distribution": "中危:40, 未标注:37, 高危:1",
+      "document_count": 77
+    },
+    {
+      "title": "邮箱账号",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/邮箱账号_fa8cbad2.md",
+      "filename": "邮箱账号_fa8cbad2.md",
+      "instances": 1,
+      "risk_distribution": "未标注:1",
+      "document_count": 1
+    }
+  ],
+  "total_instances": 80,
+  "risk_distribution_text": [
+    "测试账号泄露: 低危:1",
+    "用户名枚举: 中危:40, 未标注:37, 高危:1",
+    "邮箱账号: 未标注:1"
+  ],
+  "index": 24
+}

@@ -1,0 +1,38 @@
+{
+  "slug": "file-upload-security",
+  "title": "文件上传安全缺陷",
+  "description": "任意上传、未授权上传、上传绕过和上传后可访问性的授权验证方法。",
+  "source_files": [
+    {
+      "title": "文件上传",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/文件上传_39c04b3d.md",
+      "filename": "文件上传_39c04b3d.md",
+      "instances": 18,
+      "risk_distribution": "高危:13, 未标注:3, 中危:2",
+      "document_count": 18
+    },
+    {
+      "title": "文件任意上传",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/文件任意上传_9d98a5c1.md",
+      "filename": "文件任意上传_9d98a5c1.md",
+      "instances": 2,
+      "risk_distribution": "高危:2",
+      "document_count": 2
+    },
+    {
+      "title": "未授权上传",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/未授权上传_fcaed2f4.md",
+      "filename": "未授权上传_fcaed2f4.md",
+      "instances": 1,
+      "risk_distribution": "高危:1",
+      "document_count": 1
+    }
+  ],
+  "total_instances": 21,
+  "risk_distribution_text": [
+    "文件上传: 高危:13, 未标注:3, 中危:2",
+    "文件任意上传: 高危:2",
+    "未授权上传: 高危:1"
+  ],
+  "index": 32
+}

@@ -1,0 +1,29 @@
+{
+  "slug": "xss",
+  "title": "XSS跨站脚本",
+  "description": "反射型、存储型、DOM 型、提示框 XSS 的入口识别、最小化验证和影响判断方法。",
+  "source_files": [
+    {
+      "title": "XSS",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/XSS_1033a063.md",
+      "filename": "XSS_1033a063.md",
+      "instances": 85,
+      "risk_distribution": "高危:70, 未标注:15",
+      "document_count": 85
+    },
+    {
+      "title": "提示框XSS",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/提示框XSS_497db281.md",
+      "filename": "提示框XSS_497db281.md",
+      "instances": 1,
+      "risk_distribution": "高危:1",
+      "document_count": 1
+    }
+  ],
+  "total_instances": 86,
+  "risk_distribution_text": [
+    "XSS: 高危:70, 未标注:15",
+    "提示框XSS: 高危:1"
+  ],
+  "index": 42
+}

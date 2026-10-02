@@ -1,0 +1,110 @@
+{
+  "ok": true,
+  "phase": "post_login",
+  "recon": {
+    "site_profile": {
+      "kind": "server_script",
+      "confidence": "medium",
+      "evidence": "evidence/recon/site-profile.json"
+    },
+    "api_paths": "evidence/recon/api-paths.json",
+    "login_surfaces": "evidence/recon/login-surfaces.json",
+    "dirsearch": {
+      "webroot": "evidence/recon/dirsearch-webroot.jsonl",
+      "api_paths": "evidence/recon/dirsearch-api-paths.jsonl"
+    },
+    "passive_findings": [
+      "evidence/passive/scout-passive-findings.jsonl"
+    ]
+  },
+  "progress": [
+    {
+      "time": "2026-06-04T10:00:00+08:00",
+      "event": "scout_completed",
+      "summary": "发现 1 个登录框、2 个认证 API 和 8 个业务 API。"
+    },
+    {
+      "time": "2026-06-04T10:05:00+08:00",
+      "event": "skill_triggered",
+      "summary": "login_form_detected 触发 weak-pass-check。"
+    }
+  ],
+  "observations": [
+    {
+      "id": "obs-001",
+      "signal": "login_form_detected",
+      "source": "forms.json",
+      "evidence": "evidence/browser/scout.summary.json"
+    },
+    {
+      "id": "obs-002",
+      "signal": "passive_sql_error_match",
+      "source": "passive-hook",
+      "evidence": "evidence/passive/scout-passive-findings.jsonl"
+    }
+  ],
+  "active_tasks": [],
+  "queued_tasks": [
+    {
+      "agent": "access-control-idor",
+      "vulnerability_skill_id": "access-control-idor",
+      "status": "waiting_for_environment",
+      "reason": "已获得登录态，但尚未发现 ID 型资源或第二测试账号"
+    }
+  ],
+  "issues": [
+    {
+      "id": "issue-001",
+      "severity": "high",
+      "title": "弱口令登录成功",
+      "status": "validated",
+      "evidence": [
+        "evidence/agents/weak-pass-check/findings/finding-001"
+      ],
+      "burp_packets": [
+        "reports/测试系统/弱口令登录成功.md#burp-格式数据包"
+      ],
+      "report": "reports/测试系统/弱口令登录成功.md",
+      "annotated_screenshots": [
+        "reports/测试系统/弱口令登录成功.assets/证据截图.png"
+      ]
+    }
+  ],
+  "not_found": [
+    {
+      "id": "not-found-001",
+      "title": "默认密码未命中",
+      "status": "not_found",
+      "reason": "授权字典内的默认凭据均未登录成功，未产生有效 session。",
+      "report": "reports/测试系统/not-found/默认密码未命中.md",
+      "screenshots": [
+        "reports/测试系统/not-found/默认密码未命中.assets/状态截图.png"
+      ]
+    }
+  ],
+  "wins": [
+    {
+      "id": "win-001",
+      "title": "获得测试账号有效 session",
+      "impact": "可进入登录后功能区",
+      "unlocks": [
+        "browser-sensitive-storage",
+        "jwt-security",
+        "session-token-invalidation",
+        "access-control-idor"
+      ]
+    }
+  ],
+  "next_actions": [
+    "继续使用保存的 browser state 采集登录后 API、ID 型资源和角色边界，再按环境门槛派发 access-control-idor。"
+  ],
+  "report_index": {
+    "system_name": "测试系统",
+    "found": [
+      "reports/测试系统/弱口令登录成功.md"
+    ],
+    "not_found": [
+      "reports/测试系统/not-found/默认密码未命中.md"
+    ]
+  }
+}

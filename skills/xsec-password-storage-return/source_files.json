@@ -1,0 +1,65 @@
+{
+  "slug": "password-storage-return",
+  "title": "密码明文处理与返回",
+  "description": "密码未哈希、明文返回前端、明文缓存、弱密码存储链路的验证方法。",
+  "source_files": [
+    {
+      "title": "密码未Hash",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/密码未Hash_582b243f.md",
+      "filename": "密码未Hash_582b243f.md",
+      "instances": 1,
+      "risk_distribution": "中危:1",
+      "document_count": 1
+    },
+    {
+      "title": "密码未hash",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/密码未hash_b18d83b0.md",
+      "filename": "密码未hash_b18d83b0.md",
+      "instances": 18,
+      "risk_distribution": "中危:11, 低危:6, 未标注:1",
+      "document_count": 18
+    },
+    {
+      "title": "密码返回",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/密码返回_9d8b3c9d.md",
+      "filename": "密码返回_9d8b3c9d.md",
+      "instances": 33,
+      "risk_distribution": "中危:20, 高危:13",
+      "document_count": 33
+    },
+    {
+      "title": "密码返回前端",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/密码返回前端_b2fbe5c7.md",
+      "filename": "密码返回前端_b2fbe5c7.md",
+      "instances": 5,
+      "risk_distribution": "高危:3, 中危:2",
+      "document_count": 5
+    },
+    {
+      "title": "用户密码未hash",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/用户密码未hash_143e42e9.md",
+      "filename": "用户密码未hash_143e42e9.md",
+      "instances": 2,
+      "risk_distribution": "低危:2",
+      "document_count": 2
+    },
+    {
+      "title": "用户密码未在前端hash",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/用户密码未在前端hash_543f0efc.md",
+      "filename": "用户密码未在前端hash_543f0efc.md",
+      "instances": 15,
+      "risk_distribution": "低危:11, 中危:4",
+      "document_count": 15
+    }
+  ],
+  "total_instances": 74,
+  "risk_distribution_text": [
+    "密码未Hash: 中危:1",
+    "密码未hash: 中危:11, 低危:6, 未标注:1",
+    "密码返回: 中危:20, 高危:13",
+    "密码返回前端: 高危:3, 中危:2",
+    "用户密码未hash: 低危:2",
+    "用户密码未在前端hash: 低危:11, 中危:4"
+  ],
+  "index": 19
+}

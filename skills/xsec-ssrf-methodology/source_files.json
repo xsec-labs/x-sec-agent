@@ -1,0 +1,20 @@
+{
+  "slug": "ssrf",
+  "title": "SSRF服务端请求伪造",
+  "description": "SSRF 入口识别、回连/内网探测的授权低影响验证与修复复测方法。",
+  "source_files": [
+    {
+      "title": "SSRF",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/SSRF_496c0ddb.md",
+      "filename": "SSRF_496c0ddb.md",
+      "instances": 3,
+      "risk_distribution": "高危:2, 未标注:1",
+      "document_count": 3
+    }
+  ],
+  "total_instances": 3,
+  "risk_distribution_text": [
+    "SSRF: 高危:2, 未标注:1"
+  ],
+  "index": 13
+}

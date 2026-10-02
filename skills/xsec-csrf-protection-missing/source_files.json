@@ -1,0 +1,20 @@
+{
+  "slug": "csrf-protection-missing",
+  "title": "CSRF防护缺失",
+  "description": "状态变更接口缺少 CSRF 防护时的授权验证和低影响证明方法。",
+  "source_files": [
+    {
+      "title": "CSRF",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/CSRF_efdcba0f.md",
+      "filename": "CSRF_efdcba0f.md",
+      "instances": 6,
+      "risk_distribution": "高危:3, 低危:2, 中危:1",
+      "document_count": 6
+    }
+  ],
+  "total_instances": 6,
+  "risk_distribution_text": [
+    "CSRF: 高危:3, 低危:2, 中危:1"
+  ],
+  "index": 5
+}

@@ -1,0 +1,38 @@
+{
+  "slug": "cloud-secret-leakage",
+  "title": "云密钥与私钥泄露",
+  "description": "云厂商 AK/SK、云主机密钥、私钥等高价值凭据泄露的发现、验证、留证和复测方法。",
+  "source_files": [
+    {
+      "title": "AK/SK密钥泄露",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/AK_SK密钥泄露_2b53a2f5.md",
+      "filename": "AK_SK密钥泄露_2b53a2f5.md",
+      "instances": 1,
+      "risk_distribution": "高危:1",
+      "document_count": 1
+    },
+    {
+      "title": "云主机密钥泄露",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/云主机密钥泄露_9ad3c54e.md",
+      "filename": "云主机密钥泄露_9ad3c54e.md",
+      "instances": 3,
+      "risk_distribution": "高危:3",
+      "document_count": 3
+    },
+    {
+      "title": "私钥泄露",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/私钥泄露_9fc1e698.md",
+      "filename": "私钥泄露_9fc1e698.md",
+      "instances": 1,
+      "risk_distribution": "高危:1",
+      "document_count": 1
+    }
+  ],
+  "total_instances": 5,
+  "risk_distribution_text": [
+    "AK/SK密钥泄露: 高危:1",
+    "云主机密钥泄露: 高危:3",
+    "私钥泄露: 高危:1"
+  ],
+  "index": 1
+}

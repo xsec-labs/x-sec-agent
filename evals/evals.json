@@ -1,0 +1,104 @@
+{
+  "skill_name": "x-sec-agent",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我有授权 scope，要测 https://test.example.com。请先用浏览器采集插件观察页面和 API，不要一上来全量跑所有漏洞测试。如果发现登录框，再启动弱口令测试，并实时告诉我当前进度、问题清单和战果。",
+      "expected_output": "应使用 x-sec-agent 作为上级编排；主代理读取 references/main-agent.md；声明使用 web-pentest-browser-flow 作为 browser traffic adapter；先启动 proxy/passive hook，再并行做站点画像、API 路径发现、登录入口归集和 scout 并记录 observations；只有 login_form_detected/password_field_detected/auth_endpoint_detected/admin_login_form_detected 后才触发 weak-pass-check；维护 status.json、issues、wins、recon 和 passive findings。",
+      "files": [
+        "references/main-agent.md",
+        "config/vulnerability-skills.yaml",
+        "web-pentest-browser-flow/SKILL.md"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "弱口令测试已经验证成功，拿到了保存的 browser state。现在继续授权测试，但不要乱跑，只有需要的时候才启用权限和客户信息泄露测试。请说明你如何编排。",
+      "expected_output": "应把弱口令子代理返回的 validated issue 写入 issues，把获得 session 写入 wins；根据 authenticated_session_obtained/post_login_surface_available 重新计算触发队列；access-control-idor、browser-sensitive-storage、jwt-security、session-token-invalidation 等已注册节点只有在 activation、artifacts、requires_environment 和 scope 都满足时才启动，否则记录为 idle、waiting_for_artifact 或 blocked；customer-data-exposure-check 当前只是 not_installed_skill_ideas，不能启动子代理。",
+      "files": [
+        "references/main-agent.md",
+        "references/vulnerability-subagent.md",
+        "examples/status-ledger.sample.json"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "我想把浏览器流量采集换成另一个实现，可能以后不用 mitmproxy。主流程还是要按观察信号分配漏洞 skill。请调整 skill 设计思路。",
+      "expected_output": "应保持上级编排不变，只替换 adapters.browser_traffic 的 id/path/capabilities；说明新 adapter 必须提供 compact summary、forms/actions/routes、api inventory、request corpus、passive findings、flow/evidence paths；不得把漏洞注册表或子代理分配逻辑放回 browser-flow；主代理和子代理仍分别读取自己的 reference。",
+      "files": [
+        "SKILL.md",
+        "config/vulnerability-skills.yaml"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "子代理确认发现了一个弱口令漏洞。请说明它应该如何保存截图、红框标注重点位置，并生成 reports/系统名称/漏洞名称.md；如果某个漏洞测试未发现问题，也要保存原因到 reports/系统名称/not-found/漏洞名称.md，截图也按对应 .assets 目录保存。",
+      "expected_output": "应让漏洞测试子代理读取 references/vulnerability-subagent.md；UI 可见类发现漏洞时保存原始截图和红框标注后的证据截图，红框坐标应来自浏览器真实布局，控件用元素 boundingBox，块级文本用 text range tight bbox；红框应为无文字标签的细线，并向外 padding，避免遮住文字或控件边缘；API/passive/协议类发现可使用 selected request/response、HAR slice、flow fingerprint 或 corpus-query 命中片段作为等价证据，并写明 screenshot_unavailable_reason；生成 reports/<系统名称>/<漏洞名称>.md；未发现漏洞时生成 reports/<系统名称>/not-found/<漏洞名称>.md，并优先保存状态/范围截图，无法截图时引用覆盖范围或阻断原因证据；输出 JSON 应包含 report paths、annotated_screenshots 或等价 evidence path、not_found 证据。",
+      "files": [
+        "references/vulnerability-subagent.md",
+        "templates/found-vulnerability.md",
+        "templates/not-found.md",
+        "scripts/annotate_screenshot.py"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "漏洞详情文档里不要用 JSON 摘要展示数据包，要用 Burp 那种原始 HTTP 请求/响应格式。请说明子代理发现漏洞后文档中的数据包应该怎么写。",
+      "expected_output": "应要求子代理在 reports/<系统名称>/<漏洞名称>.md 中使用 Burp Raw 风格数据包：请求代码块包含 METHOD path HTTP/1.1、Host、headers、空行和 body；响应代码块包含 HTTP/1.1 status、headers、空行和短 body preview；敏感值脱敏，保留关键字段名、状态码、关键参数和证明漏洞的响应片段；不得用 JSON、curl、fetch 或 HAR 片段替代。",
+      "files": [
+        "references/vulnerability-subagent.md",
+        "templates/found-vulnerability.md"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "测试初期请先侦查：判断目标是 Vue/React 还是 PHP/ASP/未知；Vue/React 不做 Web 根路径目录扫描，PHP/ASP/未知要做 DirSearch；所有流量过 hook 自动找秘钥、SQL 报错、详细错误、内网 IP。结束前再看 passive 数据并调用漏洞组合 Skill。",
+      "expected_output": "应在主代理阶段并行启动 site-profile-classifier、api-path-discovery、login-surface-discovery；site_profile.kind=spa_template 时跳过 Web 根路径 DirSearch，server_script 或 unknown 时执行受控 DirSearch；无论站点画像如何，都对 API base path/接口目录执行 API DirSearch；所有 DirSearch 和浏览器流量都必须经过分配 proxy/passive hook；收尾时先调用 skills/xsec-passive-scanning 作为被动扫描总入口，再按 target_skill 分组触发 cloud-secret/sql-error/error-path/internal-network passive Skills；最终调用 skills/xsec-vulnerability-chain-analysis 进行组合链分析。",
+      "files": [
+        "references/main-agent.md",
+        "config/vulnerability-skills.yaml",
+        "web-pentest-browser-flow/config/passive-patterns.yaml",
+        "web-pentest-browser-flow/scripts/mitm_passive_hook.py",
+        "skills/xsec-passive-scanning/SKILL.md",
+        "skills/xsec-vulnerability-chain-analysis/SKILL.md",
+        "skills/xsec-cloud-secret-leakage/SKILL.md"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "我想增加 Apache Shiro rememberMe 弱 Key 和利用链检测，但不要启动时主动扫 Shiro，只有 passive hook 看到 rememberMe 或 deleteMe 后才触发。",
+      "expected_output": "应在 passive hook 规则中把 rememberMe/deleteMe Cookie 头命中标记为 passive_shiro_cookie_detected，并路由到 skills/xsec-shiro-attack-detection；config/vulnerability-skills.yaml 中 shiro-attack-detection 的 activation 只能依赖 passive_shiro_cookie_detected、passive_findings/request_corpus/flow 等工件和授权 proxy 环境；主代理在没有 passive Shiro Cookie 证据时只能 waiting/idle，不得主动全站探测；弱 Key 检测后，只有弱 Key 命中且授权允许低影响命令验证时才做利用链检测。",
+      "files": [
+        "web-pentest-browser-flow/config/passive-patterns.yaml",
+        "skills/xsec-shiro-attack-detection/SKILL.md",
+        "config/vulnerability-skills.yaml",
+        "references/main-agent.md"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "浏览器流量里出现了 https://demo-bucket.oss-cn-beijing.aliyuncs.com/static/logo.png，这个后缀在 excluded_request_extensions 里。不要因为是 png 就完全不过 passive hook；要保留 bucket host，后续被动扫描 agent 再用 Bucket 检测 skill 检查 OSS/COS/OBS/S3 的遍历、未授权上传、ACL/Policy、桶接管。",
+      "expected_output": "应说明 excluded_request_extensions 只跳过正文/正则匹配，不让整条流量绕过 passive hook；mitm_passive_hook.py 应在静态/二进制后缀上仍识别 OSS/COS/OBS/S3 bucket host，按 host 去重写出 passive_object_storage_bucket_detected，并把 target_skill 指向 skills/xsec-object-storage-bucket；xsec-passive-scanning 应把该信号路由到 xsec-object-storage-bucket；config/vulnerability-skills.yaml 应注册 object-storage-bucket 节点；Bucket 检测 skill 默认只做匿名只读检查，canary PUT 上传必须显式授权。",
+      "files": [
+        "web-pentest-browser-flow/scripts/mitm_passive_hook.py",
+        "web-pentest-browser-flow/config/passive-patterns.yaml",
+        "skills/xsec-passive-scanning/SKILL.md",
+        "skills/xsec-object-storage-bucket/SKILL.md",
+        "skills/xsec-object-storage-bucket/scripts/bucket_check.py",
+        "config/vulnerability-skills.yaml"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "我想给 Agent 更高自由度。遇到注册表没覆盖的新线索时，不要直接 blocked；但也不要乱跑。发现登录框时弱口令也不要默认大字典全量跑。",
+      "expected_output": "应读取 config/vulnerability-skills.yaml 的 autonomy，默认 guided；注册表未覆盖但证据合理的新线索应写入 hypothesis_queue，并只做 compact corpus-query、同源只读请求、小范围控件探测等低影响补证；能映射现有 Skill 的转成 observation 重新计算队列，不能映射的写入 next_actions/skill_ideas；子代理只围绕一个 Skill，但可在 payload autonomy 预算内补齐当前 Skill artifact；弱口令节点应按 credential_audit_policy 执行预算化凭据审计，包含 attempt_budget、max_threads、delay_seconds、lockout_stop_condition 和 allowed credential sources；全量用户名枚举、大字典、喷洒、预算外尝试和高并发必须显式授权。",
+      "files": [
+        "SKILL.md",
+        "references/main-agent.md",
+        "references/vulnerability-subagent.md",
+        "skills/weak-pass-check/SKILL.md",
+        "config/vulnerability-skills.yaml"
+      ]
+    }
+  ]
+}

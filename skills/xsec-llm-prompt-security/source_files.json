@@ -1,0 +1,38 @@
+{
+  "slug": "llm-prompt-security",
+  "title": "提示词泄露与提示词绕过",
+  "description": "LLM 应用提示词泄露、提示词绕过、输出注入风险的安全测试方法。",
+  "source_files": [
+    {
+      "title": "提示词泄露",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/提示词泄露_bf9f8138.md",
+      "filename": "提示词泄露_bf9f8138.md",
+      "instances": 2,
+      "risk_distribution": "中危:1, 未标注:1",
+      "document_count": 2
+    },
+    {
+      "title": "提示词绕过+XSS",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/提示词绕过+XSS_7741b027.md",
+      "filename": "提示词绕过+XSS_7741b027.md",
+      "instances": 3,
+      "risk_distribution": "未标注:3",
+      "document_count": 3
+    },
+    {
+      "title": "提示词绕过",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/提示词绕过_c5ddec77.md",
+      "filename": "提示词绕过_c5ddec77.md",
+      "instances": 2,
+      "risk_distribution": "中危:1, 未标注:1",
+      "document_count": 2
+    }
+  ],
+  "total_instances": 7,
+  "risk_distribution_text": [
+    "提示词泄露: 中危:1, 未标注:1",
+    "提示词绕过+XSS: 未标注:3",
+    "提示词绕过: 中危:1, 未标注:1"
+  ],
+  "index": 43
+}
