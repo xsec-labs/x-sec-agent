@@ -1,0 +1,29 @@
+{
+  "slug": "jwt-lifecycle",
+  "title": "JWT有效期控制缺陷",
+  "description": "JWT 未设置 exp、过期策略不合理、长期有效令牌的验证与风险判断方法。",
+  "source_files": [
+    {
+      "title": "JWT未设置过期时间",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/JWT未设置过期时间_7d016a26.md",
+      "filename": "JWT未设置过期时间_7d016a26.md",
+      "instances": 1,
+      "risk_distribution": "低危:1",
+      "document_count": 1
+    },
+    {
+      "title": "JWT未设置过期时间低",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/JWT未设置过期时间低_29b41f35.md",
+      "filename": "JWT未设置过期时间低_29b41f35.md",
+      "instances": 1,
+      "risk_distribution": "未标注:1",
+      "document_count": 1
+    }
+  ],
+  "total_instances": 2,
+  "risk_distribution_text": [
+    "JWT未设置过期时间: 低危:1",
+    "JWT未设置过期时间低: 未标注:1"
+  ],
+  "index": 9
+}

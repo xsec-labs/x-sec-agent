@@ -1,0 +1,35 @@
+.DS_Store
+
+# Node / Playwright 依赖与报告
+node_modules/
+npm-debug.log*
+playwright-report/
+test-results/
+
+# Python 环境与缓存
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# 本地密钥与 engagement 专用 scope
+.env
+.env.*
+web-pentest-browser-flow/config/scope.yaml
+
+# 运行产物与原始证据
+.xsec-runs/
+web-pentest-browser-flow/evidence/
+web-pentest-browser-flow/tmp/
+*.flows
+*.har
+
+# 证据包生成的归档文件
+*.zip
+
+# 大型本地字典文件
+skills/xsec-jwt-security/wordlists/rockyou.txt
+
+报告/
+output/

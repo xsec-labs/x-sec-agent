@@ -1,0 +1,20 @@
+{
+  "slug": "insecure-crypto",
+  "title": "不安全加密方式",
+  "description": "弱算法、可逆加密、前端伪加密、密钥管理不当的判断方法。",
+  "source_files": [
+    {
+      "title": "不安全的加密方式",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/不安全的加密方式_c0c39e35.md",
+      "filename": "不安全的加密方式_c0c39e35.md",
+      "instances": 1,
+      "risk_distribution": "低危:1",
+      "document_count": 1
+    }
+  ],
+  "total_instances": 1,
+  "risk_distribution_text": [
+    "不安全的加密方式: 低危:1"
+  ],
+  "index": 18
+}

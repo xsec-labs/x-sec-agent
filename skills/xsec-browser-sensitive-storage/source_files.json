@@ -1,0 +1,92 @@
+{
+  "slug": "browser-sensitive-storage",
+  "title": "浏览器端敏感信息存储",
+  "description": "Cookie、本地存储、前端缓存中保存敏感信息或明文凭据的检查方法。",
+  "source_files": [
+    {
+      "title": "Cookie中存储敏感数据",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/Cookie中存储敏感数据_86bdfa72.md",
+      "filename": "Cookie中存储敏感数据_86bdfa72.md",
+      "instances": 1,
+      "risk_distribution": "中危:1",
+      "document_count": 1
+    },
+    {
+      "title": "Cookie存储敏感信息",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/Cookie存储敏感信息_b9b821a2.md",
+      "filename": "Cookie存储敏感信息_b9b821a2.md",
+      "instances": 6,
+      "risk_distribution": "中危:3, 低危:2, 未标注:1",
+      "document_count": 6
+    },
+    {
+      "title": "Cookie存在敏感信息",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/Cookie存在敏感信息_f9eb73b9.md",
+      "filename": "Cookie存在敏感信息_f9eb73b9.md",
+      "instances": 2,
+      "risk_distribution": "高危:2",
+      "document_count": 2
+    },
+    {
+      "title": "cookie存在敏感数据",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/cookie存在敏感数据_a0c478be.md",
+      "filename": "cookie存在敏感数据_a0c478be.md",
+      "instances": 2,
+      "risk_distribution": "高危:2",
+      "document_count": 2
+    },
+    {
+      "title": "密码存储在COOKIE",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/密码存储在COOKIE_9b687704.md",
+      "filename": "密码存储在COOKIE_9b687704.md",
+      "instances": 2,
+      "risk_distribution": "高危:2",
+      "document_count": 2
+    },
+    {
+      "title": "密码明文存储到前端缓存",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/密码明文存储到前端缓存_6e97d521.md",
+      "filename": "密码明文存储到前端缓存_6e97d521.md",
+      "instances": 1,
+      "risk_distribution": "中危:1",
+      "document_count": 1
+    },
+    {
+      "title": "敏感信息存储在cookie",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/敏感信息存储在cookie_94aac436.md",
+      "filename": "敏感信息存储在cookie_94aac436.md",
+      "instances": 2,
+      "risk_distribution": "高危:2",
+      "document_count": 2
+    },
+    {
+      "title": "本地存储敏感信息",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/本地存储敏感信息_338e21e0.md",
+      "filename": "本地存储敏感信息_338e21e0.md",
+      "instances": 9,
+      "risk_distribution": "高危:9",
+      "document_count": 9
+    },
+    {
+      "title": "账号密码存在cookie",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/账号密码存在cookie_ac7fede3.md",
+      "filename": "账号密码存在cookie_ac7fede3.md",
+      "instances": 4,
+      "risk_distribution": "高危:4",
+      "document_count": 4
+    }
+  ],
+  "total_instances": 29,
+  "risk_distribution_text": [
+    "Cookie中存储敏感数据: 中危:1",
+    "Cookie存储敏感信息: 中危:3, 低危:2, 未标注:1",
+    "Cookie存在敏感信息: 高危:2",
+    "cookie存在敏感数据: 高危:2",
+    "密码存储在COOKIE: 高危:2",
+    "密码明文存储到前端缓存: 中危:1",
+    "敏感信息存储在cookie: 高危:2",
+    "本地存储敏感信息: 高危:9",
+    "账号密码存在cookie: 高危:4"
+  ],
+  "index": 6
+}

@@ -1,0 +1,47 @@
+{
+  "slug": "error-path-leakage",
+  "title": "错误回显与路径泄露",
+  "description": "详细错误、统一报错缺失、物理路径/绝对路径泄露的判断方法。",
+  "source_files": [
+    {
+      "title": "未统一报错",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/未统一报错_25e95b1a.md",
+      "filename": "未统一报错_25e95b1a.md",
+      "instances": 2,
+      "risk_distribution": "中危:2",
+      "document_count": 2
+    },
+    {
+      "title": "物理路径泄露",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/物理路径泄露_c6748e88.md",
+      "filename": "物理路径泄露_c6748e88.md",
+      "instances": 3,
+      "risk_distribution": "低危:3",
+      "document_count": 3
+    },
+    {
+      "title": "绝对路径泄露",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/绝对路径泄露_52129e12.md",
+      "filename": "绝对路径泄露_52129e12.md",
+      "instances": 4,
+      "risk_distribution": "低危:4",
+      "document_count": 4
+    },
+    {
+      "title": "详细错误信息",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/详细错误信息_d6e13d3a.md",
+      "filename": "详细错误信息_d6e13d3a.md",
+      "instances": 53,
+      "risk_distribution": "中危:24, 低危:16, 未标注:12, 高危:1",
+      "document_count": 48
+    }
+  ],
+  "total_instances": 62,
+  "risk_distribution_text": [
+    "未统一报错: 中危:2",
+    "物理路径泄露: 低危:3",
+    "绝对路径泄露: 低危:4",
+    "详细错误信息: 中危:24, 低危:16, 未标注:12, 高危:1"
+  ],
+  "index": 27
+}

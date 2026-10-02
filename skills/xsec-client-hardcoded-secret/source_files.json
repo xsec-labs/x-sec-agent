@@ -1,0 +1,29 @@
+{
+  "slug": "client-hardcoded-secret",
+  "title": "客户端硬编码敏感信息",
+  "description": "前端、移动端或客户端包中硬编码密钥、接口地址、账号凭据等敏感信息的审计方法。",
+  "source_files": [
+    {
+      "title": "前端硬编码",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/前端硬编码_9c0f47d9.md",
+      "filename": "前端硬编码_9c0f47d9.md",
+      "instances": 3,
+      "risk_distribution": "高危:3",
+      "document_count": 3
+    },
+    {
+      "title": "密钥硬编码",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/密钥硬编码_00f68687.md",
+      "filename": "密钥硬编码_00f68687.md",
+      "instances": 4,
+      "risk_distribution": "低危:4",
+      "document_count": 4
+    }
+  ],
+  "total_instances": 7,
+  "risk_distribution_text": [
+    "前端硬编码: 高危:3",
+    "密钥硬编码: 低危:4"
+  ],
+  "index": 2
+}

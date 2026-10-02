@@ -1,0 +1,47 @@
+{
+  "slug": "unauth-access",
+  "title": "未授权访问",
+  "description": "接口、页面、资源、表单或服务无需认证即可访问的验证方法。",
+  "source_files": [
+    {
+      "title": "影像未授权",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/影像未授权_e9e5316c.md",
+      "filename": "影像未授权_e9e5316c.md",
+      "instances": 1,
+      "risk_distribution": "未标注:1",
+      "document_count": 1
+    },
+    {
+      "title": "未授权",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/未授权_86bddceb.md",
+      "filename": "未授权_86bddceb.md",
+      "instances": 1,
+      "risk_distribution": "未标注:1",
+      "document_count": 1
+    },
+    {
+      "title": "未授权访问",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/未授权访问_bd884ad7.md",
+      "filename": "未授权访问_bd884ad7.md",
+      "instances": 100,
+      "risk_distribution": "高危:79, 未标注:21",
+      "document_count": 87
+    },
+    {
+      "title": "表单未授权",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/表单未授权_e438c97c.md",
+      "filename": "表单未授权_e438c97c.md",
+      "instances": 1,
+      "risk_distribution": "未标注:1",
+      "document_count": 1
+    }
+  ],
+  "total_instances": 103,
+  "risk_distribution_text": [
+    "影像未授权: 未标注:1",
+    "未授权: 未标注:1",
+    "未授权访问: 高危:79, 未标注:21",
+    "表单未授权: 未标注:1"
+  ],
+  "index": 14
+}

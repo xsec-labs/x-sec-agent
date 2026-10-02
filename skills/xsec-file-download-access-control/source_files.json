@@ -1,0 +1,38 @@
+{
+  "slug": "file-download-access-control",
+  "title": "文件下载访问控制缺陷",
+  "description": "任意文件下载、越权下载敏感文件、下载接口对象权限缺失的测试方法。",
+  "source_files": [
+    {
+      "title": "任意文件下载",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/任意文件下载_8c89982a.md",
+      "filename": "任意文件下载_8c89982a.md",
+      "instances": 1,
+      "risk_distribution": "中危:1",
+      "document_count": 1
+    },
+    {
+      "title": "越权下载敏感文件",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/越权下载敏感文件_2d5c9ee3.md",
+      "filename": "越权下载敏感文件_2d5c9ee3.md",
+      "instances": 2,
+      "risk_distribution": "高危:2",
+      "document_count": 2
+    },
+    {
+      "title": "越权文件下载",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/越权文件下载_43d9385a.md",
+      "filename": "越权文件下载_43d9385a.md",
+      "instances": 1,
+      "risk_distribution": "高危:1",
+      "document_count": 1
+    }
+  ],
+  "total_instances": 4,
+  "risk_distribution_text": [
+    "任意文件下载: 中危:1",
+    "越权下载敏感文件: 高危:2",
+    "越权文件下载: 高危:1"
+  ],
+  "index": 33
+}

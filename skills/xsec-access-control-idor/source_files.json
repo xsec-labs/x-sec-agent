@@ -1,0 +1,110 @@
+{
+  "slug": "access-control-idor",
+  "title": "水平垂直越权与对象级访问控制",
+  "description": "通用水平越权、垂直越权、接口越权、对象级权限缺失的测试方法。",
+  "source_files": [
+    {
+      "title": "垂直越权",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/垂直越权_cd894762.md",
+      "filename": "垂直越权_cd894762.md",
+      "instances": 4,
+      "risk_distribution": "高危:3, 未标注:1",
+      "document_count": 4
+    },
+    {
+      "title": "接口存在越权",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/接口存在越权_226d137e.md",
+      "filename": "接口存在越权_226d137e.md",
+      "instances": 1,
+      "risk_distribution": "未标注:1",
+      "document_count": 1
+    },
+    {
+      "title": "水平越权",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/水平越权_c8a5510d.md",
+      "filename": "水平越权_c8a5510d.md",
+      "instances": 2,
+      "risk_distribution": "中危:2",
+      "document_count": 2
+    },
+    {
+      "title": "越权",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/越权_04075268.md",
+      "filename": "越权_04075268.md",
+      "instances": 79,
+      "risk_distribution": "高危:73, 未标注:6",
+      "document_count": 79
+    },
+    {
+      "title": "越权复测1",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/越权复测1_6a48eabd.md",
+      "filename": "越权复测1_6a48eabd.md",
+      "instances": 1,
+      "risk_distribution": "高危:1",
+      "document_count": 1
+    },
+    {
+      "title": "越权复测2",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/越权复测2_ff3629a2.md",
+      "filename": "越权复测2_ff3629a2.md",
+      "instances": 1,
+      "risk_distribution": "高危:1",
+      "document_count": 1
+    },
+    {
+      "title": "越权查看用户信息",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/越权查看用户信息_13ff7ab4.md",
+      "filename": "越权查看用户信息_13ff7ab4.md",
+      "instances": 2,
+      "risk_distribution": "高危:2",
+      "document_count": 2
+    },
+    {
+      "title": "越权查看试卷",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/越权查看试卷_5d72cd39.md",
+      "filename": "越权查看试卷_5d72cd39.md",
+      "instances": 2,
+      "risk_distribution": "高危:2",
+      "document_count": 2
+    },
+    {
+      "title": "越权访问个人信息",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/越权访问个人信息_a9f85a61.md",
+      "filename": "越权访问个人信息_a9f85a61.md",
+      "instances": 2,
+      "risk_distribution": "高危:1, 未标注:1",
+      "document_count": 2
+    },
+    {
+      "title": "越权访问控制台日志",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/越权访问控制台日志_529f7494.md",
+      "filename": "越权访问控制台日志_529f7494.md",
+      "instances": 1,
+      "risk_distribution": "高危:1",
+      "document_count": 1
+    },
+    {
+      "title": "越权遍历",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/越权遍历_aeb6dae9.md",
+      "filename": "越权遍历_aeb6dae9.md",
+      "instances": 5,
+      "risk_distribution": "高危:3, 未标注:2",
+      "document_count": 5
+    }
+  ],
+  "total_instances": 100,
+  "risk_distribution_text": [
+    "垂直越权: 高危:3, 未标注:1",
+    "接口存在越权: 未标注:1",
+    "水平越权: 中危:2",
+    "越权: 高危:73, 未标注:6",
+    "越权复测1: 高危:1",
+    "越权复测2: 高危:1",
+    "越权查看用户信息: 高危:2",
+    "越权查看试卷: 高危:2",
+    "越权访问个人信息: 高危:1, 未标注:1",
+    "越权访问控制台日志: 高危:1",
+    "越权遍历: 高危:3, 未标注:2"
+  ],
+  "index": 36
+}

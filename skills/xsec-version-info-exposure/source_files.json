@@ -1,0 +1,38 @@
+{
+  "slug": "version-info-exposure",
+  "title": "版本信息泄露",
+  "description": "Web、中间件、框架、组件版本暴露的资产识别和风险校准方法。",
+  "source_files": [
+    {
+      "title": "中间件版本泄露",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/中间件版本泄露_881aed9b.md",
+      "filename": "中间件版本泄露_881aed9b.md",
+      "instances": 31,
+      "risk_distribution": "低危:28, 中危:3",
+      "document_count": 31
+    },
+    {
+      "title": "患者360HTTPS版本",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/患者360HTTPS版本_90b98ff4.md",
+      "filename": "患者360HTTPS版本_90b98ff4.md",
+      "instances": 1,
+      "risk_distribution": "未标注:1",
+      "document_count": 1
+    },
+    {
+      "title": "版本信息泄露",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/版本信息泄露_0bd60d99.md",
+      "filename": "版本信息泄露_0bd60d99.md",
+      "instances": 61,
+      "risk_distribution": "低危:53, 中危:4, 未标注:4",
+      "document_count": 61
+    }
+  ],
+  "total_instances": 93,
+  "risk_distribution_text": [
+    "中间件版本泄露: 低危:28, 中危:3",
+    "患者360HTTPS版本: 未标注:1",
+    "版本信息泄露: 低危:53, 中危:4, 未标注:4"
+  ],
+  "index": 26
+}

@@ -1,0 +1,29 @@
+{
+  "slug": "shiro-attack-detection",
+  "title": "Apache Shiro rememberMe 弱 Key 与利用链检测",
+  "description": "仅在 passive hook 发现 rememberMe/deleteMe Cookie 后触发，使用内置 203-key 字典验证 Shiro 存在、常见弱 Key 和授权范围内的低影响 Gadget/回显链。",
+  "source_files": [
+    {
+      "title": "内置 Shiro Key 字典",
+      "file": "skills/xsec-shiro-attack-detection/wordlists/shiro-keys.txt",
+      "filename": "shiro-keys.txt",
+      "instances": 203,
+      "risk_distribution": "字典:203",
+      "document_count": 1
+    },
+    {
+      "title": "ShiroAttack2 CLI Skill",
+      "file": "https://github.com/SummerSec/ShiroAttack2/blob/master/.claude/skills/shiro-attack-cli/SKILL.md",
+      "filename": "SKILL.md",
+      "instances": 1,
+      "risk_distribution": "参考资料",
+      "document_count": 1
+    }
+  ],
+  "total_instances": 204,
+  "risk_distribution_text": [
+    "内置 Shiro Key 字典: 字典:203",
+    "ShiroAttack2 CLI Skill: 参考资料"
+  ],
+  "index": 36
+}

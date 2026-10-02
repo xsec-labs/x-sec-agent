@@ -1,0 +1,47 @@
+{
+  "slug": "internal-network-leakage",
+  "title": "内网地址与网络信息泄露",
+  "description": "内网 IP、内网地址、网络拓扑线索泄露的收集与风险评估方法。",
+  "source_files": [
+    {
+      "title": "IP泄露",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/IP泄露_19018029.md",
+      "filename": "IP泄露_19018029.md",
+      "instances": 1,
+      "risk_distribution": "低危:1",
+      "document_count": 1
+    },
+    {
+      "title": "内网IP泄露",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/内网IP泄露_b218d0e8.md",
+      "filename": "内网IP泄露_b218d0e8.md",
+      "instances": 13,
+      "risk_distribution": "低危:7, 未标注:6",
+      "document_count": 12
+    },
+    {
+      "title": "内网地址泄露",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/内网地址泄露_ce0f92ec.md",
+      "filename": "内网地址泄露_ce0f92ec.md",
+      "instances": 7,
+      "risk_distribution": "高危:3, 低危:3, 中危:1",
+      "document_count": 7
+    },
+    {
+      "title": "序号|风险等级|安全问题1|高风险|敏感信息泄露2|中风险|内网地址泄露",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/序号_风险等级_安全问题1_高风险_敏感信息泄露2_中风险_内网地址泄露_3d60fb7c.md",
+      "filename": "序号_风险等级_安全问题1_高风险_敏感信息泄露2_中风险_内网地址泄露_3d60fb7c.md",
+      "instances": 1,
+      "risk_distribution": "中危:1",
+      "document_count": 1
+    }
+  ],
+  "total_instances": 22,
+  "risk_distribution_text": [
+    "IP泄露: 低危:1",
+    "内网IP泄露: 低危:7, 未标注:6",
+    "内网地址泄露: 高危:3, 低危:3, 中危:1",
+    "序号|风险等级|安全问题1|高风险|敏感信息泄露2|中风险|内网地址泄露: 中危:1"
+  ],
+  "index": 28
+}

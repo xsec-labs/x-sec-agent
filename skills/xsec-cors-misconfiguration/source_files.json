@@ -1,0 +1,20 @@
+{
+  "slug": "cors-misconfiguration",
+  "title": "CORS跨域配置缺陷",
+  "description": "CORS 过宽配置、凭证跨域与实际敏感数据可读性的验证方法。",
+  "source_files": [
+    {
+      "title": "CORS跨域",
+      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/CORS跨域_fda3d42f.md",
+      "filename": "CORS跨域_fda3d42f.md",
+      "instances": 16,
+      "risk_distribution": "中危:15, 低危:1",
+      "document_count": 16
+    }
+  ],
+  "total_instances": 16,
+  "risk_distribution_text": [
+    "CORS跨域: 中危:15, 低危:1"
+  ],
+  "index": 4
+}
