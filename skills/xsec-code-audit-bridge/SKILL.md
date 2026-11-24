@@ -10,9 +10,9 @@ description: 当渗透测试过程中确认可以下载到目标真实后端源�
 先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
 
 - 适用场景：`xsec-config-backup-leakage`（Git/SVN 仓库还原、备份包解包）或 `xsec-directory-sensitive-leakage` 确认存在可下载、可还原的真实后端源码，而不是构建产物、前端 bundle 或单个配置文件片段。
-- 触发信号：`source_code_leakage_candidate`、`client_source_leakage_candidate`。
+- 触发信号：`source_code_leakage_candidate`。（`xsec-directory-sensitive-leakage` 的 `client_source_leakage_candidate` 指的是前端/客户端源码暴露，不是本 skill 要处理的真实后端源码，不作为触发信号。）
 - 测试前置环境：已经把源码下载/还原到本地隔离目录（不是目标本身，也不是审计人员自己项目所在目录）；有可用的系统终端插件做下载/解包。
-- 参考工件：`candidate_file_response`、还原出的本地源码目录路径、`artifact_metadata`。
+- 参考工件：`restored_source_local_path`（还原出的本地源码目录绝对路径）。
 - 解锁输出：`leaked_source_audit_completed`、`vulnerability_chain_input`。
 - 建议阻断（可低影响补齐时先补证再测）：只拿到个别配置片段或单文件、还原不完整到无法判断是否值得审计、本地没有可用的解包/终端环境。
 
@@ -26,7 +26,7 @@ description: 当渗透测试过程中确认可以下载到目标真实后端源�
 
 `code_audit_run_start`、`code_audit_findings_put`、`code_audit_report_build` 等写入类工具在插件里没有声明 `roles`，宿主侧默认只开给主 Agent（`role=parent`）；子 Agent 即使有权限调用 `code_audit_runs_list` 等只读工具，也不能发起或写入一次审计。所以：
 
-- 子 Agent（跑 config-backup-leakage/directory-sensitive-leakage 的那个）只负责把还原出的源码路径、规模、来源证据记录成共享发现，解锁 `source_code_leakage_candidate`/`client_source_leakage_candidate`，然后收尾，不要自己尝试调用任何 `code_audit_*` 工具。
+- 子 Agent（跑 config-backup-leakage 的那个）只负责把还原出的源码路径、规模、来源证据记录成共享发现，解锁 `source_code_leakage_candidate`，然后收尾，不要自己尝试调用任何 `code_audit_*` 工具。
 - 是否跑这个桥接、什么时候跑，由主 Agent 在回收子 Agent 结果后自己判断，不是自动触发。
 
 ## 参考方法（目标与常见路径，不是必须顺序）
@@ -36,10 +36,11 @@ description: 当渗透测试过程中确认可以下载到目标真实后端源�
 1. 确认本地已有一份完整、只读的源码副本，在一个专门的隔离目录下（不是正在测试的目标本身，不是本次会话外的其他项目目录），例如用系统终端插件的 PTY 跑 git-dumper/GitHack/手动解包命令，把还原结果放到本次运行专属的工作目录中。
 2. 粗看一眼目录结构（文件数量、是否有路由/控制器/ORM/中间件特征），判断是否值得跑审计；只有个别文件或残缺到看不出业务逻辑时，直接读文件找敏感信息即可，不必进入本流程剩余步骤。
 3. 调用 `code_audit_run_start` 时把还原出的本地目录绝对路径作为 target，scope 选 `repo`（整树）或 `paths`（已知只有部分目录有价值时），budget/focus 按还原出的代码量和本次测试剩余预算设置，不要无限展开。
-4. 代码审计 v2 本身只读源码、不执行不构建（它自己的硬约束），这里不需要重复这件事，但如果你打算用其它方式验证代码审计发现的问题，仍然只能在你自己准备的隔离副本上做，绝不能在目标系统上执行从泄露源码还原出的任何代码。
-5. 用 `code_audit_runs_list`/`code_audit_findings_list` 读回发现，挑出和本次渗透测试相关、严重度高的项（硬编码云密钥、SQL 拼接、反序列化、SSRF sink、鉴权绕过逻辑等），结合黑盒测试已经验证的内容看能否进一步证明可达性；代码审计本身发现的问题仍然是"源码层面确认"，不等于"已验证可从外部触发"，除非你额外用黑盒方式复核。
-6. 把折算后的高价值发现写回本次渗透测试的共享发现（`attack_path_finding_add` 或等价机制），标注来源是"代码审计 v2 对还原源码的静态分析"，不要和黑盒直接验证的问题混为一谈。
-7. 审计结束后清理本地还原出的源码副本（除非客户要求保留作为证据附件），不要把客户的完整后端源码长期留在工作目录里。
+4. `code_audit_run_start` 之后不要假设审计已经完成——按 `xsec-plugin-code-audit` 自己的 `xsec-code-audit` skill 走完剩余流程（`code_audit_ledger_put` 记录进展、`code_audit_findings_put` 写入发现、必要时 `code_audit_validate`，最后 `code_audit_report_build` 生成报告），具体步骤和参数以那个 skill 的 SKILL.md 为准。
+5. 代码审计 v2 本身只读源码、不执行不构建（它自己的硬约束），这里不需要重复这件事，但如果你打算用其它方式验证代码审计发现的问题，仍然只能在你自己准备的隔离副本上做，绝不能在目标系统上执行从泄露源码还原出的任何代码。
+6. 用 `code_audit_runs_list`/`code_audit_findings_list` 读回发现，挑出和本次渗透测试相关、严重度高的项（硬编码云密钥、SQL 拼接、反序列化、SSRF sink、鉴权绕过逻辑等），结合黑盒测试已经验证的内容看能否进一步证明可达性；代码审计本身发现的问题仍然是"源码层面确认"，不等于"已验证可从外部触发"，除非你额外用黑盒方式复核。
+7. 把折算后的高价值发现写回本次渗透测试的共享发现（`attack_path_finding_add` 或等价机制），标注来源是"代码审计 v2 对还原源码的静态分析"，不要和黑盒直接验证的问题混为一谈。
+8. 审计结束后清理本地还原出的源码副本（除非客户要求保留作为证据附件），不要把客户的完整后端源码长期留在工作目录里。
 
 ## 判断边界
 
