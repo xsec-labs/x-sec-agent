@@ -8,6 +8,7 @@
       "files": [
         "references/security-boundaries.md",
         "references/main-agent.md",
+        "references/routing-index.md",
         "config/vulnerability-skills.yaml",
         "SKILL.md"
       ]
@@ -63,6 +64,7 @@
       "files": [
         "references/security-boundaries.md",
         "references/main-agent.md",
+        "references/routing-index.md",
         "config/vulnerability-skills.yaml",
         "skills/xsec-passive-scanning/SKILL.md",
         "skills/xsec-vulnerability-chain-analysis/SKILL.md",
@@ -76,6 +78,7 @@
       "files": [
         "references/security-boundaries.md",
         "skills/xsec-shiro-attack-detection/SKILL.md",
+        "references/routing-index.md",
         "config/vulnerability-skills.yaml",
         "references/main-agent.md"
       ]
@@ -89,6 +92,7 @@
         "skills/xsec-passive-scanning/SKILL.md",
         "skills/xsec-object-storage-bucket/SKILL.md",
         "skills/xsec-object-storage-bucket/scripts/bucket_check.py",
+        "references/routing-index.md",
         "config/vulnerability-skills.yaml"
       ]
     },
@@ -102,6 +106,7 @@
         "references/main-agent.md",
         "references/vulnerability-subagent.md",
         "skills/weak-pass-check/SKILL.md",
+        "references/routing-index.md",
         "config/vulnerability-skills.yaml"
       ]
     }
