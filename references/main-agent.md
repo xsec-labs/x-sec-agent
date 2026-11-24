@@ -37,9 +37,9 @@
 
 ## MCP 工具（主 Agent 的树管理入口）
 
-- 树：`attack_path_node_create`（仅主）、`attack_path_node_update`、`attack_path_node_get`、`attack_path_list`、`attack_path_node_delete`（仅主）。调用 `attack_path_node_update`/`attack_path_node_delete` 前，必须把 `attack_path_node_get`/`attack_path_list` 返回的顶层 `revision` 原样作为 `expectedRevision` 传回（不要用 `updatedAt`）；并发更新同一节点时，带旧 `expectedRevision` 的调用会被拒绝，按最新状态重试，不要覆盖别的 Agent 刚写的结论。
+- 树：`attack_path_node_create`（仅主）、`attack_path_node_update`、`attack_path_node_get`、`attack_path_list`、`attack_path_node_delete`（仅主）。调用 `attack_path_node_update`/`attack_path_node_delete` 前，必须把 `attack_path_node_get`/`attack_path_list` 返回的顶层 `revision`（底层就是该节点的 `updated_at`）原样作为 `expectedRevision` 传回；这是按单个节点判断的乐观锁，不是整棵树共用一个版本号。并发更新同一节点时，带旧 `expectedRevision` 的调用会被拒绝，按最新状态重试，不要覆盖别的 Agent 刚写的结论。
 - 共享发现知识库（全体可见、`fingerprint` 去重）：`attack_path_finding_add`、`attack_path_findings_list`、`attack_path_finding_delete`（仅主，清理过时发现）。
-- 子 Agent 编排：`xsec_subagent_dispatch`（仅主，派发）、`xsec_subagent_cancel`（仅主，收回失控/超预算子 Agent）、`xsec_subagent_status`（仅主，轮询全部子 Agent）、（子 Agent 侧）`xsec_subagent_register_session`（登记）、`xsec_subagent_heartbeat`（存活心跳）、`xsec_subagent_complete`（正式收口，带 `status`+`conclusion`）。
+- 子 Agent 编排：`xsec_subagent_dispatch`（仅主，派发）、`xsec_subagent_cancel`（仅主，收回失控/超预算子 Agent）、`xsec_subagent_status`（仅主，轮询全部子 Agent）、（子 Agent 侧）`xsec_subagent_register_session`（登记）、`xsec_subagent_heartbeat`（存活心跳）、`xsec_subagent_complete`（正式收口，`status` 取 `done`/`vuln`/`failed`/`cancelled`——未发现漏洞也是 `done`+`conclusion` 说明，没有单独的 not-found 取值）。
 - 页面分组：`xsec_subagent_dispatch` 已原子创建该子 Agent 的 page group，不需要先调 `xsec_page_group_create`；`xsec_page_group_use` 只用于设置分组的 current page。
 - 主 MCP 里还有同名别名 `xsec_tree_*`、`xsec_shared_finding_*`、`xsec_shared_findings_list`（参数 snake_case，如 `parent_id`、`node_id`；上面这组用驼峰）。批量系统提示词写的是 `xsec_` 这组；两组操作同一份数据，以当前 `tools/list` 为准。
 
@@ -132,7 +132,7 @@ root: <目标>
 5. 缺 `session_id` 时，树节点能显示但 UI 无法切到该子 Agent 终端——尽快补登记。
 6. 子 Agent 运行期间定期调用无参数的 `xsec_subagent_heartbeat`（尤其是单步较长时）；超时不发心跳会被判定失联。
 7. 子 Agent 收尾调用 `xsec_subagent_complete(status, conclusion, reason?)` 正式收口——不是在文本里写个结束标记；没有这一步，主 Agent 轮询 `xsec_subagent_status` 拿不到可靠的完成信号。
-8. 子 Agent 失控（超预算、超时、跑偏）时，主 Agent 调用 `xsec_subagent_cancel(id, reason)` 主动收回，不要等它自己退出。
+8. 子 Agent 失控（超预算、超时、跑偏）时，主 Agent 调用 `xsec_subagent_cancel(subagent_id, reason)` 主动收回，不要等它自己退出。
 
 ## 主 Agent 职责
 
