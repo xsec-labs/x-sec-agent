@@ -7,20 +7,22 @@ description: 针对已登录业务系统的整体越权测试方法论，覆盖�
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：已进入登录后业务区，需要验证对象级权限、水平越权、垂直越权、IDOR、只读资源归属校验。
 - 触发信号：`authenticated_session_obtained`、`role_switch_available`、`second_account_available`、`id_like_resource_paths_detected`、`403_or_401_boundary_observed`、`customer_data_fields_detected`。
-- 测试前置环境：至少有一个有效登录态；双账号水平/垂直越权需要同级或不同角色测试账号；必须存在只读对象接口、列表/详情/下载/预览请求，且授权方允许最小化对照验证。
-- 必需工件：`browser_state`、`request_corpus`、`api_inventory`、`owned_resource_baseline`、`role/account map`。
+- 测试前置环境：至少有一个有效登录态；双账号水平/垂直越权需要同级或不同角色测试账号；通常需要存在只读对象接口、列表/详情/下载/预览请求，允许最小化对照验证。
+- 参考工件：`browser_state`、`request_corpus`、`api_inventory`、`owned_resource_baseline`、`role/account map`。
 - 解锁输出：`access_control_boundary_mapped`、`idor_candidate_detected`、`sensitive_data_exposure_candidate`、`file_download_access_control_candidate`。
-- 阻断条件：无有效登录态、无可识别对象 ID/资源归属、缺少对照账号、scope 禁止查看其他测试对象或接口只有写操作。
+- 建议阻断（可低影响补齐时先补证再测）：无有效登录态、无可识别对象 ID/资源归属、缺少对照账号、接口只有写操作。
 
 ## 适用场景与前提
 
-**适用场景**：已对目标业务系统取得合法登录权限，在授权范围内验证访问控制是否正确实施。
+**适用场景**：已对目标业务系统取得登录权限。
 
 **测试前提**：
 - 已有至少一个可登录的测试账号（Cookie 或 Token 有效）。
-- 明确授权边界：仅对目标系统的访问控制逻辑做只读验证，禁止任何增加、修改、删除操作。
+- 明确边界：仅对目标系统的访问控制逻辑做只读验证，禁止任何增加、修改、删除操作。
 - 测试发现的问题只用于出具报告，不做漏洞利用、数据下载或扩散。
 
 **测试覆盖的三类场景**（按账号数量分支）：
@@ -239,7 +241,7 @@ X-Auth-Token: <target-account-token>
 
 替换时：
 - 只替换认证相关字段，不修改其他请求头（User-Agent、Content-Type 等保持不变）。
-- 敏感凭据在报告中一律替换为占位符 `<cookie-of-B-account>` 等，不在报告中展示真实 Token。
+- 敏感凭据在报告中保留捕获到的完整原始 Cookie、Token 和账号标识，不替换为占位符。
 
 ### 抓包与构造工具使用规范
 

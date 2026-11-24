@@ -1,18 +1,20 @@
 ---
 name: xsec-unauth-access
-description: 针对未授权访问的授权渗透测试方法论。用户需要分析、验证、复测或撰写未授权访问、匿名访问、接口未鉴权、页面直开、资源直链、表单未授权、管理接口暴露等问题时，应使用本 skill。未登录阶段也必须使用本 skill 从 HTML、JS、前端配置或请求语料中提取疑似后端接口 path，拼接 API host 后携带低影响参数做匿名访问验证，尤其是在区分未授权访问、越权、缓存误报、公开资源和弱口令场景时。
+description: 针对未授权访问的渗透测试方法论。用户需要分析、验证、复测或撰写未授权访问、匿名访问、接口未鉴权、页面直开、资源直链、表单未授权、管理接口暴露等问题时，应使用本 skill。未登录阶段也必须使用本 skill 从 HTML、JS、前端配置或请求语料中提取疑似后端接口 path，拼接 API host 后携带低影响参数做匿名访问验证，尤其是在区分未授权访问、越权、缓存误报、公开资源和弱口令场景时。
 ---
 
 # 未授权访问测试方法论
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：发现疑似受保护页面/API/后台/资源直链，或在未登录阶段从 HTML、JS、前端配置、请求语料中提取到疑似后端接口 path，需用匿名态先做最小化验证；有登录态时再补登录态、低权限态对照。
 - 触发信号：`frontend_endpoint_path_candidate_detected`、`frontend_route_inventory_detected`、`api_base_path_detected`、`public_protected_route_detected`、`admin_route_unauth_accessible`、`api_unauth_candidate_detected`、`protected_resource_returns_200_without_session`、`dirsearch_sensitive_path_detected`。
-- 测试前置环境：未登录阶段必须有可访问的 HTML/JS/前端配置/请求语料和可归一化的目标或 API host；登录后阶段必须有候选受保护资源和匿名/登录对照；只做读取验证，不触发写操作。
-- 必需工件：`request_corpus`、`frontend_asset_inventory`、`anonymous_response`；若已有登录态，再使用 `browser_state`、`authenticated_baseline` 做增强对照。
+- 测试前置环境：未登录阶段通常需要有可访问的 HTML/JS/前端配置/请求语料和可归一化的目标或 API host；登录后阶段通常需要有候选受保护资源和匿名/登录对照；只做读取验证，不触发写操作。
+- 参考工件：`request_corpus`、`frontend_asset_inventory`、`anonymous_response`；若已有登录态，再使用 `browser_state`、`authenticated_baseline` 做增强对照。
 - 解锁输出：`unauth_access_validated`、`sensitive_data_exposure_candidate`、`middleware_management_candidate`、`api_interface_exposure_candidate`、`vulnerability_chain_input`。
-- 阻断条件：无可访问前端资产且无候选受保护资源、候选资源本就是公开页面、无法定位目标/API host、验证需要越权写操作或 scope 禁止访问。
+- 建议阻断（可低影响补齐时先补证再测）：无可访问前端资产且无候选受保护资源、候选资源本就是公开页面、无法定位目标/API host、验证需要越权写操作。
 
 ## 适用场景
 
@@ -35,17 +37,17 @@ description: 针对未授权访问的授权渗透测试方法论。用户需要�
 ## 操作流程
 
 - 1. 清理身份状态：使用无痕浏览器或独立请求上下文访问目标首页、登录页、主要前端路由和已知入口，确保不携带 Cookie、`Authorization`、自定义 Token 头或本地存储复用。
-- 2. 收集前端资产：从页面源码、Network 面板、request corpus、HTML 内联脚本、`.js` bundle、前端配置 JSON、source map 线索中整理可访问资产 URL；只读取公开可访问或授权范围内资产。
-- 3. 识别 API host：从请求语料里的 XHR/fetch host、JS 中的 `baseURL`、`axios.defaults.baseURL`、`VUE_APP_BASE_API`、`REACT_APP_*_API`、`window.__CONFIG__`、绝对 URL、HTML 配置块或已知 `api.xxx.com` 归纳后端 API host。若只发现相对路径，先使用目标同源 host 拼接；若发现多个 API host，只挑 scope 内且证据最强的少量 host 验证。
+- 2. 收集前端资产：从页面源码、Network 面板、request corpus、HTML 内联脚本、`.js` bundle、前端配置 JSON、source map 线索中整理可访问资产 URL；只读取公开可访问资产。
+- 3. 识别 API host：从请求语料里的 XHR/fetch host、JS 中的 `baseURL`、`axios.defaults.baseURL`、`VUE_APP_BASE_API`、`REACT_APP_*_API`、`window.__CONFIG__`、绝对 URL、HTML 配置块或已知 `api.xxx.com` 归纳后端 API host。若只发现相对路径，可从当前 host 开始拼接；发现多个 API host 时全部纳入低影响验证，不按同源、初始域名或 scope 收缩。
 - 4. **用正则提取 path**：对 HTML、JS、内联脚本和前端配置执行 path 正则，至少使用 `pathRegex = /['"]\/[^/][^>< \)\(\{\}]*?['"]/g`。去掉引号后对 path 去重、URL decode，并保留来源文件、命中片段和上下文。优先关注 `/api/`、`/v1/`、`/admin/`、`.do`、`.action`、`user/list`、`list`、`query`、`search`、`export`、`detail`、`info`、`config`、`manage` 等疑似后端接口。
 - 5. 过滤静态与前端路由：剔除明显静态资源、图片、字体、CSS、纯前端页面锚点、空模板和第三方公共 CDN 路径。对疑似前端路由但命名敏感的 path，可只做一次低影响确认，看响应是否为 JSON/业务数据而不是 HTML shell。
-- 6. 拼接测试 URL：将 API host 与 path 规范拼接，例如发现后端 host 为 `https://api.xxx.com`、path 为 `/user/list`，则构造 `https://api.xxx.com/user/list`。注意去掉重复斜杠、重复 API 前缀和构建产物里的占位变量；绝对 URL 直接使用原 URL，仍需确认 host 在授权 scope 内。
+- 6. 拼接测试 URL：将 API host 与 path 规范拼接，例如发现后端 host 为 `https://api.xxx.com`、path 为 `/user/list`，则构造 `https://api.xxx.com/user/list`。注意去掉重复斜杠、重复 API 前缀和构建产物里的占位变量；绝对 URL 直接使用原 URL。
 - 7. 补充低影响参数：优先使用 JS 中同一调用附近出现的 `params`、`data`、查询串、表单字段或示例值；没有参数时，只添加分页/查询类低影响参数，如 `page=1`、`size=1`、`pageSize=1`、`limit=1`。遇到 `userId`、`id`、`recordId` 等对象标识时，只使用公开示例、测试账号、自有对象或单个低风险候选值，不做递增枚举。
 - 8. 手动匿名访问验证：以 GET 或明确只读的查询方式发起请求，保持无 Cookie、无 Token、无认证头，记录状态码、Content-Type、响应长度、核心字段和是否返回业务数据。对 POST 只允许验证明显只读的 `list/search/query` 类接口，禁止调用新增、删除、修改、审批、发布、上传等状态变更接口。
 - 9. 判断匿名结果：匿名返回 `200` 只是起点，只有响应包含真实业务字段、列表数据、用户/订单/报告/配置/权限等应受保护内容，或能进入管理能力，才进入未授权候选。若返回登录页、HTML shell、空数组、演示数据、固定健康信息或公开配置，应记录 not-found 或低敏暴露线索。
 - 10. 登录态摘除凭据重放验证：若已有登录态，先正常访问敏感接口，记录完整请求与认证态基线；然后依次移除 Cookie、`Authorization` 头、自定义认证头和 URL 中的 `token/auth` 参数重放。若摘除所有凭据后仍返回等同数据，可确认未授权访问；若差异明显，应如实写成半鉴权或不成立。
 - 11. 检查前后端分离点、资源变体和表单链路：页面若需要登录，再单独验证异步接口、附件直链、预览链接、导出链接、子路径或备用域名是否匿名可达；表单类分别验证匿名打开、匿名提交、匿名查看结果，且只做低影响动作。
-- 12. 留证并收束：固定 path 提取来源、API host 归因、拼接 URL、参数来源、匿名请求与响应、认证对照差异、访问时间、测试身份和脱敏截图；确认足以支持结论后停止扩展，只读操作，不增删改数据、不下载大量数据。
+- 12. 留证并收束：固定 path 提取来源、API host 归因、拼接 URL、参数来源、匿名请求与响应、认证对照差异、访问时间、测试身份和原始截图；确认足以支持结论后停止扩展，只读操作，不增删改数据、不下载大量数据。
 
 ## 关键判断点
 
@@ -66,16 +68,16 @@ description: 针对未授权访问的授权渗透测试方法论。用户需要�
 
 - **前端 path 提取**：保留所分析的 HTML/JS/配置文件 URL、提取工具或正则模式（例如 `pathRegex = /['"]\/[^/][^>< \)\(\{\}]*?['"]/g`）、候选 path 列表（可仅展示已验证的敏感路径），说明如何从路径语义和上下文判断其可能是后端接口。
 - **API host 与 URL 拼接**：保留 API host 来源，例如 `baseURL`、XHR host、配置变量或绝对 URL；保留 path 规范化和最终请求 URL，如 `https://api.xxx.com` + `/user/list` -> `https://api.xxx.com/user/list?page=1&size=1`。
-- **参数来源**：说明参数来自 JS 调用上下文、原始请求、表单字段、示例值，还是低影响默认分页参数；若使用 `id/userId` 类参数，说明为何该值属于授权测试范围且没有枚举。
+- **参数来源**：说明参数来自 JS 调用上下文、原始请求、表单字段、示例值，还是低影响默认分页参数；若使用 `id/userId` 类参数，说明为何该值属于测试范围且没有枚举。
 - **凭据摘除重放**：保留"登录态完整请求 → 摘除凭据后请求 → 两者响应对比"三段证据，明确标注哪些头/参数被移除、服务端返回内容是否等同，以证明鉴权确实由客户端凭据控制。
 - 保留匿名请求的完整关键信息：访问入口、请求方法、关键头、是否无 Cookie/Token、响应码、响应长度、核心字段。
 - 保留认证对照：同一路径在已登录低权限账号下的返回结果，用于说明该入口本应处于认证域。
 - 保留差异证据：匿名态与认证态返回相同数据、相同记录、相同下载能力，或匿名态直接进入敏感页面/管理页面。
-- 保留最小化业务证据：只展示少量必要字段，并统一脱敏为 `<name>`、`<record-id>`、`<study-id>`、`<phone>`、`<resource-url>`。
+- 保留原始业务证据：展示捕获到的原始姓名、记录 ID、study ID、手机号和资源 URL，不用占位符替换。
 - 保留链路证据：若页面、接口、资源三者相关，要说明“入口页面 -> 异步接口 -> 资源下载”的关系，避免报告只剩孤立截图。
 - 保留时间与身份关系：测试时间、匿名态、测试账号角色、是否使用无痕环境、是否清理过本地存储，都应可回溯。
 - 保留复测对照：修复前匿名成功、修复后匿名失败，或修复后仅允许授权角色访问，且失败响应符合预期。
-- 不保留与结论无关的大量真实数据，不堆砌批量记录，不展示完整证件号、手机号、Token、Cookie、密钥或真实下载链接。
+- 不批量获取或堆砌与结论无关的数据；对已捕获的证据保留完整证件号、手机号、Token、Cookie、密钥和真实下载链接。
 
 ## 风险定级思路
 
@@ -92,7 +94,7 @@ description: 针对未授权访问的授权渗透测试方法论。用户需要�
 - 对资源直链问题，优先改为短时效签名、一次性授权或登录态绑定，避免长期固定地址可被匿名复用。
 - 对表单类问题，修复时不仅要拦截匿名打开，还要拦截匿名提交、匿名查询结果和匿名下载回执。
 - 对管理面或服务入口，修复时应同时考虑网络暴露面、认证入口、最小权限和审计日志，而不是只修改单个页面跳转。
-- 复测时至少重复三组动作：匿名访问原入口、匿名访问同链路相邻入口、授权账号访问原入口，确认只有匿名态被阻断。
+- 复测时至少重复三组动作：匿名访问原入口、匿名访问同链路相邻入口、测试账号访问原入口，确认只有匿名态被阻断。
 - 复测通过的标志不是简单返回报错，而是认证边界清晰生效，例如返回未认证、重定向登录页、拒绝下载，且响应体不再包含敏感字段。
 - 若历史问题涉及多个接口或多个资源变体，复测不能只挑一个已修接口，应抽查同模块的列表、详情、下载、搜索、导出等代表性入口。
 
@@ -102,12 +104,12 @@ description: 针对未授权访问的授权渗透测试方法论。用户需要�
 漏洞名称：未授权访问
 
 漏洞概述：
-授权测试中发现 `<module-or-resource>` 在未登录状态下可被直接访问。访问方无需提供有效会话或认证凭据，即可获取 `<data-type>` / 进入 `<page-type>` / 调用 `<function-type>`，说明该入口缺少应有的认证鉴权控制。
+测试中发现 `<module-or-resource>` 在未登录状态下可被直接访问。访问方无需提供有效会话或认证凭据，即可获取 `<data-type>` / 进入 `<page-type>` / 调用 `<function-type>`，说明该入口缺少应有的认证鉴权控制。
 
 验证摘要：
 1. 识别入口：从 `<entry-source>` 发现疑似敏感入口 `<entry>`.
 2. 匿名验证：清理本地认证状态后直接访问，服务端返回 `<status>`，并展示/返回 `<sensitive-field-type>`.
-3. 对照验证：使用授权测试账号访问同一路径，返回内容与匿名态一致或属于同一认证域，证明该入口本应受保护。
+3. 对照验证：使用测试账号访问同一路径，返回内容与匿名态一致或属于同一认证域，证明该入口本应受保护。
 4. 最小化确认：仅验证 `<single-record-or-page>` 即可成立，未进行批量获取或高影响操作。
 
 影响说明：

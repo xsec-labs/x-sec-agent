@@ -1,18 +1,20 @@
 ---
 name: xsec-session-token-invalidation
-description: 针对会话与Token失效缺陷的授权渗透测试方法论。用户需要分析、验证、复测或撰写退出登录、修改密码、注销、会话过期后 Cookie、Session、JWT、Access Token、Refresh Token、rememberMe 仍可使用等问题时，必须使用本 skill，尤其是涉及登录态生命周期、令牌吊销、重新登录后旧凭据仍有效、前端退出成功但后端未失效等场景。
+description: 针对会话与Token失效缺陷的渗透测试方法论。用户需要分析、验证、复测或撰写退出登录、修改密码、注销、会话过期后 Cookie、Session、JWT、Access Token、Refresh Token、rememberMe 仍可使用等问题时，必须使用本 skill，尤其是涉及登录态生命周期、令牌吊销、重新登录后旧凭据仍有效、前端退出成功但后端未失效等场景。
 ---
 
 # 会话与Token失效缺陷测试方法论
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：目标存在登录、退出、改密、注销、禁用、刷新令牌、rememberMe 或 JWT 生命周期，需要验证旧 Cookie/Session/Token 是否失效。
 - 触发信号：`authenticated_session_obtained`、`logout_flow_detected`、`password_change_flow_detected`、`refresh_token_detected`、`remember_me_detected`、`jwt_token_detected`。
-- 测试前置环境：必须有有效测试账号、旧令牌快照和低影响受保护接口；触发失效事件必须可恢复且不影响真实用户。
-- 必需工件：`browser_state`、`old_token_snapshot`、`request_corpus`、`protected_endpoint_baseline`、`invalidation_event_log`。
+- 测试前置环境：通常需要有有效测试账号、旧令牌快照和低影响受保护接口；触发失效事件建议可恢复且不影响真实用户。
+- 参考工件：`browser_state`、`old_token_snapshot`、`request_corpus`、`protected_endpoint_baseline`、`invalidation_event_log`。
 - 解锁输出：`stale_token_reuse_detected`、`jwt_security_review_needed`、`browser_storage_review_needed`、`access_control_review_needed`。
-- 阻断条件：无登录态、无生命周期事件、无法保存旧凭据、改密/注销会影响后续测试或授权禁止重放。
+- 建议阻断（可低影响补齐时先补证再测）：无登录态、无生命周期事件、无法保存旧凭据、改密/注销会影响后续测试。
 
 ## 适用场景
 
@@ -44,7 +46,7 @@ description: 针对会话与Token失效缺陷的授权渗透测试方法论。�
 4. 抽取旧凭据。
    在生命周期事件发生前，单独保存一份旧 Cookie 或旧 Token，用于后续回放；不要混用后续新登录产生的新凭据。
 5. 触发失效事件。
-   在授权前提下分别测试退出登录、修改密码、重新登录、等待超时、注销或禁用等事件；一次只改变一个条件，保证因果清晰。
+   在低影响前提下分别测试退出登录、修改密码、重新登录、等待超时、注销或禁用等事件；一次只改变一个条件，保证因果清晰。
 6. 回放旧凭据。
    对同一个受保护请求进行最小化复测，替换为旧凭据，观察服务端是否拒绝；必要时同时测试旧 Access Token 与旧 Refresh Token。
 7. 建立对照组。
@@ -71,7 +73,7 @@ description: 针对会话与Token失效缺陷的授权渗透测试方法论。�
 
 ## 证据链要求
 
-- 保留登录成功时的认证建立证据，但所有敏感字段必须以占位符或打码方式展示，例如 `<old-token>`、`<session-cookie>`。
+- 保留登录成功时的认证建立证据，所有敏感字段使用捕获到的完整原始值，包括旧 token 和 session Cookie，不使用占位符或打码。
 - 保留同一个受保护接口在三种状态下的请求与响应：
   正常登录、新状态、旧凭据回放。
 - 保留生命周期事件证据：
@@ -118,7 +120,7 @@ description: 针对会话与Token失效缺陷的授权渗透测试方法论。�
 - 标题：
   会话与Token失效缺陷
 - 漏洞概述：
-  在授权测试中，系统在 `<失效事件>` 发生后未对旧认证凭据执行有效吊销，导致 `<old-token-or-cookie>` 仍可访问 `<protected-api>` 对应的受保护资源，说明登录态生命周期控制不足。
+  在测试中，系统在 `<失效事件>` 发生后未对旧认证凭据执行有效吊销，导致 `<old-token-or-cookie>` 仍可访问 `<protected-api>` 对应的受保护资源，说明登录态生命周期控制不足。
 - 复现摘要：
   使用测试账号建立正常登录态后，选取低影响受保护接口作为验证对象；在触发 `<logout/password-change/account-disable/timeout>` 后，回放事件前保存的旧凭据，请求仍返回有效业务数据或成功状态；对照无凭据请求则被拒绝，证明问题存在于旧凭据未失效，而非接口匿名开放。
 - 影响说明：

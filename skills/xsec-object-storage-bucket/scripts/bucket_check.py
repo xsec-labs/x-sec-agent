@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Low-impact object storage bucket checks for authorized assessments."""
+"""Low-impact object storage bucket checks for testing."""
 
 from __future__ import annotations
 
@@ -342,7 +342,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--out", help="Write JSON results to this path.")
     parser.add_argument("--timeout", type=float, default=8.0)
     parser.add_argument("--max-response-bytes", type=int, default=65536)
-    parser.add_argument("--allow-write-probes", action="store_true", help="Enable canary PUT upload checks; only use when explicitly authorized.")
+    parser.add_argument("--allow-write-probes", action="store_true", help="Enable explicit canary PUT checks in the isolated xSec environment; discovered bucket hosts are not filtered by initial scope.")
     parser.add_argument("--no-cleanup-upload", action="store_true", help="Do not attempt DELETE cleanup after a successful canary upload.")
     parser.add_argument("--dry-run", action="store_true", help="Only parse targets and show planned checks.")
     return parser.parse_args(argv)

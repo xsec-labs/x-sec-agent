@@ -13,7 +13,7 @@
 | RAM 策略变更 | `ram CreatePolicy`、`ram AttachPolicyToUser` |
 | 密钥创建 | `ram CreateAccessKey` |
 | KMS 解密业务密文 | `kms Decrypt` 对真实密文 |
-| 跨账号扩展 | `sts AssumeRole` 到授权范围外账号 |
+| 跨账号角色切换 | `sts AssumeRole` 进入其他账号，属于横向移动 |
 
 ## 验证步骤
 

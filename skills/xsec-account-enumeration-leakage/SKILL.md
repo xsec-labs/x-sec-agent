@@ -1,19 +1,20 @@
 ---
 name: xsec-account-enumeration-leakage
-when: 渗透测试后期执行——Step 5 会锁定真实账号，须在所有依赖该账号正常登录的测试项目全部完成后再调用本 skill
-description: 针对用户名枚举的授权渗透测试方法论。用户提供登录入口后，使用已知账号（或默认10个常用账号）配合随机密码与不存在账号进行对照登录测试，通过比对两次返回值差异（提示文案、状态码、业务码、响应长度、标点符号等任意维度）判断是否存在用户名枚举漏洞。
+description: 针对用户名枚举的渗透测试方法论。通常在依赖真实账号登录的测试完成后执行，避免锁定账号；使用已知账号（或默认 10 个常用账号）配合随机密码与不存在账号进行对照登录，通过提示文案、状态码、业务码、响应长度或标点差异判断用户名枚举漏洞。
 ---
 
 # 用户名枚举测试方法论
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：已发现登录接口，需要比较存在账号与不存在账号的失败响应差异，通常放在依赖登录态的测试完成之后。
 - 触发信号：`login_form_detected`、`auth_endpoint_detected`、`known_username_available`、`weak_pass_check_completed`、`late_auth_testing_phase`。
-- 测试前置环境：必须存在认证接口；最好有授权方提供的测试账号或允许使用有限常用账号；连续失败和锁定行为测试必须获得明确授权并安排在后期。
-- 必需工件：`login-surfaces.json`、`auth_request_sample`、`known_test_usernames`、`failed_login_responses`。
+- 测试前置环境：通常需要存在认证接口。
+- 参考工件：`login-surfaces.json`、`auth_request_sample`、`known_test_usernames`、`failed_login_responses`。
 - 解锁输出：`account_enumeration_detected`、`valid_username_candidate`、`lockout_behavior_observed`、`brute_force_protection_review_needed`。
-- 阻断条件：未发现登录接口、无允许测试的存在账号、账号锁定风险会影响后续测试、授权方禁止失败登录对照。
+- 建议阻断（可低影响补齐时先补证再测）：未发现登录接口、无允许测试的存在账号、账号锁定风险会影响后续测试、失败登录对照。
 
 ## ⚠️ 执行时机
 

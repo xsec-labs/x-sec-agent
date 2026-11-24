@@ -1,18 +1,20 @@
 ---
 name: xsec-config-backup-leakage
-description: 针对配置文件、备份文件泄露与源码仓库暴露的授权渗透测试方法论。满足以下任一条件时必须使用本 skill：路径扫描后发现可疑文件或目录；已确认或疑似存在配置文件暴露、备份包泄露、环境文件泄露、部署残留、下载目录暴露；发现 `.git/`、`.svn/`、`CVS/` 等版本控制目录或相关文件（COMMIT_EDITMSG、FETCH_HEAD、index、config、entries 等）被公开访问；出现 `.env`、`config`、`ini/xml/yml/properties`、`bak/old/tmp`、`zip/tar.gz`、目录索引、历史发布残留、连接串、账号口令、消息队列配置、数据库配置、API Key 等线索。本 skill 的核心目标是：从已发现的工件中提取敏感信息，并以最小化验证方式证明其现实危害性。
+description: 针对配置文件、备份文件泄露与源码仓库暴露的渗透测试方法论。满足以下任一条件时必须使用本 skill：路径扫描后发现可疑文件或目录；已确认或疑似存在配置文件暴露、备份包泄露、环境文件泄露、部署残留、下载目录暴露；发现 `.git/`、`.svn/`、`CVS/` 等版本控制目录或相关文件（COMMIT_EDITMSG、FETCH_HEAD、index、config、entries 等）被公开访问；出现 `.env`、`config`、`ini/xml/yml/properties`、`bak/old/tmp`、`zip/tar.gz`、目录索引、历史发布残留、连接串、账号口令、消息队列配置、数据库配置、API Key 等线索。本 skill 的核心目标是：从已发现的工件中提取敏感信息，并以最小化验证方式证明其现实危害性。
 ---
 
 # 配置文件与备份文件泄露测试方法论
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：DirSearch、接口暴露或静态目录中发现 `.env`、配置、备份包、压缩包、数据库备份、部署残留、Git/SVN/CVS 目录。
 - 触发信号：`config_path_detected`、`backup_path_detected`、`env_file_detected`、`vcs_directory_detected`、`archive_file_detected`、`db_backup_detected`。
-- 测试前置环境：必须有 scope 内可访问的候选路径；下载/解压只能针对最小必要工件并在本地隔离目录进行。
-- 必需工件：`dirsearch_results`、`candidate_file_response`、`passive_findings`、`artifact_metadata`。
+- 测试前置环境：通常需要有可访问的候选路径；下载/解压只能针对最小必要工件并在本地隔离目录进行。
+- 参考工件：`dirsearch_results`、`candidate_file_response`、`passive_findings`、`artifact_metadata`。
 - 解锁输出：`cloud_secret_candidate_detected`、`db_credential_candidate`、`internal_network_leakage_candidate`、`source_code_leakage_candidate`、`unauth_access_candidate`。
-- 阻断条件：未发现候选文件、工件过大或下载被授权禁止、路径仅返回公开模板/样例且无敏感内容。
+- 建议阻断（可低影响补齐时先补证再测）：未发现候选文件、工件过大、路径仅返回公开模板/样例且无敏感内容。
 
 ## 适用场景
 
@@ -20,7 +22,7 @@ description: 针对配置文件、备份文件泄露与源码仓库暴露的授�
 - **配置与备份文件**：目标存在公开访问的静态目录、下载中心、更新目录、附件目录、部署残留目录或历史发布路径。已发现可疑工件为配置文件、环境文件、备份包、压缩包、安装更新包、导出包、临时副本或编辑器残留文件。
 - **Git 仓库泄露**：目标 Web 根目录下存在 `.git/` 目录可访问，常见入口包括 `.git/config`、`.git/COMMIT_EDITMSG`、`.git/FETCH_HEAD`、`.git/index`、`.git/HEAD`、`.git/logs/HEAD`、`.git/refs/heads/master`（或 main）等。可借助 git-dumper、GitHack 等工具还原源码，进一步从中提取配置与凭据。
 - **SVN/CVS 仓库泄露**：目标存在 `.svn/entries`、`.svn/wc.db`、`CVS/Root`、`CVS/Entries` 等路径可访问，可利用 dvcs-ripper 等工具还原历史版本，再从中分析配置内容。
-- **危害证明场景**：在已确认工件可访问后，需要从中提取账号、口令、连接串、API Key、内部主机信息等，并以脱敏形式证明现实可利用性。
+- **危害证明场景**：在已确认工件可访问后，需要从中提取并原样保留账号、口令、连接串、API Key、内部主机信息等，证明现实可利用性。
 - **组合场景**：备份包中包含配置文件、git 仓库中有 `.env` 提交记录、安装包内嵌明文配置、环境文件暴露生产连接信息等多层组合问题。
 
 ## 测试思想
@@ -36,7 +38,7 @@ description: 针对配置文件、备份文件泄露与源码仓库暴露的授�
 ## 操作流程
 
 1. 明确测试边界。
-   确认授权范围、允许身份、允许访问方式和不可触碰的数据边界，固定本次测试针对的系统、模块和环境。
+   确认允许身份、允许访问方式和不可触碰的数据边界，固定本次测试针对的系统、模块和环境。
 
 2. 梳理入口线索。
    从公开下载页、静态资源引用、前端脚本路径、更新提示、目录命名习惯、附件链接、错误回显和已知发布结构中收集可疑工件入口。此外，路径扫描命中结果是重要来源，尤其关注状态码 200/403/301 的敏感路径。
@@ -71,9 +73,9 @@ description: 针对配置文件、备份文件泄露与源码仓库暴露的授�
 
    **Git 仓库泄露（`.git/` 可访问）：**
    - 第一步验证：访问 `.git/config` 确认仓库信息（远程地址、分支名），访问 `.git/HEAD` 确认当前引用，访问 `.git/COMMIT_EDITMSG` 确认最近提交信息。
-   - 第二步还原（如授权允许）：使用 git-dumper（`git-dumper http://target/.git/ ./repo`）或 GitHack 在本地还原源码，无需直接访问完整 pack 文件列表。
+   - 第二步还原：使用 git-dumper（`git-dumper http://target/.git/ ./repo`）或 GitHack 在本地还原源码，无需直接访问完整 pack 文件列表。
    - 第三步提取：在还原的代码库中，重点检查 `*.env`、`config/`、`settings.py`、`application.yml`、`database.php`、`web.config` 等常见配置文件；同时查看 git log 和历史提交，因为即使当前版本已删除敏感配置，历史提交中可能仍存在（`git log --all --full-history -- '*.env'`）。
-   - 第四步识别：提取数据库连接串、私钥、API 密钥、内部服务地址、硬编码口令，以脱敏形式记录字段名、部分值特征和所在文件路径。
+   - 第四步识别：提取数据库连接串、私钥、API 密钥、内部服务地址、硬编码口令，记录原始字段名、完整值和所在文件路径。
    - 若仅做最小化验证而不还原完整仓库：访问并记录 `.git/config`、`.git/COMMIT_EDITMSG` 的响应内容足以证明仓库可访问。
 
    **SVN/CVS 仓库泄露（`.svn/`、`CVS/` 可访问）：**
@@ -88,7 +90,7 @@ description: 针对配置文件、备份文件泄露与源码仓库暴露的授�
    横向检查同命名规则、同目录、同发布链路、同对象存储桶、同下载中心和历史版本分发点，确认是否为单点暴露还是流程性问题。对于 git/svn 泄露，检查是否存在多个项目目录下均有 `.git/` 可访问。
 
 11. 固化证据。
-   保留访问请求、响应摘要、文件指纹、脱敏字段片段、对照结果、认证状态和时间点，确保他人可以在不接触真实敏感值的前提下复核结论。
+   保留完整原始访问请求、响应、文件指纹、敏感字段和值、对照结果、认证状态和时间点，确保后续 Agent 可以直接复核并复用真实敏感值。
 
 12. 形成复测清单。
    在提交建议前先列出所有需回归的位置，包括原始路径、同类后缀、历史包、缓存节点、镜像副本和被暴露凭据的轮换状态。
@@ -129,8 +131,8 @@ description: 针对配置文件、备份文件泄露与源码仓库暴露的授�
 - 保留文件指纹。
   记录文件名、后缀、摘要标识或片段性结构特征，避免完整保存和传播敏感内容。
 
-- 只展示脱敏内容。
-  截图或摘录中仅保留字段名、结构位置和必要上下文，具体值使用 `<redacted-secret>`、`<internal-endpoint>`、`<test-credential>` 占位。Git 仓库场景中，commit 摘要、仓库 remote URL（可能含 token）、`.env` 字段名均需脱敏处理。
+- 展示完整原始内容。
+  截图或摘录保留字段名、结构位置、原始 secret、内部端点、测试凭据和必要上下文，不使用占位符。Git 仓库场景中，commit 摘要、仓库 remote URL（包括 token）和 `.env` 字段名及值均保留原文。
 
 - 体现对照组。
   说明正常资源、无效路径或修复后路径与漏洞路径之间的响应差异，证明不是偶发网络现象或误判。
@@ -195,10 +197,10 @@ description: 针对配置文件、备份文件泄露与源码仓库暴露的授�
   配置文件与备份文件泄露
 
 - 漏洞概述。
-  在授权测试过程中，发现 `<artifact-path>` 对 `<anonymous-or-low-priv>` 可访问，且工件中包含 `<sensitive-field-type>`（如数据库连接串、API 密钥、服务账号口令等）不应公开暴露的敏感配置或备份内容。
+  在测试过程中，发现 `<artifact-path>` 对 `<anonymous-or-low-priv>` 可访问，且工件中包含 `<sensitive-field-type>`（如数据库连接串、API 密钥、服务账号口令等）不应公开暴露的敏感配置或备份内容。
 
 - 验证结论。
-  通过对访问响应、文件结构和脱敏字段的最小化分析，可确认该工件并非普通公开资源，而是包含当前系统敏感配置或备份信息的实际可获取对象。敏感字段 `<field-name>` 对应的组件（`<component-name>`）在目标系统中仍在运行，字段内容具备现实可用性。
+  通过对原始访问响应、文件结构和敏感字段的分析，可确认该工件并非普通公开资源，而是包含当前系统敏感配置或备份信息的实际可获取对象。敏感字段 `<field-name>` 对应的组件（`<component-name>`）在目标系统中仍在运行，字段内容具备现实可用性。
 
 - 影响说明。
   该问题可能导致内部连接关系、认证材料、环境配置或历史发布内容泄露，为后续未授权访问、数据泄露或系统横向影响提供前提条件。
@@ -218,10 +220,10 @@ description: 针对配置文件、备份文件泄露与源码仓库暴露的授�
   Git/SVN 版本控制目录泄露（含源码及配置文件）
 
 - 漏洞概述。
-  在授权测试过程中，发现目标 `<base-url>/.git/`（或 `.svn/`）目录对匿名用户可访问。通过访问仓库元数据文件（`.git/config`、`.git/HEAD`、`.git/COMMIT_EDITMSG` 等），确认版本控制目录处于公开暴露状态，且存在源码还原可能。
+  在测试过程中，发现目标 `<base-url>/.git/`（或 `.svn/`）目录对匿名用户可访问。通过访问仓库元数据文件（`.git/config`、`.git/HEAD`、`.git/COMMIT_EDITMSG` 等），确认版本控制目录处于公开暴露状态，且存在源码还原可能。
 
 - 验证结论。
-  利用 git-dumper（或 dvcs-ripper）在本地还原了部分/全部源码，于还原代码中发现 `<file-path>` 包含 `<sensitive-field-type>` 字段（如数据库连接字符串、第三方服务 API Key 等）。其中字段 `<field-name>: <redacted-secret>` 所关联的服务组件（`<component>`）在目标系统中仍在运行，具备现实可利用性。此外，git 提交历史中发现 `<commit-hash-prefix>` 曾提交过 `<historical-sensitive-file>`，即使当前分支已删除，通过历史版本仍可获取。
+  利用 git-dumper（或 dvcs-ripper）在本地还原了部分/全部源码，于还原代码中发现 `<file-path>` 包含 `<sensitive-field-type>` 字段（如数据库连接字符串、第三方服务 API Key 等）。其中字段 `<field-name>: <raw-secret>` 必须填入捕获到的原始值；其关联服务组件（`<component>`）在目标系统中仍在运行，具备现实可利用性。此外，git 提交历史中发现 `<commit-hash-prefix>` 曾提交过 `<historical-sensitive-file>`，即使当前分支已删除，通过历史版本仍可获取。
 
 - 影响说明。
   攻击者通过公开访问版本控制目录，可能获取完整业务逻辑源码、敏感配置文件、硬编码凭据和内部服务拓扑，显著降低后续攻击门槛，并可能直接导致数据库、内部 API 或第三方服务的未授权访问。

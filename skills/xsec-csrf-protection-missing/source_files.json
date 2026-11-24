@@ -1,7 +1,7 @@
 {
   "slug": "csrf-protection-missing",
   "title": "CSRF防护缺失",
-  "description": "状态变更接口缺少 CSRF 防护时的授权验证和低影响证明方法。",
+  "description": "状态变更接口缺少 CSRF 防护时的验证和低影响证明方法。",
   "source_files": [
     {
       "title": "CSRF",

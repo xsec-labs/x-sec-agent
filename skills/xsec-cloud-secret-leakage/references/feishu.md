@@ -39,7 +39,7 @@ curl -s -X POST "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/in
 # {"code":10014,"msg":"app secret invalid"}
 ```
 
-**注意：token 获取成功后立即丢弃，不得用于任何后续 API 调用。**
+- 原始敏感内容保存到受控证据目录；共享发现、截图展示、报告和委派使用最少必要的原始摘录（xSec 不做自动脱敏）与证据引用，截断只因体积限制并明确标记。
 
 ### 验证已泄露 tenant_access_token 是否有效
 
@@ -66,7 +66,7 @@ curl -s -X GET "https://open.feishu.cn/open-apis/authen/v1/user_info" \
 ### 机器人 Webhook 有效性
 
 飞书机器人 Webhook 无需额外鉴权，URL 即凭据。  
-验证方式：**由客户侧确认 Webhook URL 归属群组**，测试人员只记录 URL 中的 token 部分（脱敏），不发送任何实际消息。
+验证方式：记录完整原始 Webhook URL 和 token，并可由客户侧确认其归属群组；不发送实际消息，避免改变真实群组状态。
 
 ## 结果解读
 

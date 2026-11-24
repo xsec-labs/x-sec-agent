@@ -1,24 +1,26 @@
 ---
 name: xsec-cors-misconfiguration
-description: 针对 CORS跨域配置缺陷 的授权渗透测试方法论。用户需要分析、验证、复测或撰写 CORS、跨域、Origin、Access-Control-Allow-Origin、Access-Control-Allow-Credentials、预检请求、敏感接口跨站可读性 等问题时，应优先使用本 skill，尤其是在需要区分“仅配置异常”与“实际可读取敏感数据”时。
+description: 针对 CORS跨域配置缺陷 的渗透测试方法论。用户需要分析、验证、复测或撰写 CORS、跨域、Origin、Access-Control-Allow-Origin、Access-Control-Allow-Credentials、预检请求、敏感接口跨站可读性 等问题时，应优先使用本 skill，尤其是在需要区分“仅配置异常”与“实际可读取敏感数据”时。
 ---
 
 # CORS跨域配置缺陷测试方法论
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：API 响应出现 Origin 反射、宽松 ACAO、ACAC=true 或疑似跨站可读敏感接口。
 - 触发信号：`cors_header_observed`、`origin_reflection_detected`、`acao_wildcard_detected`、`acac_true_detected`、`sensitive_api_fields_detected`。
-- 测试前置环境：必须有可重放 API 请求；若验证跨站读取，需要受控测试 Origin/页面和必要登录态。
-- 必需工件：`request_corpus`、`response_headers`、`api_inventory`、`browser_state`、`controlled_origin_result`。
+- 测试前置环境：通常需要有可重放 API 请求；若验证跨站读取，需要受控测试 Origin/页面和必要登录态。
+- 参考工件：`request_corpus`、`response_headers`、`api_inventory`、`browser_state`、`controlled_origin_result`。
 - 解锁输出：`cross_origin_read_candidate`、`csrf_review_needed`、`sensitive_data_exposure_candidate`。
-- 阻断条件：无 CORS 头、仅公共资源跨域、没有可读敏感响应或无法建立受控跨站对照。
+- 建议阻断（可低影响补齐时先补证再测）：无 CORS 头、仅公共资源跨域、没有可读敏感响应或无法建立受控跨站对照。
 
 ## 适用场景
 
 - 目标系统返回 `Access-Control-Allow-Origin`、`Access-Control-Allow-Credentials`、`Vary: Origin` 等头部，怀疑存在跨域策略过宽或动态回显。
 - 前端、网关、认证中心、移动端接口、H5 页面、统一入口 API、文件下载或配置接口存在跨域访问需求，需要判断是否被错误放开。
-- 需要在授权测试中验证“跨域是否真的能读到敏感响应”，而不是只停留在头部异常层面。
+- 需要在测试中验证“跨域是否真的能读到敏感响应”，而不是只停留在头部异常层面。
 - 需要对 CORS 问题做风险定级、修复建议、复测闭环，避免把所有跨域异常一律报成中高危。
 
 ## 测试思想
@@ -41,7 +43,7 @@ description: 针对 CORS跨域配置缺陷 的授权渗透测试方法论。用�
    - 记录接口所属域、是否登录后访问、是否经过网关、是否存在多子域共享。
 
 2. 建立基线。
-   - 使用正常请求确认接口在当前授权测试账号下可访问，并保存原始响应头、响应体摘要、状态码、时间点。
+   - 使用正常请求确认接口在当前测试账号下可访问，并保存原始响应头、响应体摘要、状态码、时间点。
    - 区分匿名接口与登录接口，区分纯公开内容与带身份上下文的内容。
    - 若接口本身返回公开配置或静态资源，不要直接作为高风险结论依据。
 
@@ -51,7 +53,7 @@ description: 针对 CORS跨域配置缺陷 的授权渗透测试方法论。用�
    - 补充观察 `Access-Control-Allow-Credentials`、`Access-Control-Allow-Headers`、`Access-Control-Allow-Methods`、`Vary: Origin` 是否联动变化。
 
 4. 验证凭证参与情况。
-   - 在授权且低影响的前提下，分别比较无凭证请求和带现有会话凭证请求的响应。
+   - 在低影响的前提下，分别比较无凭证请求和带现有会话凭证请求的响应。
    - 判断系统是否允许跨域携带 Cookie、会话标识或其他浏览器自动附带凭证。
    - 若使用自定义认证头，重点判断浏览器场景下是否真实可被跨站脚本读取，而不是仅在抓包工具中看到头部。
 
@@ -87,8 +89,8 @@ description: 针对 CORS跨域配置缺陷 的授权渗透测试方法论。用�
   - 带伪造 `Origin` 的跨域请求。
   - 带授权态且可读到业务字段的最小验证请求。
 - 每组证据至少包含：请求方法、路径、关键请求头摘要、响应状态码、关键响应头、响应体字段摘要、时间点。
-- 对敏感数据只保留脱敏摘要，例如“返回当前用户姓名字段”“返回账户绑定信息字段”，不要记录真实个人数据。
-- 需要明确账号关系：使用何种授权测试账号、该账号本来可见什么数据、跨域后读到的仍是该账号数据还是不应暴露的数据。
+- 对敏感数据保留原始字段和值，包括真实个人数据，便于证明跨域读取的实际影响。
+- 需要明确账号关系：使用何种测试账号、该账号本来可见什么数据、跨域后读到的仍是该账号数据还是不应暴露的数据。
 - 若结论依赖浏览器可读性，应补充受控页面验证截图或等价过程记录，证明脚本实际读取到字段，而不是只发出了请求。
 - 若评估为策略级问题，应补充至少一个同类接口抽样对照，证明不是单点误配。
 
@@ -128,7 +130,7 @@ description: 针对 CORS跨域配置缺陷 的授权渗透测试方法论。用�
 - 漏洞概述：
   - `目标系统在部分接口上对跨域来源校验过宽，并允许浏览器在特定授权态下读取响应内容，导致同源策略保护被削弱。`
 - 验证结论：
-  - `在授权测试中，使用受控跨站来源对 <sensitive-endpoint> 进行最小化验证，发现系统对非预期来源返回放行头；在携带现有会话的浏览器场景下，可读取包含 <sensitive-field-summary> 的响应内容。`
+  - `在测试中，使用受控跨站来源对 <sensitive-endpoint> 进行最小化验证，发现系统对非预期来源返回放行头；在携带现有会话的浏览器场景下，可读取包含 <sensitive-field-summary> 的响应内容。`
 - 影响范围：
   - `问题影响 <scope-summary>。当前已抽样验证 <count> 类接口存在相同策略表现，需排查同网关/同认证体系下的其他接口。`
 - 风险说明：

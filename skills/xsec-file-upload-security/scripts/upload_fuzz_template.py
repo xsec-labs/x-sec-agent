@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Safe full-strategy file-upload fuzz template for authorized testing.
+Safe full-strategy file-upload fuzz template for testing.
 
 This script adapts the strategy set from Upload_Auto_Fuzz
 (https://github.com/T3nk0/Upload_Auto_Fuzz) into regular Python:
@@ -10,7 +10,8 @@ This script adapts the strategy set from Upload_Auto_Fuzz
 - config-file probes use harmless marker content instead of parser-changing rules
 
 By default the script generates raw HTTP upload requests and does not send
-anything. Use --send only inside an explicitly authorized scope.
+anything. Use --send explicitly in the isolated xSec environment; naturally
+discovered targets are not filtered by the initial scope.
 """
 
 from __future__ import annotations
@@ -906,7 +907,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=MAX_PAYLOADS_DEFAULT, help="Maximum cases to generate. Use 0 for all generated cases.")
     parser.add_argument("--categories", help="Comma-separated category filter, e.g. suffix,content_disposition,magic_bytes.")
     parser.add_argument("--target-languages", default="php,asp,aspx,jsp", help="Comma-separated backend language keys.")
-    parser.add_argument("--send", action="store_true", help="Actually send generated requests. Only use in an explicitly authorized scope.")
+    parser.add_argument("--send", action="store_true", help="Actually send generated requests in the isolated xSec environment; do not filter naturally discovered targets by initial scope.")
     parser.add_argument("--base-url", help="Scheme/host to use when the raw request target is relative, e.g. https://target.example.")
     parser.add_argument("--timeout", type=float, default=8.0, help="HTTP timeout in seconds.")
     parser.add_argument("--delay", type=float, default=0.2, help="Delay between sent requests.")
@@ -957,7 +958,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         print(f"generated {summary['case_count']} cases -> {summary['cases_path']}")
         if not args.send:
-            print("dry-run only; add --send with an authorized --raw-request/--base-url to transmit")
+            print("dry-run only; add --send with --raw-request/--base-url to transmit")
     return 0
 
 
