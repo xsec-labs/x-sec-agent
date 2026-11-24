@@ -37,9 +37,9 @@
 
 ## MCP 工具（主 Agent 的树管理入口）
 
-- 树：`attack_path_node_create`（仅主）、`attack_path_node_update`、`attack_path_node_get`、`attack_path_list`。
-- 共享发现知识库（全体可见、`fingerprint` 去重）：`attack_path_finding_add`、`attack_path_findings_list`。
-- 子 Agent 编排：`xsec_subagent_dispatch`（仅主）、`xsec_subagent_status`、（子 Agent 侧）`xsec_subagent_register_session`。
+- 树：`attack_path_node_create`（仅主）、`attack_path_node_update`、`attack_path_node_get`、`attack_path_list`、`attack_path_node_delete`（仅主）。调用 `attack_path_node_update`/`attack_path_node_delete` 前，必须把 `attack_path_node_get`/`attack_path_list` 返回的顶层 `revision` 原样作为 `expectedRevision` 传回（不要用 `updatedAt`）；并发更新同一节点时，带旧 `expectedRevision` 的调用会被拒绝，按最新状态重试，不要覆盖别的 Agent 刚写的结论。
+- 共享发现知识库（全体可见、`fingerprint` 去重）：`attack_path_finding_add`、`attack_path_findings_list`、`attack_path_finding_delete`（仅主，清理过时发现）。
+- 子 Agent 编排：`xsec_subagent_dispatch`（仅主，派发）、`xsec_subagent_cancel`（仅主，收回失控/超预算子 Agent）、`xsec_subagent_status`（仅主，轮询全部子 Agent）、（子 Agent 侧）`xsec_subagent_register_session`（登记）、`xsec_subagent_heartbeat`（存活心跳）、`xsec_subagent_complete`（正式收口，带 `status`+`conclusion`）。
 - 页面分组：`xsec_subagent_dispatch` 已原子创建该子 Agent 的 page group，不需要先调 `xsec_page_group_create`；`xsec_page_group_use` 只用于设置分组的 current page。
 - 主 MCP 里还有同名别名 `xsec_tree_*`、`xsec_shared_finding_*`、`xsec_shared_findings_list`（参数 snake_case，如 `parent_id`、`node_id`；上面这组用驼峰）。批量系统提示词写的是 `xsec_` 这组；两组操作同一份数据，以当前 `tools/list` 为准。
 
@@ -130,6 +130,9 @@ root: <目标>
 3. 启动子 Agent 时 payload 带 `node_id`、`subagent_id`、`page_group_id`、`vulnerability_skill`、`activation_reason`，以及你能给的全部相关上下文（共享发现、artifact、登录态、测试账号等）。
 4. 子 Agent 启动后先调用 `xsec_task_profile`，再调用无参数的 `xsec_subagent_register_session` 登记自己；身份和 session 由子 Agent capability 与桌面运行器绑定，主 Agent 不代为登记。
 5. 缺 `session_id` 时，树节点能显示但 UI 无法切到该子 Agent 终端——尽快补登记。
+6. 子 Agent 运行期间定期调用无参数的 `xsec_subagent_heartbeat`（尤其是单步较长时）；超时不发心跳会被判定失联。
+7. 子 Agent 收尾调用 `xsec_subagent_complete(status, conclusion, reason?)` 正式收口——不是在文本里写个结束标记；没有这一步，主 Agent 轮询 `xsec_subagent_status` 拿不到可靠的完成信号。
+8. 子 Agent 失控（超预算、超时、跑偏）时，主 Agent 调用 `xsec_subagent_cancel(id, reason)` 主动收回，不要等它自己退出。
 
 ## 主 Agent 职责
 
@@ -402,7 +405,7 @@ MCP 树 + 共享发现是权威状态；如需人类可读镜像，可写 `evide
     "纯 API/passive/协议类 finding 使用原始 selected request/response 摘录（不脱敏）与受控原始证据引用 或请求指纹作为等价证据；仅可因体积限制截断 body，并标记 truncated",
     "真实发现漏洞生成 reports/<系统名称>/<漏洞名称>.md；未发现生成 not-found 报告",
     "漏洞详情文档用 Burp Raw 风格展示关键请求响应",
-    "结束前 attack_path_node_update 更新本节点，并输出 XSEC_SUBAGENT_DONE"
+    "结束前用 attack_path_node_update(..., expectedRevision) 更新本节点，再调用 xsec_subagent_complete(status, conclusion) 正式收口（不是输出文本结束标记）；单步较长时记得 xsec_subagent_heartbeat"
   ]
 }
 ```
