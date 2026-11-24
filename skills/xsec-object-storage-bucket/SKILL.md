@@ -47,7 +47,9 @@ python3 skills/xsec-object-storage-bucket/scripts/bucket_check.py \
   --out evidence/agents/object-storage-bucket/bucket-check-results.json
 ```
 
-## 检测流程
+## 参考方法（目标与常见路径，不是必须顺序）
+
+下面是常见检测路径，不是必须照做的脚本，可按判断调整顺序或跳过已确认的部分。
 
 1. 按 `bucket_provider + host + bucket_name` 去重，只对每个 host 测一次。
 2. 识别 provider：

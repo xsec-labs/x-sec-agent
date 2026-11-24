@@ -1,6 +1,6 @@
 ---
 name: xsec-shiro-attack-detection
-description: Apache Shiro rememberMe 弱 Key 与利用链检测方法论。仅当 passive hook 流量中发现 Shiro rememberMe 或 deleteMe Cookie 信号后才可触发，用于确认 Shiro 存在、验证常见弱 Key，并做 Gadget/回显链检测。用户提到 Shiro、rememberMe、deleteMe、Shiro-550、CVE-2016-4437、Shiro 弱口令、Shiro 弱 Key 或 Shiro 利用链检测时应使用，但编排层必须先满足 passive_shiro_cookie_detected。
+description: Apache Shiro rememberMe 弱 Key 与利用链检测方法论，用于确认 Shiro 存在、验证常见弱 Key，并做 Gadget/回显链检测。最常见触发时机是 passive hook 流量中发现 Shiro rememberMe 或 deleteMe Cookie 信号，但这只是参考信号而非前置门槛；用户直接提到 Shiro、rememberMe、deleteMe、Shiro-550、CVE-2016-4437、Shiro 弱口令、Shiro 弱 Key 或 Shiro 利用链检测，或从技术栈判断目标可能是 Java + Shiro 时，也应使用本 skill。
 ---
 
 # Shiro 弱 Key 与利用链检测
@@ -16,25 +16,19 @@ description: Apache Shiro rememberMe 弱 Key 与利用链检测方法论。仅�
 - 解锁输出：`shiro_framework_confirmed`、`shiro_weak_key_detected`、`shiro_gadget_chain_detected`、`shiro_deserialization_rce_candidate`、`vulnerability_chain_input`。
 - 建议阻断（可低影响补齐时先补证再测）：未发现 passive Shiro Cookie 信号、缺少可重放目标 URL、工具不可用且无法在本地准备、目标被 WAF/challenge 阻断或验证会造成业务影响。
 
-## 触发边界
+## 何时测试
 
-本 skill 不允许在启动阶段主动探测全站是否存在 Shiro。只有当 passive 扫描已经观察到以下任一证据时，才允许派发子代理：
+最常见的触发方式是 passive 扫描在请求或响应头中观察到以下任一证据，这时直接判断测试价值很高：
 
 - 请求头或响应头中出现 `rememberMe=`。
 - 响应头中出现 `rememberMe=deleteMe`。
 - Cookie 相关头部中出现 `deleteMe`。
 
-如果用户直接要求测试 Shiro，但当前没有 passive 命中，主代理只能记录为 `waiting_for_passive_shiro_cookie`，继续通过浏览器/代理采集测试流量，不能直接启动弱 Key 或利用链检测。
+但这只是参考信号，不是前置门槛。用户直接要求测试 Shiro、或从技术栈/框架指纹/错误栈判断目标很可能是 Java + Shiro，即使还没有 passive Cookie 命中，主 Agent 也可以凭判断直接派发——先通过浏览器/代理采集一轮流量确认框架存在，再继续后面的弱 Key 和利用链验证，不必卡在等 passive 命中。真走到"确认目标不是 Shiro 或拿不到任何相关证据"时再收尾为 not-found，不要预先假设测不了。
 
 ## 测试目标
 
-按低影响顺序推进：
-
-1. 复核 passive evidence，确认命中来自目标域 Cookie 头，而不是页面正文、第三方资源、文档示例或代理噪声。
-2. 使用工具确认 Shiro rememberMe 行为存在。
-3. 使用常见 Shiro Key 字典验证是否存在弱 Key。
-4. 仅在弱 Key 命中，检测可用 Gadget/回显链。
-5. 生成 found/not-found 报告。
+判断目标是否存在 Shiro rememberMe 反序列化风险，生成 found/not-found 报告。真实的依赖关系只有一条：没有确认弱 Key 就没有可用的利用链，所以 Gadget/回显链检测必须在弱 Key 命中之后——这是技术上的硬约束，不是编排规定。其余部分（先核对证据来源还是先跑 detect、要不要同时核对多个 passive 命中）按你的判断安排。
 
 ## 工具准备
 
@@ -69,7 +63,9 @@ cd "$RUN_ROOT"
 
 流量可被捕获与复现。若用户提供了抓包代理，可用 CLI 的 `--proxy` 参数经过它（下方示例中的 `$PROXY`）；未提供时直接执行并完整记录请求/响应作为证据。浏览器可见步骤用 MCP 浏览器 network 抓包留证。
 
-## 执行流程
+## 参考命令
+
+下面按"核对证据 → 确认框架 → 弱 Key → 利用链"的常见顺序给出可直接用的命令，不是必须照抄的脚本——可以调整顺序、跳过已经确认过的部分，或者用你更熟悉的等价工具。
 
 ### 1. 复核 passive 命中
 
