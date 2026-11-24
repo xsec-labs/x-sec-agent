@@ -7,7 +7,7 @@ description: 当渗透测试过程中确认可以下载到目标真实后端源�
 
 ## 编排适配
 
-先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。这是主 Agent 自行判断、自己执行的收尾步骤，不是分配给子 Agent 的树节点任务；仍要在低影响约束内进行：`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
 
 - 适用场景：`xsec-config-backup-leakage`（Git/SVN 仓库还原、备份包解包）或 `xsec-directory-sensitive-leakage` 确认存在可下载、可还原的真实后端源码，而不是构建产物、前端 bundle 或单个配置文件片段。
 - 触发信号：`source_code_leakage_candidate`。（`xsec-directory-sensitive-leakage` 的 `client_source_leakage_candidate` 指的是前端/客户端源码暴露，不是本 skill 要处理的真实后端源码，不作为触发信号。）
