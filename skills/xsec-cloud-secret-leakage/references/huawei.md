@@ -12,7 +12,7 @@
 | ECS 实例变更 | `ecs BatchStartServers`、`ecs DeleteServer` |
 | IAM 策略变更 | `iam CreatePolicy`、`iam AttachRolePolicy` |
 | 密钥创建 | `iam CreatePermanentAccessKey` |
-| 跨账号扩展 | `iam CreateTemporaryAccessKeyByAgency` 到授权范围外 |
+| 跨账号角色切换 | `iam CreateTemporaryAccessKeyByAgency` 进入其他账号，属于横向移动 |
 
 ## 验证步骤
 

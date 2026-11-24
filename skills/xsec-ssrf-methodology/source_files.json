@@ -1,7 +1,7 @@
 {
   "slug": "ssrf",
   "title": "SSRF服务端请求伪造",
-  "description": "SSRF 入口识别、回连/内网探测的授权低影响验证与修复复测方法。",
+  "description": "SSRF 入口识别、回连/内网探测的低影响验证与修复复测方法。",
   "source_files": [
     {
       "title": "SSRF",

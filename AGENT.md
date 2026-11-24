@@ -2,18 +2,18 @@
 
 ## 项目是什么
 
-xSecAgent 是一套面向 Web 安全测试的 skill 编排项目。它不是“启动后把所有漏洞都跑一遍”的扫描器，而是一个分阶段调度系统：
+xSecAgent 是一套面向 Web 安全测试的 skill 编排项目。它不是“启动后把所有漏洞都跑一遍”的扫描器，而是一个**主 Agent 管理树状任务、按需派发子 Agent** 的调度系统。浏览器与抓包已由本系统 MCP 接管（所有 Agent 共享全部浏览器与网络上下文，页面分组只做路由归因），本 skill 只负责编排：
 
-1. 先确认目标、代理、被动采集和基础环境。
+1. 先确认目标和基础环境；用 MCP 浏览器（共享会话）做 scout，抓包用浏览器 network 工具。
 2. 再做站点画像、API 路径发现、登录面归集、必要的目录扫描和浏览器 scout。
-3. 把浏览器流量、DirSearch 结果、request corpus、API inventory、passive findings 等证据转成 observations。
-4. 用 observations 按需解锁具体漏洞 skill。
-5. 每个被触发的 skill 单独开一个子代理执行测试。
-6. 子代理只测试自己被分配的一个 skill，输出 found/not-found 报告、证据截图、Burp Raw 风格请求响应和可解锁的新信号。
-7. 主代理把结果写回 `evidence/orchestrator/status.json`，重新计算后续队列。
-8. 收尾时复核 passive findings，并进行组合漏洞链路分析。
+3. 把浏览器流量、DirSearch 结果、request corpus、API inventory、passive 命中转成**共享发现**（`attack_path_finding_add`）。
+4. 主 Agent 判断测试价值，用 `attack_path_node_create` 把值得测的发现建成树节点。
+5. 每个节点用 `xsec_subagent_dispatch(node_id, browser_session_id)` 单独开一个子 Agent 执行测试；服务端同时生成路由归因用的 `page_group_id`，它不隔离页面。
+6. 子 Agent 只测自己被分配的一个节点 + 一个 skill，输出 found/not-found 报告、MCP 截图证据、Burp Raw 风格请求响应，并把新发现回填共享知识库、`attack_path_node_update` 更新自己节点。
+7. 主 Agent 读 `attack_path_list` + `attack_path_findings_list`，把新发现建成新节点，继续扩展树。
+8. 收尾时复核 passive 命中，并进行组合漏洞链路分析，最后 `xsec_report_submit`。
 
-核心目标是：让测试流程像状态机一样渐进解锁。比如先发现环境和目录，再发现登录框后解锁弱口令；提供账号或弱口令成功后解锁登录后测试；发现 AK/SK 后解锁云密钥复核；发现 AI 对话场景后解锁 LLM prompt security。
+核心目标是：让测试树像状态机一样渐进往外生长。比如先发现环境和目录，再发现登录框后建弱口令节点；提供账号或弱口令成功后解锁登录后节点；发现 AK/SK 后解锁云密钥复核；发现 AI 对话场景后解锁 LLM prompt security。树是权威状态源，存活在 MCP，桌面端「测试树」界面实时可视化。
 
 ## 主要目录
 
@@ -24,16 +24,15 @@ xSecAgent 是一套面向 Web 安全测试的 skill 编排项目。它不是“�
   项目根目录的上级编排 skill 入口。负责读取注册表、维护状态账本、按观察信号派发子代理、汇总报告。
 
 - `config/vulnerability-skills.yaml`
-  编排注册表。这里定义场景 playbook、侦查任务、漏洞 skill 激活条件、收尾处理器和浏览器流量 adapter。
+  编排注册表。定义场景 playbook、侦查任务、漏洞 skill 激活条件、收尾处理器；`adapters.browser` 声明浏览器由 MCP 接管；`mcp_tools` 声明主 Agent 专属与共享工具。
 
 - `references/main-agent.md`
-  主代理执行指南。描述主代理如何做 preflight、recon、触发、队列、状态账本和收尾。
+  主 Agent 执行指南。描述如何用 MCP 管理测试树、recon、建节点、派子 Agent、页面分组归因和收尾。
 
 - `references/vulnerability-subagent.md`
-  漏洞测试子代理指南。描述子代理如何读取单个 skill、验证环境、生成 found/not-found 报告。
+  漏洞测试子 Agent 指南。描述子 Agent 如何登记会话、用 page_group 归因并操作完整共享浏览器、读单个 skill、回填共享发现、生成 found/not-found 报告。
 
-- `web-pentest-browser-flow/`
-  浏览器流量采集 adapter。负责浏览器操作、mitmproxy、passive hook、flow 归一化、证据复现。
+- 浏览器与抓包由本系统 MCP 接管（Playwright 封装），不在本 skill 内实现。原 `web-pentest-browser-flow/` adapter 已废弃（不再被编排流程引用），目录标 deprecated 保留在仓库里作历史参考，没有删除。
 
 - `Index.html`
   项目的可视化流程图，展示所有 skill 如何从上到下按场景解锁。
@@ -64,8 +63,9 @@ xSecAgent 是一套面向 Web 安全测试的 skill 编排项目。它不是“�
 - `post_processors`: 2 个收尾节点
 - `recon`: 初期侦查子代理
 - `scheduler`: 子代理并发和队列策略
-- `orchestration_model`: 状态账本和 payload 契约
-- `adapters.browser_traffic`: 默认浏览器流量采集插件
+- `orchestration_model`: 节点/发现 payload 契约
+- `adapters.browser`: 声明浏览器由 MCP 接管（完整共享会话 + 页面分组路由归因）
+- `mcp_tools`: 主 Agent 专属工具与共享工具（树/发现/子 Agent/页面分组）
 
 35 个漏洞测试节点 + 2 个收尾节点 = 覆盖顶层 `skills/` 下全部 37 个 skill。
 
@@ -211,10 +211,6 @@ config/vulnerability-skills.yaml
     - request_corpus
     - browser_state
     requires_environment: 必须有有效登录态、可重放请求和测试数据；没有这些环境时返回 blocked，不启动子代理。
-  browser_modes:
-  - scout-browser
-  - interact-browser
-  - evidence-browser
   output_contract:
   - compact JSON summary
   - observations

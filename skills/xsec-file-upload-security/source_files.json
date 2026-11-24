@@ -1,7 +1,7 @@
 {
   "slug": "file-upload-security",
   "title": "文件上传安全缺陷",
-  "description": "任意上传、未授权上传、上传绕过和上传后可访问性的授权验证方法。",
+  "description": "任意上传、未授权上传、上传绕过和上传后可访问性的验证方法。",
   "source_files": [
     {
       "title": "文件上传",
