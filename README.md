@@ -17,7 +17,7 @@
 - 顶层 `skills/` 下所有 Skill 都通过 `## 编排适配` 暴露适用场景、触发信号、测试前置环境、必需工件、解锁输出和阻断条件。
 - `config/vulnerability-skills.yaml` 用 `scenario_playbooks` 描述常见路线，用 `activation.requires_environment` 控制是否真的派发子 Agent。
 - `autonomy.default_level` 默认 `guided`：注册表是正式派发路径，未覆盖的新线索写入 `hypothesis_queue`，做低影响补证后再转成节点或建议。
-- 测试初期先并行侦查：站点画像、API 路径发现、登录入口归集，以及按画像条件执行 DirSearch。所有浏览器/DirSearch/验证流量经 MCP 浏览器 network 抓包，敏感命中自动落盘为共享发现。
+- 测试初期先并行侦查：站点画像、API 路径发现、登录入口归集，以及按画像条件执行 DirSearch（批量路径探测经系统终端 MCP 跑 dirsearch 类工具，命中后用浏览器核实）。浏览器/验证流量经 MCP 浏览器 network 抓包，敏感命中自动落盘为共享发现。
 - 每个被触发的漏洞 Skill 开一个独立子 Agent（一个节点一个 Skill）；前序节点只通过发现/wins 解锁后续节点，不代表后续已确认漏洞。
 - 子 Agent 只围绕被分配的一个节点 + 一个 Skill，但可按 payload 的 `autonomy` 预算对自然发现目标做只读请求或小范围控件探测补齐证据。
 - 每个已验证问题和战果都必须引用 evidence path、shared_finding fingerprint 或来源 artifact。
@@ -49,7 +49,7 @@
 
 ## 配置
 
-复制或维护 `config/vulnerability-skills.yaml`（可建 `.local.yaml`）。当前把 35 个漏洞测试 Skill 放入 `vulnerability_skills`，把 `xsec-passive-scanning` 和 `xsec-vulnerability-chain-analysis` 放入 `post_processors`，合计覆盖 `skills/` 下全部 37 个 Skill。`adapters.browser` 声明浏览器由 MCP 接管；`mcp_tools` 声明主 Agent 专属与共享工具。未触发或环境不满足的 enabled Skill 保持 idle/blocked；未注册或 disabled 的只记录为建议。
+复制或维护 `config/vulnerability-skills.yaml`（可建 `.local.yaml`）。当前把 35 个漏洞测试 Skill 放入 `vulnerability_skills`，把 `xsec-passive-scanning`、`xsec-code-audit-bridge` 和 `xsec-vulnerability-chain-analysis` 放入 `post_processors`，合计覆盖 `skills/` 下全部 38 个 Skill。`adapters.browser` 声明浏览器由 MCP 接管；`mcp_tools` 声明主 Agent 专属与共享工具。未触发或环境不满足的 enabled Skill 保持 idle/blocked；未注册或 disabled 的只记录为建议。
 
 ### 自由度配置
 
