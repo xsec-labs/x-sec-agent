@@ -526,15 +526,15 @@
       <div class="eyebrow">Authorized Web Pentest Orchestration</div>
       <h1>xSecAgent Skills 从观察到解锁的纵向编排图</h1>
       <p class="hero-copy">
-        这张图把仓库中的 37 个 skill 放入同一条自上而下的授权测试流水线：
-        先做环境发现和被动采集，再根据登录、API、文件、AI、敏感信息等观察信号解锁专项子代理，
-        每个子代理只测试一个 skill，结果再回写状态账本触发下一层。
+        这张图把仓库中的 37 个 skill 放入同一条自上而下的测试流水线：
+        先用 MCP 共享浏览器做环境发现和 network 抓包，再根据登录、API、文件、AI、敏感信息等观察信号在测试树上建节点、派专项子 Agent，
+        每个子 Agent 只测试一个节点一个 skill，结果回填共享发现并扩展树。
       </p>
       <div class="metrics" aria-label="流程摘要">
         <div class="metric"><strong>37</strong><span>全部 skills 已纳入流程图</span></div>
         <div class="metric"><strong>7</strong><span>阶段从侦查到报告自上而下展开</span></div>
         <div class="metric"><strong>1:1</strong><span>一个触发 skill 对应一个子代理</span></div>
-        <div class="metric"><strong>Gate</strong><span>必须满足授权、scope、工件、环境条件</span></div>
+        <div class="metric"><strong>Gate</strong><span>必须满足工件、环境条件</span></div>
       </div>
     </section>
 
@@ -557,7 +557,7 @@
 
     <section class="footer-note">
       <strong>安全边界：</strong>
-      这份图只描述授权 Web 安全测试编排。所有节点都必须在 scope、速率、账号、测试数据和禁止动作边界内运行；
+      这份图只描述 Web 安全测试编排。所有节点都必须在速率、账号、测试数据和禁止动作边界内运行；
       passive hook 的命中只是候选，只有专项 skill 完成最小化验证并生成证据后才进入问题清单。
     </section>
   </main>
@@ -571,17 +571,17 @@
         title: "环境发现与公开面侦查",
         desc: "从目标可达性、站点画像、API 路径、目录扫描和公开响应入手。这里的目标不是直接下结论，而是产出后续节点能消费的 observations、artifacts 和 passive findings。",
         trigger: "target_reachable / site_profile / api_base_path",
-        environment: "已确认授权 scope，browser traffic adapter 与 passive hook 可用",
+        environment: "MCP 共享浏览器与 network 抓包可用",
         unlock: "发现登录框、API 文档、敏感目录、管理端、版本、明文传输或前端源码线索后，进入对应专项分支。",
         skills: [
           ["xsec-transport-security-plaintext-tls", "明文传输与 TLS 弱配置", "HTTP、TLS、混合内容、Secure Cookie 缺失", "目标 URL、传输层响应、TLS/证书观测"],
           ["xsec-version-info-exposure", "版本信息泄露", "Server/X-Powered-By、默认页、框架版本", "响应头、scout summary、页面截图"],
           ["xsec-directory-sensitive-leakage", "目录浏览与敏感目录泄露", "目录索引、敏感目录、对象存储清单", "DirSearch 结果或目录响应"],
-          ["xsec-config-backup-leakage", "配置与备份文件泄露", ".env、备份包、Git/SVN、数据库备份", "scope 内候选文件，允许最小化下载/解压"],
+          ["xsec-config-backup-leakage", "配置与备份文件泄露", ".env、备份包、Git/SVN、数据库备份", "候选文件，允许最小化下载/解压"],
           ["xsec-api-interface-exposure", "接口与接口文档泄露", "Swagger、OpenAPI、Knife4j、WSDL", "API 文档入口或定义文件可访问"],
-          ["xsec-middleware-unauth-management", "中间件与管理端暴露", "Actuator、Nacos、监控、配置中心、console", "候选管理端在授权 scope 内"],
+          ["xsec-middleware-unauth-management", "中间件与管理端暴露", "Actuator、Nacos、监控、配置中心、console", "候选管理端可访问"],
           ["xsec-unauth-access", "未授权访问", "HTML/JS 提取接口 path 后匿名访问疑似受保护资源", "前端资产、API host、匿名响应；登录态存在时补对照"],
-          ["xsec-client-hardcoded-secret", "客户端硬编码敏感信息", "source map、JS 配置、硬编码凭据、客户端包", "可访问或已授权分析客户端资源"]
+          ["xsec-client-hardcoded-secret", "客户端硬编码敏感信息", "source map、JS 配置、硬编码凭据、客户端包", "可访问分析客户端资源"]
         ]
       },
       {
@@ -589,15 +589,15 @@
         accent: "#b45309",
         kicker: "Stage 02",
         title: "登录面与认证防护",
-        desc: "只有发现登录框、密码字段、认证 API 或后台登录入口时才进入这一层。弱口令、爆破防护、验证码/OTP、用户名枚举都需要授权边界和低频策略。",
+        desc: "只有发现登录框、密码字段、认证 API 或后台登录入口时才进入这一层。弱口令、爆破防护、验证码/OTP。",
         trigger: "login_form_detected / auth_endpoint_detected",
         environment: "存在可交互登录框或可重放认证接口",
         unlock: "若用户提供凭据或弱口令验证成功，保存 browser_state 并解锁登录后测试；若遇到验证码、锁定或风控，记录 blocked。",
         skills: [
-          ["weak-pass-check", "弱口令检测", "登录框、密码字段、认证 API、后台登录入口", "授权字典、速率、锁定和验证码策略明确"],
+          ["weak-pass-check", "弱口令检测", "登录框、密码字段、认证 API、后台登录入口", "字典、速率、锁定和验证码策略明确"],
           ["xsec-brute-force-protection", "暴力破解防护缺失", "失败登录基线、验证码缺失、密码喷洒面", "允许少量失败登录，约定停止条件"],
-          ["xsec-captcha-otp-defect", "验证码与 OTP 机制缺陷", "图形验证码、短信/邮箱 OTP、通知发送", "授权测试手机号/邮箱/账号或测试环境"],
-          ["xsec-account-enumeration-leakage", "用户名枚举", "存在账号和不存在账号响应差异", "有授权存在账号；锁定差异检测放在后期"],
+          ["xsec-captcha-otp-defect", "验证码与 OTP 机制缺陷", "图形验证码、短信/邮箱 OTP、通知发送", "测试手机号/邮箱/账号或测试环境"],
+          ["xsec-account-enumeration-leakage", "用户名枚举", "存在账号和不存在账号响应差异", "有存在账号；锁定差异检测放在后期"],
           ["xsec-cookie-security-flags", "Cookie 安全属性缺失", "Set-Cookie、登录态 Cookie、rememberMe", "捕获 Cookie 下发响应或登录态"]
         ]
       },
@@ -616,7 +616,7 @@
           ["xsec-session-token-invalidation", "会话与 Token 失效缺陷", "退出、改密、注销、刷新令牌、rememberMe", "旧令牌快照和可恢复失效事件"],
           ["xsec-access-control-idor", "权限边界与 IDOR 检测", "ID 型资源、多角色、403/401 边界", "有效登录态；双账号测试需同级或不同角色账号"],
           ["xsec-password-policy", "不安全密码策略", "注册、改密、重置、首次登录改密", "可控测试账号，动作可恢复"],
-          ["xsec-password-storage-return", "密码明文处理与返回", "密码出现在请求、响应、缓存、记住密码", "授权测试账号和受控临时口令"],
+          ["xsec-password-storage-return", "密码明文处理与返回", "密码出现在请求、响应、缓存、记住密码", "测试账号和临时口令"],
           ["xsec-csrf-protection-missing", "CSRF 防护缺失", "Cookie 会话下的状态变更表单/API", "可逆低影响动作和受控跨站页面"],
           ["xsec-cors-misconfiguration", "CORS 跨域配置缺陷", "Origin 反射、ACAC=true、跨站可读", "可重放 API 请求和受控测试 Origin"]
         ]
@@ -628,14 +628,14 @@
         title: "API、参数与服务端处理面",
         desc: "从 request corpus、API inventory 和表单动作里筛出可重放、低影响、带参数的请求。这里更像精密仪表：先有基线，再做最小化差异验证。",
         trigger: "parameterized_request_detected / search_or_filter_form_detected",
-        environment: "可重放请求、参数基线、响应可比较，所有流量走 proxy",
+        environment: "可重放请求、参数基线、响应可比较，流量经 MCP 浏览器 network 抓包",
         unlock: "SQL 报错会反向提示 SQL 注入候选；路径、URL 代取和加密样本会进入对应专项。",
         skills: [
           ["xsec-sql-injection", "SQL 注入", "搜索、筛选、分页、排序、报表、详情参数", "低影响请求基线和响应对照"],
           ["xsec-sql-error-info-leak", "SQL 错误与语句信息泄露", "SQL/ORM/数据库错误回显", "被动命中或低影响错误响应"],
           ["xsec-error-path-leakage", "错误回显与路径泄露", "详细异常、绝对路径、堆栈、默认错误页", "目标返回给客户端的错误证据"],
           ["xsec-insecure-crypto", "不安全加密方式", "弱算法、固定 IV、前端可逆加密、编码冒充加密", "密文样本、代码位置或样本对"],
-          ["xsec-ssrf-methodology", "SSRF 服务端请求伪造", "URL 代取、Webhook、回调、远程导入", "授权回连监听或安全测试目标"],
+          ["xsec-ssrf-methodology", "SSRF 服务端请求伪造", "URL 代取、Webhook、回调、远程导入", "回连监听或安全测试目标"],
           ["xsec-internal-network-leakage", "内网地址与网络信息泄露", "内网 IP、内部主机名、回源地址、端口线索", "对外可见泄露来源；不主动扫描内网"]
         ]
       },
@@ -661,13 +661,13 @@
         accent: "#0891b2",
         kicker: "Stage 06",
         title: "被动命中与高价值凭据复核",
-        desc: "passive hook 和客户端分析会持续产出候选命中。这里把候选按 target_skill 分组、去重、脱敏，再交给专项节点做最小化证明。",
+        desc: "passive hook 和客户端分析会持续产出候选命中。这里把候选按 target_skill 分组、去重，并保留完整原始 headers 与敏感值，再交给专项节点做验证。",
         trigger: "passive_findings_available / passive_secret_match",
         environment: "已生成 evidence/passive/*-passive-findings.jsonl",
         unlock: "有效 AK/SK、私钥、Webhook、SQL 报错、路径或内网线索会成为组合漏洞分析的输入。",
         skills: [
-          ["xsec-passive-scanning", "被动扫描总入口", "passive findings 已落盘，需要分组路由", "request_id、pattern_id、match_hash、脱敏 preview"],
-          ["xsec-object-storage-bucket", "对象存储桶安全检测", "passive_object_storage_bucket_detected、OSS/COS/OBS/S3 host", "bucket host 在授权 scope 内；写入 canary 需单独授权"],
+          ["xsec-passive-scanning", "被动扫描总入口", "passive findings 已落盘，需要分组路由", "request_id、pattern_id、match_hash、完整原始命中值与 headers"],
+          ["xsec-object-storage-bucket", "对象存储桶安全检测", "passive_object_storage_bucket_detected、OSS/COS/OBS/S3 host", "写入 canary 需单独确认"],
           ["xsec-shiro-attack-detection", "Shiro 弱 Key 与利用链检测", "passive_shiro_cookie_detected", "仅 passive 发现 rememberMe/deleteMe 后触发"],
           ["xsec-cloud-secret-leakage", "云密钥与私钥泄露", "AK/SK、STS、私钥、对象存储凭据、Webhook", "疑似凭据和来源证据；只读或隔离验证"]
         ]

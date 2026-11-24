@@ -1,25 +1,27 @@
 ---
 name: xsec-transport-security-plaintext-tls
-description: 针对明文传输与TLS弱配置的授权渗透测试方法论。用户需要分析、验证、复测或撰写 HTTP 明文传输、TLS 弱协议、弱加密套件、HTTPS 未强制启用、客户端到服务端或数据库通信未加密等问题时，应优先使用本 skill，尤其是涉及 抓包、传输加密、证书、SSL/TLS、敏感字段、登录接口、移动端接口、C/S 通信、数据库链路 时。
+description: 针对明文传输与TLS弱配置的渗透测试方法论。用户需要分析、验证、复测或撰写 HTTP 明文传输、TLS 弱协议、弱加密套件、HTTPS 未强制启用、客户端到服务端或数据库通信未加密等问题时，应优先使用本 skill，尤其是涉及 抓包、传输加密、证书、SSL/TLS、敏感字段、登录接口、移动端接口、C/S 通信、数据库链路 时。
 ---
 
 # 明文传输与TLS弱配置测试方法论
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：目标存在 HTTP 明文入口、登录/敏感 API 非 HTTPS、HTTPS 未强制、混合内容、弱 TLS 协议/套件或证书问题。
 - 触发信号：`http_scheme_detected`、`login_over_http_detected`、`sensitive_api_over_http_detected`、`tls_weakness_detected`、`mixed_content_detected`、`secure_cookie_missing`。
-- 测试前置环境：必须有目标 URL、传输层响应和必要的 TLS/证书观测；验证不需要登录真实敏感账号。
-- 必需工件：`scout_summary`、`request_corpus`、`tls_scan_summary`、`response_headers`。
+- 测试前置环境：通常需要有目标 URL、传输层响应和必要的 TLS/证书观测；验证不需要登录真实敏感账号。
+- 参考工件：`scout_summary`、`request_corpus`、`tls_scan_summary`、`response_headers`。
 - 解锁输出：`password_plaintext_transport_candidate`、`cookie_secure_missing`、`session_risk_context`。
-- 阻断条件：所有入口强制 HTTPS 且 TLS 基线正常、明文只来自本地代理/测试环境或证书问题不属于目标域。
+- 建议阻断（可低影响补齐时先补证再测）：所有入口强制 HTTPS 且 TLS 基线正常、明文只来自本地代理/测试环境或证书问题不属于目标域。
 
 ## 适用场景
 
 - 目标存在 Web、App、API、C/S 客户端、反向代理或数据库连接等多段通信链路，需要判断传输层是否保护了敏感数据。
 - 已发现登录、注册、找回密码、短信验证、单点登录、患者或用户资料查询、报表下载、内部客户端访问等入口，需要确认是否仍经 HTTP 或弱 TLS 传输。
 - 已知站点支持 HTTPS，但怀疑仍保留 HTTP 可达入口、弱协议版本、弱加密套件、证书校验不足或回退配置问题。
-- 需要做授权渗透测试中的最小化验证、复测或报告撰写，而不是开展高影响利用。
+- 需要做渗透测试中的最小化验证、复测或报告撰写，而不是开展高影响利用。
 
 ## 测试思想
 
@@ -53,7 +55,7 @@ description: 针对明文传输与TLS弱配置的授权渗透测试方法论。�
 
 5. 留证
 - 保留能够说明“协议、路径、参数类型、返回结果、时间点、账号角色、是否协商成功”的最小证据集合。
-- 对敏感值统一脱敏，只展示字段名、数据类型、长度、前后少量字符或替代标识，不保留完整凭据。
+- 原始敏感内容保存到受控证据目录；共享发现、截图展示、报告和委派使用最少必要的原始摘录（xSec 不做自动脱敏）与证据引用，截断只因体积限制并明确标记。
 - 对复测场景保留前后对照证据，证明控制点是否真正生效，而不是只改了展示层。
 
 6. 修复复测
@@ -72,7 +74,7 @@ description: 针对明文传输与TLS弱配置的授权渗透测试方法论。�
 ## 证据链要求
 
 - 入口证据：目标标识、协议、端口、业务动作、测试时间、测试账号角色或匿名态。
-- 请求证据：方法、路径、关键请求头、参数位置、敏感字段类型；字段值必须脱敏，不记录完整密码、令牌、Cookie 或个人信息。
+- 请求证据：方法、路径、完整请求头、参数位置、敏感字段类型和原始字段值；记录完整密码、令牌、Cookie 和个人信息。
 - 响应证据：状态码、重定向行为、返回内容类型、关键业务提示，用于证明请求确实被服务端接收并处理。
 - 抓包证据：能够直接说明明文可见、弱协议协商成功或链路未加密的关键截图或文本，不保留超出结论所需的大量报文。
 - TLS 证据：支持的协议版本、弱套件或回退结果、证书链异常点、是否作用于真实业务端口。
@@ -102,10 +104,10 @@ description: 针对明文传输与TLS弱配置的授权渗透测试方法论。�
 
 ```markdown
 漏洞概述：
-经授权测试，发现 `<system-or-module>` 在 `<business-action>` 过程中存在传输层保护不足问题。具体表现为 `<http-plaintext-or-weak-tls>`，导致 `<credential-or-data-type>` 在链路中存在被窃听、篡改或降级访问的风险。
+经测试，发现 `<system-or-module>` 在 `<business-action>` 过程中存在传输层保护不足问题。具体表现为 `<http-plaintext-or-weak-tls>`，导致 `<credential-or-data-type>` 在链路中存在被窃听、篡改或降级访问的风险。
 
 验证过程：
-测试在授权账号/测试数据条件下，对 `<entry-point>` 进行最小化验证。结果显示，请求经 `<protocol-or-link>` 传输时，能够观察到 `<masked-sensitive-elements>`，或服务端仍接受 `<weak-tls-version-or-weak-negotiation>` 协商。
+测试在测试账号/测试数据条件下，对 `<entry-point>` 进行最小化验证。结果显示，请求经 `<protocol-or-link>` 传输时，能够观察到 `<raw-sensitive-elements>`（填写捕获到的原始值），或服务端仍接受 `<weak-tls-version-or-weak-negotiation>` 协商。
 
 影响分析：
 该问题说明系统未对 `<affected-link>` 实施充分的传输加密控制。攻击者一旦位于可观测链路中，可能获取或干扰 `<data-category>`，影响认证安全、数据保密性与通信完整性。若同类配置在多个入口复用，实际影响面将进一步扩大。

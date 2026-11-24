@@ -28,10 +28,6 @@
 
 ![{{screenshot_alt}}]({{status_screenshot_path}})
 
-## 限制与未覆盖项
-
-{{limitations}}
-
 ## 后续建议
 
 {{next_suggestions}}

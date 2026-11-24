@@ -1,7 +1,7 @@
 {
   "slug": "shiro-attack-detection",
   "title": "Apache Shiro rememberMe 弱 Key 与利用链检测",
-  "description": "仅在 passive hook 发现 rememberMe/deleteMe Cookie 后触发，使用内置 203-key 字典验证 Shiro 存在、常见弱 Key 和授权范围内的低影响 Gadget/回显链。",
+  "description": "仅在 passive hook 发现 rememberMe/deleteMe Cookie 后触发，使用内置 203-key 字典验证 Shiro 存在、常见弱 Key 和低影响 Gadget/回显链。",
   "source_files": [
     {
       "title": "内置 Shiro Key 字典",

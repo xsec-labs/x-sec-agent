@@ -1,18 +1,20 @@
 ---
 name: xsec-passive-scanning
-description: Web 安全测试中的被动扫描总入口与路由 Skill。用户需要复核 passive hook、mitmproxy、浏览器流量、DirSearch 代理流量或请求响应语料中自动落盘的敏感信息命中时应使用本 skill，尤其是需要按 target_skill/正则命中把秘钥泄露、SQL 报错、详细错误/路径泄露、内网地址泄露、指纹/API 文档、客户端暴露、对象存储桶 host、敏感字段、个人信息或 endpoint 线索分配给具体 Skill 生成报告时。该 skill 只做被动扫描结果去重、归类和子 Skill 路由，不替代具体漏洞判断。
+description: Web 安全测试中的被动扫描总入口与路由 Skill。用户需要复核浏览器 network 抓包、DirSearch 流量或请求响应语料中自动落盘的敏感信息命中时应使用本 skill，尤其是需要按 target_skill/正则命中把秘钥泄露、SQL 报错、详细错误/路径泄露、内网地址泄露、指纹/API 文档、客户端暴露、对象存储桶 host、敏感字段、个人信息或 endpoint 线索分配给具体 Skill 生成报告时。该 skill 只做被动扫描结果去重、归类和子 Skill 路由，不替代具体漏洞判断。
 ---
 
 # 被动扫描总入口
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：测试过程中 passive hook 已生成敏感信息、指纹、接口暴露或潜在漏洞线索命中，需要按 target_skill 去重、归类并派发专项复核。
 - 触发信号：`passive_findings_available`、`passive_secret_match`、`passive_sql_error_match`、`passive_detailed_error_match`、`passive_path_leak_match`、`passive_internal_ip_match`、`passive_internal_hostname_match`、`passive_fingerprint_match`、`passive_api_doc_match`、`passive_client_exposure_match`、`passive_personal_info_match`、`passive_endpoint_match`、`passive_shiro_cookie_detected`、`passive_object_storage_bucket_detected`。
-- 测试前置环境：必须已启用 browser traffic adapter 的 passive hook，并存在 `evidence/passive/*-passive-findings.jsonl`。
-- 必需工件：`passive_findings`、`request_corpus`、`api_inventory`、`status_ledger`。
+- 测试前置环境：通常需要已通过 MCP 浏览器 network 抓包产生 passive 敏感命中，并存在 `evidence/passive/*-passive-findings.jsonl`。
+- 参考工件：`passive_findings`、`request_corpus`、`api_inventory`、`status_ledger`。
 - 解锁输出：`cloud_secret_review_task`、`sql_error_review_task`、`error_path_review_task`、`internal_network_review_task`、`shiro_attack_detection_task`、`object_storage_bucket_review_task`。
-- 阻断条件：没有 passive findings、命中无法归类或只有已确认的测试噪声。
+- 建议阻断（可低影响补齐时先补证再测）：没有 passive findings、命中无法归类或只有已确认的测试噪声。
 
 本 Skill 是被动扫描能力域的总入口。它保留“被动扫描”这个概念，但不嵌套其他 Skill 目录；具体漏洞判断仍由平铺在 `skills/` 顶层的专项 Skill 执行。
 
@@ -58,16 +60,16 @@ description: Web 安全测试中的被动扫描总入口与路由 Skill。用户
 
 1. 汇总所有 `passive-findings.jsonl`。
 2. 按 `target_skill + pattern_id + match_hash + host + path + location` 去重。
-3. 把每组命中整理为 compact evidence set：命中数量、首末时间、host/path、status、location、pattern_id、signal、脱敏 preview、request_id 列表。
+3. 把每组命中整理为 raw evidence set：命中数量、首末时间、host/path、status、location、pattern_id、signal、完整原始命中值、完整 headers、请求/响应和 request_id 列表。
 4. 对每组 evidence set 启动对应专项 Skill 子代理。
 5. 专项 Skill 必须做最小化判断：确认是有效泄露、低价值信息、误报、已脱敏占位、测试数据，还是证据不足。
 6. 发现问题时生成 `reports/<系统名称>/<漏洞名称>.md`；未发现或误报时生成 `reports/<系统名称>/not-found/<漏洞名称>.md`。
-7. 返回给主代理的 JSON 中必须包含分组结果、被调用专项 Skill、report paths、not_found paths 和未覆盖限制。
+7. 返回给主代理的 JSON 中必须包含分组结果、被调用专项 Skill、report paths 和 not_found paths。
 
 ## 判断边界
 
 - passive hook 命中只是候选，不是最终漏洞。
-- 报告中不得写入完整秘钥、完整 token、完整 Cookie、完整个人信息或大段响应体。
+- 报告中必须写入完整秘钥、完整 token、完整 Cookie 和完整个人信息，确保后续 Agent 可复用；响应体默认保留原文，仅在体积受限时截断并注明。
 - 对秘钥类命中，只验证来源、可获取性、类型、有效性边界和最小权限，不接管真实资源。
 - 对内网地址类命中，不主动扫描内网，只判断泄露线索是否对外可见、是否稳定、是否具有环境认知价值。
 - 对对象存储桶命中，先按 host 去重；默认只做匿名只读检查，未明确时不做 canary 上传，也不写 ACL/Policy。

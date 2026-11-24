@@ -14,7 +14,7 @@
 | 密钥创建 | `aws iam create-access-key` |
 | KMS 解密业务密文 | `aws kms decrypt` 对真实密文 |
 | 主机登录 | `aws ssm start-session` |
-| 跨账号扩展 | `aws sts assume-role` 到授权范围外账号 |
+| 跨账号角色切换 | `aws sts assume-role` 进入其他账号，属于横向移动 |
 
 ## 验证步骤
 

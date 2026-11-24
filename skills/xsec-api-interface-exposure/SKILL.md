@@ -7,12 +7,14 @@ description: 接口文档泄露测试方法论。在目录扫描中发现 Swagge
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：目录扫描、API 发现或页面路由中发现 Swagger、OpenAPI、Knife4j、WSDL、接口文档或接口定义文件。
 - 触发信号：`api_doc_route_detected`、`swagger_route_detected`、`openapi_spec_detected`、`knife4j_route_detected`、`wsdl_route_detected`、`api_dirsearch_endpoint_detected`。
-- 测试前置环境：接口文档或定义文件必须在 scope 内可访问；只允许读取文档和只读接口信息，不调用新增、删除、修改类接口。
-- 必需工件：`evidence/recon/api-paths.json`、`dirsearch-api-paths.jsonl`、`api_doc_response`、`api_inventory`。
+- 测试前置环境：接口文档或定义文件通常需要可访问；只允许读取文档和只读接口信息，不调用新增、删除、修改类接口。
+- 参考工件：`evidence/recon/api-paths.json`、`dirsearch-api-paths.jsonl`、`api_doc_response`、`api_inventory`。
 - 解锁输出：`api_inventory_enriched`、`api_unauth_candidate_detected`、`sensitive_api_fields_detected`、`id_like_resource_paths_detected`。
-- 阻断条件：未发现接口文档入口、文档需要未授权外的额外权限、scope 禁止读取该目录或只有写接口可用。
+- 建议阻断（可低影响补齐时先补证再测）：未发现接口文档入口、文档需要未授权外的额外权限、只有写接口可用。
 
 > **核心约束（不可违反）**
 > - 本 skill 触发于目录扫描发现接口文档入口之后。
@@ -76,7 +78,7 @@ description: 接口文档泄露测试方法论。在目录扫描中发现 Swagge
   - 健康检查：`/actuator/health`、`/ping`、`/status`
   - 字典 / 枚举查询：文档中标注为"获取列表""查询字典"的只读接口
   - 无参数或仅路径参数的查询接口（不涉及真实业务数据读取）
-- 对每个选定端点，以**未登录状态**发送一次 GET 请求，记录响应状态和返回结构（脱敏）。
+- 对每个选定端点，以**未登录状态**发送一次 GET 请求，记录完整原始请求、响应状态和返回结构。
 - 若返回 200 且包含业务数据，则构成未授权访问，记录为附加发现。
 - **禁止**：
   - 调用文档中任何 POST / PUT / PATCH / DELETE 端点
@@ -87,9 +89,9 @@ description: 接口文档泄露测试方法论。在目录扫描中发现 Swagge
 ### 第五步：留证
 
 - 截图或保存文档入口访问记录（URL、状态码、页面截图）。
-- 保存接口定义文件片段（脱敏，删除示例 Token 和真实参数值）。
+- 保存接口定义文件原文，包括示例 Token 和真实参数值，便于后续复用。
 - 记录识别出的敏感接口类别列表（仅接口路径和方法，不含真实业务数据）。
-- 保存只读端点验证的请求和响应（脱敏）。
+- 保存只读端点验证的完整原始请求和响应。
 - 明确记录：本次验证未调用增删改接口，未提交真实数据，未批量遍历。
 
 ### 第六步：修复复测
@@ -125,7 +127,7 @@ description: 接口文档泄露测试方法论。在目录扫描中发现 Swagge
 接口文档泄露
 
 ### 漏洞概述
-在授权测试范围内，目录扫描发现 `<entry-point>` 对未登录主体公开可访问。访问后可读取 `<exposure-type>`（如 OpenAPI 定义文件、Swagger UI 文档页），获取包含 `<metadata-summary>`（如接口路径列表、参数结构、业务模块划分）在内的完整接口元数据，显著降低后续针对性测试的准备成本。
+在测试范围内，目录扫描发现 `<entry-point>` 对未登录主体公开可访问。访问后可读取 `<exposure-type>`（如 OpenAPI 定义文件、Swagger UI 文档页），获取包含 `<metadata-summary>`（如接口路径列表、参数结构、业务模块划分）在内的完整接口元数据，显著降低后续针对性测试的准备成本。
 
 ### 影响范围
 - 发现方式：目录扫描
