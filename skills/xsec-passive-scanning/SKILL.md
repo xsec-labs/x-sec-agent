@@ -1,6 +1,6 @@
 ---
 name: xsec-passive-scanning
-description: Web 安全测试中的被动扫描总入口与路由 Skill。用户需要复核浏览器 network 抓包、DirSearch 流量或请求响应语料中自动落盘的敏感信息命中时应使用本 skill，尤其是需要按 target_skill/正则命中把秘钥泄露、SQL 报错、详细错误/路径泄露、内网地址泄露、指纹/API 文档、客户端暴露、对象存储桶 host、敏感字段、个人信息或 endpoint 线索分配给具体 Skill 生成报告时。该 skill 只做被动扫描结果去重、归类和子 Skill 路由，不替代具体漏洞判断。
+description: Web 安全测试中的被动扫描总入口与路由 Skill。用户需要复核浏览器 network 抓包、DirSearch（经代理转发或命中后的浏览器核实访问才会落盘）流量或请求响应语料中自动落盘的敏感信息命中时应使用本 skill，尤其是需要按 target_skill/正则命中把秘钥泄露、SQL 报错、详细错误/路径泄露、内网地址泄露、指纹/API 文档、客户端暴露、对象存储桶 host、敏感字段、个人信息或 endpoint 线索分配给具体 Skill 生成报告时。该 skill 只做被动扫描结果去重、归类和子 Skill 路由，不替代具体漏洞判断。
 ---
 
 # 被动扫描总入口

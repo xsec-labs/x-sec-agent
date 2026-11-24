@@ -47,7 +47,7 @@ xSecAgent 是一套面向 Web 安全测试的 skill 编排项目。它不是“�
 
 ### 1. 给所有 skill 增加编排适配
 
-`skills/` 下 37 个 `SKILL.md` 都新增了 `## 编排适配` 小节，统一说明：
+`skills/` 下 38 个 `SKILL.md` 都新增了 `## 编排适配` 小节，统一说明：
 
 - 适用场景
 - 触发信号
@@ -66,14 +66,14 @@ xSecAgent 是一套面向 Web 安全测试的 skill 编排项目。它不是“�
 
 - `scenario_playbooks`: 8 个常见场景路线图
 - `vulnerability_skills`: 35 个漏洞测试节点
-- `post_processors`: 2 个收尾节点
+- `post_processors`: 3 个收尾节点
 - `recon`: 初期侦查子代理
 - `scheduler`: 子代理并发和队列策略
 - `orchestration_model`: 节点/发现 payload 契约
 - `adapters.browser`: 声明浏览器由 MCP 接管（完整共享会话 + 页面分组路由归因）
 - `mcp_tools`: 主 Agent 专属工具与共享工具（树/发现/子 Agent/页面分组）
 
-35 个漏洞测试节点 + 2 个收尾节点 = 覆盖顶层 `skills/` 下全部 37 个 skill。
+35 个漏洞测试节点 + 3 个收尾节点 = 覆盖顶层 `skills/` 下全部 38 个 skill。
 
 ### 3. 更新 orchestrator 文档
 
@@ -97,14 +97,14 @@ xSecAgent 是一套面向 Web 安全测试的 skill 编排项目。它不是“�
 
 ### 4. 新增可视化流程图
 
-新增 `Index.html`，用一个静态 HTML 页面展示从上到下的完整 skill 编排流程。页面包含所有 37 个 skill，并按阶段展示触发条件和前置环境。
+新增 `Index.html`，用一个静态 HTML 页面展示从上到下的完整 skill 编排流程。页面包含所有 38 个 skill，并按阶段展示触发条件和前置环境。
 
 已用 Playwright 验证：
 
 - HTML 能正常渲染
 - 桌面与移动首屏可读
 - 控制台 0 errors
-- 页面中 37 个 skill 无遗漏
+- 页面中 38 个 skill 无遗漏
 
 ## 当前 skill 覆盖关系
 
@@ -146,9 +146,10 @@ xSecAgent 是一套面向 Web 安全测试的 skill 编排项目。它不是“�
 - `insecure-crypto`
 - `csrf-protection-missing`
 
-`post_processors` 中的 2 个收尾节点：
+`post_processors` 中的 3 个收尾节点：
 
 - `passive-sensitive-review` -> `skills/xsec-passive-scanning`
+- `code-audit-bridge` -> `skills/xsec-code-audit-bridge`
 - `vulnerability-chain-analysis` -> `skills/xsec-vulnerability-chain-analysis`
 
 ## 新增 skill 时必须同步修改哪里

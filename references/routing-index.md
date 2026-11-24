@@ -43,4 +43,5 @@
 
 收尾处理器（不在启动阶段默认运行）：
 - passive_findings_available → passive-sensitive-review [passive_review] xsec-passive-scanning
+- source_code_leakage_candidate → code-audit-bridge [any]
 - multiple_validated_issues / issue_plus_key_win / credential_to_session_chain_candidate / passive_secret_plus_api_exposure → vulnerability-chain-analysis [chain_analysis]
