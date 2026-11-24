@@ -41,11 +41,11 @@ description: 按树状任务组织 Web 安全审查，由主/子 Agent 分工，
 主 Agent 用 MCP 工具持有并管理整棵树：
 
 - 树/节点：`attack_path_node_create`（主）、`attack_path_node_update`、`attack_path_node_get`、`attack_path_list`、`attack_path_node_delete`（主，清理无效节点）。
-- **并发更新用 `expectedRevision`**：`attack_path_node_get`/`attack_path_list` 返回的每个节点带顶层 `revision`；调用 `attack_path_node_update`/`attack_path_node_delete` 前必须用读到的最新 `revision` 原样作为 `expectedRevision` 传回，不要用 `updatedAt` 代替。两个 Agent（或同一 Agent 的两次调用）并发更新同一节点时，带着旧 `expectedRevision` 的调用会被拒绝；按返回的最新状态重试，不要覆盖对方刚写的结论。
+- **并发更新用 `expectedRevision`**：`attack_path_node_get`/`attack_path_list` 返回的每个节点带顶层 `revision`（底层就是该节点的 `updated_at`）；调用 `attack_path_node_update`/`attack_path_node_delete` 前必须用读到的最新 `revision` 原样作为 `expectedRevision` 传回。这是**按单个节点**判断的乐观锁，不是整棵树共用一个版本号。两个 Agent（或同一 Agent 的两次调用）并发更新同一节点时，带着旧 `expectedRevision` 的调用会被拒绝；按返回的最新状态重试，不要覆盖对方刚写的结论。
 - 共享发现知识库（全体可见、按 fingerprint 去重）：`attack_path_finding_add`、`attack_path_findings_list`、`attack_path_finding_delete`（仅主 Agent，清理过时发现）。
-- 子 Agent 编排：`xsec_subagent_dispatch`（主，派发）、`xsec_subagent_register_session`（子，登记）、`xsec_subagent_heartbeat`（子，存活心跳）、`xsec_subagent_complete`（子，正式收口）、`xsec_subagent_cancel`（主，收回失控/超预算子 Agent）、`xsec_subagent_status`（主，轮询全部子 Agent 状态）。六个工具的完整时序见下面"子 Agent 派发登记协议"。
+- 子 Agent 编排：`xsec_subagent_dispatch`（主，派发）、`xsec_subagent_register_session`（子，登记）、`xsec_subagent_heartbeat`（子，存活心跳）、`xsec_subagent_complete`（子，正式收口；`status` 取 `done`/`vuln`/`failed`/`cancelled`，未发现漏洞也是 `done`+`conclusion` 说明，没有单独的 not-found 取值）、`xsec_subagent_cancel`（主，收回失控/超预算子 Agent）、`xsec_subagent_status`（主，轮询全部子 Agent 状态）。六个工具的完整时序见下面"子 Agent 派发登记协议"。
 - 页面分组：`xsec_subagent_dispatch` 已原子创建子 Agent 的 page group，不需要先调 `xsec_page_group_create`；`xsec_page_group_use` 只用于设置分组的 current page；浏览器工具透传 `page_group_id` / `page_id`。
-- 主 MCP 里还有同名别名 `xsec_tree_*`、`xsec_shared_finding_*`、`xsec_shared_findings_list`（参数 snake_case，如 `parent_id`），操作同一份数据；以当前 `tools/list` 为准。
+- 主 MCP 里还有同名别名 `xsec_tree_*`、`xsec_shared_finding_*`、`xsec_shared_findings_list`（参数 snake_case，如 `parent_id`），操作同一份数据；以当前 `tools/list` 为准。这组的乐观锁参数是 `expected_revision`（同样取该节点的 `updated_at`，不是独立字段）。
 
 ## 子 Agent 派发登记协议
 
@@ -57,7 +57,7 @@ description: 按树状任务组织 Web 安全审查，由主/子 Agent 分工，
 4. 子 Agent 启动后先调用 `xsec_task_profile` 获取 capability 绑定上下文，再立即调用无参数的 `xsec_subagent_register_session` 登记自己。身份、运行 session 与页面分组由子 Agent capability 和桌面运行器绑定，主 Agent 不代为登记。
 5. 子 Agent 在验证过程中定期调用无参数的 `xsec_subagent_heartbeat`（尤其是单次动作较长时，例如等待页面、重放请求）；超过预期时长不发心跳会被判定失联。更新节点状态用 `attack_path_node_update(nodeId, status, testValue, conclusion, expectedRevision)`（见上文"并发更新用 `expectedRevision`"）。
 6. 子 Agent 收尾必须调用 `xsec_subagent_complete(status, conclusion, reason?)` 正式收口，不能只在文本里写"测试完成"当结束标记——没有这一步，主 Agent 和终端 UI 都拿不到可靠的结束信号。主 Agent 轮询 `xsec_subagent_status` 和 `attack_path_list` 汇总所有子 Agent 的进度和结论。
-7. 子 Agent 失控（超预算、超时、偏离被分配的 Skill/节点）时，主 Agent 调用 `xsec_subagent_cancel(id, reason)` 主动收回；不要指望子 Agent 自己会退出。
+7. 子 Agent 失控（超预算、超时、偏离被分配的 Skill/节点）时，主 Agent 调用 `xsec_subagent_cancel(subagent_id, reason)` 主动收回；不要指望子 Agent 自己会退出。
 
 UI 切换规则：点击根节点显示主 Agent 的 session 输出；点击其它节点显示其 `subagent_id` 对应的 `session_id` 输出。缺少 `xsec_subagent_register_session` 时，树节点会存在，但右侧终端无法切到该子 Agent。
 

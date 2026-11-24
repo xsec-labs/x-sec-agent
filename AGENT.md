@@ -32,7 +32,7 @@ xSecAgent 是一套面向 Web 安全测试的 skill 编排项目。它不是“�
 - `references/vulnerability-subagent.md`
   漏洞测试子 Agent 指南。描述子 Agent 如何登记会话、用 page_group 归因并操作完整共享浏览器、读单个 skill、回填共享发现、生成 found/not-found 报告。
 
-- 浏览器与抓包由本系统 MCP 接管（Playwright 封装），不在本 skill 内实现。原 `web-pentest-browser-flow/` adapter 已删除。
+- 浏览器与抓包由本系统 MCP 接管（Playwright 封装），不在本 skill 内实现。原 `web-pentest-browser-flow/` adapter 已废弃（不再被编排流程引用），目录标 deprecated 保留在仓库里作历史参考，没有删除。
 
 - `Index.html`
   项目的可视化流程图，展示所有 skill 如何从上到下按场景解锁。
