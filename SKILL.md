@@ -41,7 +41,7 @@ description: 按树状任务组织 Web 安全审查，由主/子 Agent 分工，
 主 Agent 用 MCP 工具持有并管理整棵树：
 
 - 树/节点：`attack_path_node_create`（主）、`attack_path_node_update`、`attack_path_node_get`、`attack_path_list`、`attack_path_node_delete`（主，清理无效节点）。
-- **并发更新用 `expectedRevision`**：`attack_path_node_get`/`attack_path_list` 返回的每个节点带顶层 `revision`（底层就是该节点的 `updated_at`）；调用 `attack_path_node_update`/`attack_path_node_delete` 前必须用读到的最新 `revision` 原样作为 `expectedRevision` 传回。这是**按单个节点**判断的乐观锁，不是整棵树共用一个版本号。两个 Agent（或同一 Agent 的两次调用）并发更新同一节点时，带着旧 `expectedRevision` 的调用会被拒绝；按返回的最新状态重试，不要覆盖对方刚写的结论。
+- **并发更新可带 `expectedRevision`**：`attack_path_node_get`/`attack_path_list`/写操作返回的顶层 `revision` 是**整个任务（assignment）作用域**的版本号，不是某个节点自己的 `updated_at`——同一任务下任意节点或发现的写入都会让它整体递增。调用 `attack_path_node_update`/`attack_path_node_delete` 时可选把读到的最新 `revision` 传回 `expectedRevision`；只要任务内发生过任何写入，旧值就会被拒绝（不代表你要更新的那个节点被别人改过）。被拒绝就重新 `get`/`list` 取最新 `revision` 再试，不要用它判断"这个节点有没有被并发修改"，也别覆盖对方刚写的结论。
 - 共享发现知识库（全体可见、按 fingerprint 去重）：`attack_path_finding_add`、`attack_path_findings_list`、`attack_path_finding_delete`（仅主 Agent，清理过时发现）。
 - 子 Agent 编排：`xsec_subagent_dispatch`（主，派发）、`xsec_subagent_register_session`（子，登记）、`xsec_subagent_heartbeat`（子，存活心跳）、`xsec_subagent_complete`（子，正式收口；`status` 取 `done`/`vuln`/`failed`/`cancelled`，未发现漏洞也是 `done`+`conclusion` 说明，没有单独的 not-found 取值）、`xsec_subagent_cancel`（主，收回失控/超预算子 Agent）、`xsec_subagent_status`（主，轮询全部子 Agent 状态）。六个工具的完整时序见下面"子 Agent 派发登记协议"。
 - 页面分组：`xsec_subagent_dispatch` 已原子创建子 Agent 的 page group，不需要先调 `xsec_page_group_create`；`xsec_page_group_use` 只用于设置分组的 current page；浏览器工具透传 `page_group_id` / `page_id`。
@@ -55,7 +55,7 @@ description: 按树状任务组织 Web 安全审查，由主/子 Agent 分工，
 2. 派发子 Agent：调用 `xsec_subagent_dispatch(node_id, browser_session_id)`，拿到 `subagent_id` 和服务端生成的、仅用于路由和归因的 `page_group_id`；这个调用原子地创建专属 page group、子 Agent 会话并把 `subagent_id` 绑定回树节点。不要先调 `xsec_page_group_create`。
 3. 启动子 Agent 时，任务 payload 必须包含：`node_id`、`subagent_id`、`page_group_id`、`vulnerability_skill`、`activation_reason`、目标、动作与预算边界、必要证据摘要和受控证据引用。
 4. 子 Agent 启动后先调用 `xsec_task_profile` 获取 capability 绑定上下文，再立即调用无参数的 `xsec_subagent_register_session` 登记自己。身份、运行 session 与页面分组由子 Agent capability 和桌面运行器绑定，主 Agent 不代为登记。
-5. 子 Agent 在验证过程中定期调用无参数的 `xsec_subagent_heartbeat`（尤其是单次动作较长时，例如等待页面、重放请求）；超过预期时长不发心跳会被判定失联。更新节点状态用 `attack_path_node_update(nodeId, status, testValue, conclusion, expectedRevision)`（见上文"并发更新用 `expectedRevision`"）。
+5. 子 Agent 在验证过程中定期调用无参数的 `xsec_subagent_heartbeat`（尤其是单次动作较长时，例如等待页面、重放请求）；超过预期时长不发心跳会被判定失联。过程中用 `attack_path_node_update(nodeId, status, testValue, conclusion, expectedRevision)` 记录进度（见上文"并发更新可带 `expectedRevision`"）；`done`/`vuln`/`failed`/`cancelled` 等终态结论只能通过下一步的 `xsec_subagent_complete` 提交，不要用 node_update 直接写终态。
 6. 子 Agent 收尾必须调用 `xsec_subagent_complete(status, conclusion, reason?)` 正式收口，不能只在文本里写"测试完成"当结束标记——没有这一步，主 Agent 和终端 UI 都拿不到可靠的结束信号。主 Agent 轮询 `xsec_subagent_status` 和 `attack_path_list` 汇总所有子 Agent 的进度和结论。
 7. 子 Agent 失控（超预算、超时、偏离被分配的 Skill/节点）时，主 Agent 调用 `xsec_subagent_cancel(subagent_id, reason)` 主动收回；不要指望子 Agent 自己会退出。
 

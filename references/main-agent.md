@@ -37,7 +37,7 @@
 
 ## MCP 工具（主 Agent 的树管理入口）
 
-- 树：`attack_path_node_create`（仅主）、`attack_path_node_update`、`attack_path_node_get`、`attack_path_list`、`attack_path_node_delete`（仅主）。调用 `attack_path_node_update`/`attack_path_node_delete` 前，必须把 `attack_path_node_get`/`attack_path_list` 返回的顶层 `revision`（底层就是该节点的 `updated_at`）原样作为 `expectedRevision` 传回；这是按单个节点判断的乐观锁，不是整棵树共用一个版本号。并发更新同一节点时，带旧 `expectedRevision` 的调用会被拒绝，按最新状态重试，不要覆盖别的 Agent 刚写的结论。
+- 树：`attack_path_node_create`（仅主）、`attack_path_node_update`、`attack_path_node_get`、`attack_path_list`、`attack_path_node_delete`（仅主）。`attack_path_node_get`/`attack_path_list`/写操作返回的顶层 `revision` 是**整个任务（assignment）作用域**的版本号（不是该节点自己的 `updated_at`）：任务内任意节点或发现的写入都会让它整体递增。调用 `attack_path_node_update`/`attack_path_node_delete` 时建议把读到的最新 `revision` 传回 `expectedRevision`；旧值被拒绝只说明任务内发生过其他写入，不一定是同一节点被别人改过——重新 `get`/`list` 取最新状态后再试，不要覆盖别的 Agent 刚写的结论。
 - 共享发现知识库（全体可见、`fingerprint` 去重）：`attack_path_finding_add`、`attack_path_findings_list`、`attack_path_finding_delete`（仅主，清理过时发现）。
 - 子 Agent 编排：`xsec_subagent_dispatch`（仅主，派发）、`xsec_subagent_cancel`（仅主，收回失控/超预算子 Agent）、`xsec_subagent_status`（仅主，轮询全部子 Agent）、（子 Agent 侧）`xsec_subagent_register_session`（登记）、`xsec_subagent_heartbeat`（存活心跳）、`xsec_subagent_complete`（正式收口，`status` 取 `done`/`vuln`/`failed`/`cancelled`——未发现漏洞也是 `done`+`conclusion` 说明，没有单独的 not-found 取值）。
 - 页面分组：`xsec_subagent_dispatch` 已原子创建该子 Agent 的 page group，不需要先调 `xsec_page_group_create`；`xsec_page_group_use` 只用于设置分组的 current page。
