@@ -9,7 +9,7 @@ description: 按树状任务组织 Web 安全审查，由主/子 Agent 分工，
 
 ## 执行边界
 
-先读 [运行边界与证据口径](references/security-boundaries.md)。`scope_policy` 只做资产归因，不是访问边界；
+先读 [运行边界与证据口径](references/security-boundaries.md)。主 Agent 的浏览器、被动扫描、证据、报告、审批、CLI、产品问题与 Fake IP 细则在 [运行细则](references/runbook.md)，用到时读对应章节。`scope_policy` 只做资产归因，不是访问边界；
 共享浏览器不提供隔离或额外权限。xSec 不做自动脱敏：任务 payload、共享发现与报告保留
 观察到的原始值，只选取证明问题所需的最小片段。
 
@@ -61,9 +61,7 @@ description: 按树状任务组织 Web 安全审查，由主/子 Agent 分工，
 
 UI 切换规则：点击根节点显示主 Agent 的 session 输出；点击其它节点显示其 `subagent_id` 对应的 `session_id` 输出。缺少 `xsec_subagent_register_session` 时，树节点会存在，但右侧终端无法切到该子 Agent。
 
-`config/vulnerability-skills.yaml` 维护 `scenario_playbooks`、`recon`、`vulnerability_skills` 和 `post_processors`，作为**主 Agent 判断某发现是否值得建节点、该激活哪个漏洞 Skill**的注册表。playbook 只是路线提示，真正派发看每个 Skill 的 `activation`（信号、工件、环境）——但主 Agent 不必拘泥于注册表，新线索先记录，授权与前置条件满足后才可进入分配范围。
-
-`xsec-passive-scanning` 和 `xsec-vulnerability-chain-analysis` 是收尾处理节点，不在启动阶段默认运行。
+主 Agent 判断某发现是否值得建节点、该激活哪个漏洞 Skill，读 [路由索引](references/routing-index.md)（信号 → Skill 一行一个，由注册表生成）。要看某个 Skill 的环境门槛、工件、阻断信号，或 `scenario_playbooks`、`autonomy`、`orchestration_model` 时，再读 `config/vulnerability-skills.yaml` 的对应片段，不要整份通读。playbook 只是路线提示，真正派发看每个 Skill 的 `activation`（信号、工件、环境）——但主 Agent 不必拘泥于注册表，新线索先记录，授权与前置条件满足后才可进入分配范围。
 
 `autonomy.default_level` 默认 `guided`：注册表是派发主路径；观察到合理但未注册的新线索时，主 Agent 可记录 hypothesis，做一次低影响确认或补充侦查，再决定是否转成新节点或建议新增 Skill。主 Agent 遵守已批准的请求、并发和时间上限，达到预算或停止条件即结束对应动作。
 
@@ -87,8 +85,8 @@ UI 切换规则：点击根节点显示主 Agent 的 session 输出；点击其�
 
 | 当前角色/任务 | 读取 |
 | --- | --- |
-| 主 Agent：确认目标、基线 scout、管理测试树、按信号建节点、分配页面分组、派发子 Agent、汇总报告 | `references/main-agent.md` |
+| 主 Agent：确认目标、基线 scout、管理测试树、按信号建节点、分配页面分组、派发子 Agent、汇总报告 | `references/main-agent.md` 和 `references/routing-index.md` |
 | 漏洞测试子 Agent：已收到 `node_id`、`vulnerability_skill`、`page_group_id`、`activation_reason` 等任务 payload，需要测试并生成发现/未发现文档 | `references/vulnerability-subagent.md` |
-| 新增或调整漏洞 Skill 激活条件、场景 playbook、解锁输出 | `config/vulnerability-skills.yaml`；同步更新对应 Skill 的 `## 编排适配` |
+| 新增或调整漏洞 Skill 激活条件、场景 playbook、解锁输出 | `config/vulnerability-skills.yaml`；同步更新对应 Skill 的 `## 编排适配`，再运行 `python3 scripts/build_routing_index.py` 重新生成路由索引 |
 
 不要同时读取主代理和子代理详细说明，除非当前任务确实跨越两个角色。

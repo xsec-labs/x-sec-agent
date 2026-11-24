@@ -255,23 +255,17 @@ config/vulnerability-skills.yaml
 
 注意：playbook 只是路线提示，不是执行清单。真正派发仍然看每个 skill 的 `activation`。
 
-### 必改 4：更新主代理事件触发表
+### 必改 4：重新生成路由索引
 
-编辑：
+`references/routing-index.md` 是 `config/vulnerability-skills.yaml` 的生成物（信号 → Skill 一行一个），主 Agent 靠它判断该派发哪个 Skill。改完 yaml 后在本仓库根目录运行：
 
-```text
-references/main-agent.md
+```bash
+python3 scripts/build_routing_index.py
 ```
 
-在“事件触发模型”表格中新增一行，说明什么 observation 会解锁新 skill。
+不要手改索引；`python3 -m unittest discover -s scripts -p 'test_*.py'` 会校验索引与 yaml 一致（仓库没有 CI，提交前自己跑一遍）。
 
-示例：
-
-```markdown
-| 发现新的业务测试面或候选信号 | 解锁 `new-skill`；必须具备 `<必要环境>` 后才派发 |
-```
-
-如果这个 skill 会改变流程，例如成功后解锁登录后测试、文件测试、云密钥复核、组合链路分析，也要在“场景 Playbook 与解锁”或工作流说明中补一句。
+如果这个 skill 会改变流程，例如成功后解锁登录后测试、文件测试、云密钥复核、组合链路分析，也要在 `main-agent.md` 的“触发判断”一节补一句。
 
 ### 必改 5：更新子代理说明中的特殊要求
 
@@ -390,9 +384,9 @@ mkdir -p skills/xsec-new-skill
 
 把新 skill 放入合适场景的 `unlock_sequence`。如果是全新测试面，新增 playbook。
 
-### Step 6：更新主代理事件表
+### Step 6：重新生成路由索引
 
-在 `references/main-agent.md` 的“事件触发模型”里补触发说明。
+运行 `python3 scripts/build_routing_index.py`；只有索引表达不了的触发关系才在 `references/main-agent.md` 的“触发判断”里补一句。
 
 ### Step 7：更新可视化页面
 
@@ -504,7 +498,7 @@ http://127.0.0.1:8765/Index.html
 
 - 改 `SKILL.md` 的 `## 编排适配`
 - 改 `vulnerability-skills.yaml` 的 `activation.any_signals`
-- 必要时改 `main-agent.md` 事件触发表
+- 重新生成路由索引；索引表达不了的关系才改 `main-agent.md` 的“触发判断”
 - 必要时改 `Index.html`
 
 如果新增前置环境：
@@ -534,12 +528,12 @@ http://127.0.0.1:8765/Index.html
 
 - [ ] `skills/<skill>/SKILL.md` 有 `## 编排适配`
 - [ ] `vulnerability-skills.yaml` 有对应节点或收尾处理器
+- [ ] `references/routing-index.md` 已随 yaml 重新生成（`python3 scripts/build_routing_index.py`；`python3 -m unittest discover -s scripts -p 'test_*.py'` 会校验两者一致）
 - [ ] `activation.any_signals` 是观察信号，不是漏洞结论
 - [ ] `activation.requires_artifacts` 写清楚必需工件
 - [ ] `activation.requires_environment` 写清楚环境门槛
 - [ ] `unlocks_on_success` 能被后续节点消费
 - [ ] `scenario_playbooks` 已同步
-- [ ] `main-agent.md` 事件触发表已同步
 - [ ] `Index.html` 已展示新 skill
 - [ ] YAML/JSON 解析通过
 - [ ] `git diff --check` 通过
