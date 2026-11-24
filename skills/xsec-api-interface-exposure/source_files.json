@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "API接口泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/API接口泄露_d12dcf6a.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/API接口泄露_d12dcf6a.md",
       "filename": "API接口泄露_d12dcf6a.md",
       "instances": 1,
       "risk_distribution": "高危:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "Soap接口泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/Soap接口泄露_7691d416.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/Soap接口泄露_7691d416.md",
       "filename": "Soap接口泄露_7691d416.md",
       "instances": 6,
       "risk_distribution": "低危:4, 未标注:2",
@@ -21,7 +21,7 @@
     },
     {
       "title": "wispath接口",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/wispath接口_058bba1a.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/wispath接口_058bba1a.md",
       "filename": "wispath接口_058bba1a.md",
       "instances": 2,
       "risk_distribution": "低危:2",
@@ -29,7 +29,7 @@
     },
     {
       "title": "接口文档泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/接口文档泄露_85557565.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/接口文档泄露_85557565.md",
       "filename": "接口文档泄露_85557565.md",
       "instances": 2,
       "risk_distribution": "中危:2",

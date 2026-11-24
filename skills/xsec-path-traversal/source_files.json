@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "文件遍历",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/文件遍历_70b9750f.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/文件遍历_70b9750f.md",
       "filename": "文件遍历_70b9750f.md",
       "instances": 1,
       "risk_distribution": "高危:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "目录遍历",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/目录遍历_59bfa6d1.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/目录遍历_59bfa6d1.md",
       "filename": "目录遍历_59bfa6d1.md",
       "instances": 4,
       "risk_distribution": "中危:3, 高危:1",

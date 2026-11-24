@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "CORS跨域",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/CORS跨域_fda3d42f.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/CORS跨域_fda3d42f.md",
       "filename": "CORS跨域_fda3d42f.md",
       "instances": 16,
       "risk_distribution": "中危:15, 低危:1",

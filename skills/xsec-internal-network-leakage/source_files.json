@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "IP泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/IP泄露_19018029.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/IP泄露_19018029.md",
       "filename": "IP泄露_19018029.md",
       "instances": 1,
       "risk_distribution": "低危:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "内网IP泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/内网IP泄露_b218d0e8.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/内网IP泄露_b218d0e8.md",
       "filename": "内网IP泄露_b218d0e8.md",
       "instances": 13,
       "risk_distribution": "低危:7, 未标注:6",
@@ -21,7 +21,7 @@
     },
     {
       "title": "内网地址泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/内网地址泄露_ce0f92ec.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/内网地址泄露_ce0f92ec.md",
       "filename": "内网地址泄露_ce0f92ec.md",
       "instances": 7,
       "risk_distribution": "高危:3, 低危:3, 中危:1",
@@ -29,7 +29,7 @@
     },
     {
       "title": "序号|风险等级|安全问题1|高风险|敏感信息泄露2|中风险|内网地址泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/序号_风险等级_安全问题1_高风险_敏感信息泄露2_中风险_内网地址泄露_3d60fb7c.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/序号_风险等级_安全问题1_高风险_敏感信息泄露2_中风险_内网地址泄露_3d60fb7c.md",
       "filename": "序号_风险等级_安全问题1_高风险_敏感信息泄露2_中风险_内网地址泄露_3d60fb7c.md",
       "instances": 1,
       "risk_distribution": "中危:1",

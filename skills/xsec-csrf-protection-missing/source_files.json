@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "CSRF",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/CSRF_efdcba0f.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/CSRF_efdcba0f.md",
       "filename": "CSRF_efdcba0f.md",
       "instances": 6,
       "risk_distribution": "高危:3, 低危:2, 中危:1",

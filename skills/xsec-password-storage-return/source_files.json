@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "密码未Hash",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/密码未Hash_582b243f.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/密码未Hash_582b243f.md",
       "filename": "密码未Hash_582b243f.md",
       "instances": 1,
       "risk_distribution": "中危:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "密码未hash",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/密码未hash_b18d83b0.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/密码未hash_b18d83b0.md",
       "filename": "密码未hash_b18d83b0.md",
       "instances": 18,
       "risk_distribution": "中危:11, 低危:6, 未标注:1",
@@ -21,7 +21,7 @@
     },
     {
       "title": "密码返回",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/密码返回_9d8b3c9d.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/密码返回_9d8b3c9d.md",
       "filename": "密码返回_9d8b3c9d.md",
       "instances": 33,
       "risk_distribution": "中危:20, 高危:13",
@@ -29,7 +29,7 @@
     },
     {
       "title": "密码返回前端",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/密码返回前端_b2fbe5c7.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/密码返回前端_b2fbe5c7.md",
       "filename": "密码返回前端_b2fbe5c7.md",
       "instances": 5,
       "risk_distribution": "高危:3, 中危:2",
@@ -37,7 +37,7 @@
     },
     {
       "title": "用户密码未hash",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/用户密码未hash_143e42e9.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/用户密码未hash_143e42e9.md",
       "filename": "用户密码未hash_143e42e9.md",
       "instances": 2,
       "risk_distribution": "低危:2",
@@ -45,7 +45,7 @@
     },
     {
       "title": "用户密码未在前端hash",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/用户密码未在前端hash_543f0efc.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/用户密码未在前端hash_543f0efc.md",
       "filename": "用户密码未在前端hash_543f0efc.md",
       "instances": 15,
       "risk_distribution": "低危:11, 中危:4",

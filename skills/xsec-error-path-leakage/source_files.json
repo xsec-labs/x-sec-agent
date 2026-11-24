@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "未统一报错",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/未统一报错_25e95b1a.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/未统一报错_25e95b1a.md",
       "filename": "未统一报错_25e95b1a.md",
       "instances": 2,
       "risk_distribution": "中危:2",
@@ -13,7 +13,7 @@
     },
     {
       "title": "物理路径泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/物理路径泄露_c6748e88.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/物理路径泄露_c6748e88.md",
       "filename": "物理路径泄露_c6748e88.md",
       "instances": 3,
       "risk_distribution": "低危:3",
@@ -21,7 +21,7 @@
     },
     {
       "title": "绝对路径泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/绝对路径泄露_52129e12.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/绝对路径泄露_52129e12.md",
       "filename": "绝对路径泄露_52129e12.md",
       "instances": 4,
       "risk_distribution": "低危:4",
@@ -29,7 +29,7 @@
     },
     {
       "title": "详细错误信息",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/详细错误信息_d6e13d3a.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/详细错误信息_d6e13d3a.md",
       "filename": "详细错误信息_d6e13d3a.md",
       "instances": 53,
       "risk_distribution": "中危:24, 低危:16, 未标注:12, 高危:1",

@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "文件上传",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/文件上传_39c04b3d.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/文件上传_39c04b3d.md",
       "filename": "文件上传_39c04b3d.md",
       "instances": 18,
       "risk_distribution": "高危:13, 未标注:3, 中危:2",
@@ -13,7 +13,7 @@
     },
     {
       "title": "文件任意上传",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/文件任意上传_9d98a5c1.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/文件任意上传_9d98a5c1.md",
       "filename": "文件任意上传_9d98a5c1.md",
       "instances": 2,
       "risk_distribution": "高危:2",
@@ -21,7 +21,7 @@
     },
     {
       "title": "未授权上传",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/未授权上传_fcaed2f4.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/未授权上传_fcaed2f4.md",
       "filename": "未授权上传_fcaed2f4.md",
       "instances": 1,
       "risk_distribution": "高危:1",

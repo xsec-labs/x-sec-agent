@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "测试账号泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/测试账号泄露_8e45654b.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/测试账号泄露_8e45654b.md",
       "filename": "测试账号泄露_8e45654b.md",
       "instances": 1,
       "risk_distribution": "低危:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "用户名枚举",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/用户名枚举_e048e67f.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/用户名枚举_e048e67f.md",
       "filename": "用户名枚举_e048e67f.md",
       "instances": 78,
       "risk_distribution": "中危:40, 未标注:37, 高危:1",
@@ -21,7 +21,7 @@
     },
     {
       "title": "邮箱账号",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/邮箱账号_fa8cbad2.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/邮箱账号_fa8cbad2.md",
       "filename": "邮箱账号_fa8cbad2.md",
       "instances": 1,
       "risk_distribution": "未标注:1",

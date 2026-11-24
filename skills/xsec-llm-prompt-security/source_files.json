@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "提示词泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/提示词泄露_bf9f8138.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/提示词泄露_bf9f8138.md",
       "filename": "提示词泄露_bf9f8138.md",
       "instances": 2,
       "risk_distribution": "中危:1, 未标注:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "提示词绕过+XSS",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/提示词绕过+XSS_7741b027.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/提示词绕过+XSS_7741b027.md",
       "filename": "提示词绕过+XSS_7741b027.md",
       "instances": 3,
       "risk_distribution": "未标注:3",
@@ -21,7 +21,7 @@
     },
     {
       "title": "提示词绕过",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/提示词绕过_c5ddec77.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/提示词绕过_c5ddec77.md",
       "filename": "提示词绕过_c5ddec77.md",
       "instances": 2,
       "risk_distribution": "中危:1, 未标注:1",

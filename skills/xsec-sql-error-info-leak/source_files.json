@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "SQL报错",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/SQL报错_637f2431.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/SQL报错_637f2431.md",
       "filename": "SQL报错_637f2431.md",
       "instances": 1,
       "risk_distribution": "中危:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "SQL报错提示",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/SQL报错提示_358c5079.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/SQL报错提示_358c5079.md",
       "filename": "SQL报错提示_358c5079.md",
       "instances": 3,
       "risk_distribution": "中危:3",
@@ -21,7 +21,7 @@
     },
     {
       "title": "SQL语句泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/SQL语句泄露_476a30bb.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/SQL语句泄露_476a30bb.md",
       "filename": "SQL语句泄露_476a30bb.md",
       "instances": 8,
       "risk_distribution": "高危:6, 中危:2",
@@ -29,7 +29,7 @@
     },
     {
       "title": "信息泄露包含sql语句",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/信息泄露包含sql语句_2f3a5c4d.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/信息泄露包含sql语句_2f3a5c4d.md",
       "filename": "信息泄露包含sql语句_2f3a5c4d.md",
       "instances": 1,
       "risk_distribution": "中危:1",

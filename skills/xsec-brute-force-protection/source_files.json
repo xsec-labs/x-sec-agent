@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "OA登录存在爆破",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/OA登录存在爆破_539477fa.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/OA登录存在爆破_539477fa.md",
       "filename": "OA登录存在爆破_539477fa.md",
       "instances": 1,
       "risk_distribution": "未标注:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "密码存在爆破",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/密码存在爆破_0890556c.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/密码存在爆破_0890556c.md",
       "filename": "密码存在爆破_0890556c.md",
       "instances": 1,
       "risk_distribution": "未标注:1",
@@ -21,7 +21,7 @@
     },
     {
       "title": "登录存在爆破",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/登录存在爆破_1714a7a4.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/登录存在爆破_1714a7a4.md",
       "filename": "登录存在爆破_1714a7a4.md",
       "instances": 32,
       "risk_distribution": "中危:28, 高危:3, 低危:1",
@@ -29,7 +29,7 @@
     },
     {
       "title": "短信验证码爆破",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/短信验证码爆破_ffd8b60c.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/短信验证码爆破_ffd8b60c.md",
       "filename": "短信验证码爆破_ffd8b60c.md",
       "instances": 1,
       "risk_distribution": "低危:1",
@@ -37,7 +37,7 @@
     },
     {
       "title": "账号密码暴力破解",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/账号密码暴力破解_62eff73c.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/账号密码暴力破解_62eff73c.md",
       "filename": "账号密码暴力破解_62eff73c.md",
       "instances": 3,
       "risk_distribution": "中危:3",

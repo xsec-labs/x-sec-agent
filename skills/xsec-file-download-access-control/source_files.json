@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "任意文件下载",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/任意文件下载_8c89982a.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/任意文件下载_8c89982a.md",
       "filename": "任意文件下载_8c89982a.md",
       "instances": 1,
       "risk_distribution": "中危:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "越权下载敏感文件",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/越权下载敏感文件_2d5c9ee3.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/越权下载敏感文件_2d5c9ee3.md",
       "filename": "越权下载敏感文件_2d5c9ee3.md",
       "instances": 2,
       "risk_distribution": "高危:2",
@@ -21,7 +21,7 @@
     },
     {
       "title": "越权文件下载",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/越权文件下载_43d9385a.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/越权文件下载_43d9385a.md",
       "filename": "越权文件下载_43d9385a.md",
       "instances": 1,
       "risk_distribution": "高危:1",

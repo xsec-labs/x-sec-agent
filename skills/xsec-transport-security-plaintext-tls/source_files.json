@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "TLS弱加密算法",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/TLS弱加密算法_82b53f5c.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/TLS弱加密算法_82b53f5c.md",
       "filename": "TLS弱加密算法_82b53f5c.md",
       "instances": 1,
       "risk_distribution": "低危:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "明文传输",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/明文传输_64897491.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/明文传输_64897491.md",
       "filename": "明文传输_64897491.md",
       "instances": 68,
       "risk_distribution": "中危:54, 未标注:8, 高危:6",

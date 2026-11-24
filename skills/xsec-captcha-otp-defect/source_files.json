@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "图形验证码未作失效处理",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/图形验证码未作失效处理_25b101eb.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/图形验证码未作失效处理_25b101eb.md",
       "filename": "图形验证码未作失效处理_25b101eb.md",
       "instances": 1,
       "risk_distribution": "未标注:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "图形验证码绕过",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/图形验证码绕过_7435b7d5.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/图形验证码绕过_7435b7d5.md",
       "filename": "图形验证码绕过_7435b7d5.md",
       "instances": 5,
       "risk_distribution": "中危:5",
@@ -21,7 +21,7 @@
     },
     {
       "title": "登录验证码无效",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/登录验证码无效_a4a31644.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/登录验证码无效_a4a31644.md",
       "filename": "登录验证码无效_a4a31644.md",
       "instances": 1,
       "risk_distribution": "高危:1",
@@ -29,7 +29,7 @@
     },
     {
       "title": "短信验证码共享",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/短信验证码共享_0fc749e5.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/短信验证码共享_0fc749e5.md",
       "filename": "短信验证码共享_0fc749e5.md",
       "instances": 3,
       "risk_distribution": "中危:3",
@@ -37,7 +37,7 @@
     },
     {
       "title": "短信验证码回显",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/短信验证码回显_ff40869d.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/短信验证码回显_ff40869d.md",
       "filename": "短信验证码回显_ff40869d.md",
       "instances": 1,
       "risk_distribution": "高危:1",
@@ -45,7 +45,7 @@
     },
     {
       "title": "验证码不失效",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/验证码不失效_ceada6f3.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/验证码不失效_ceada6f3.md",
       "filename": "验证码不失效_ceada6f3.md",
       "instances": 3,
       "risk_distribution": "中危:2, 未标注:1",
@@ -53,7 +53,7 @@
     },
     {
       "title": "验证码不失效中",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/验证码不失效中_16840c9b.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/验证码不失效中_16840c9b.md",
       "filename": "验证码不失效中_16840c9b.md",
       "instances": 1,
       "risk_distribution": "未标注:1",
@@ -61,7 +61,7 @@
     },
     {
       "title": "验证码共享",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/验证码共享_c4e198a1.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/验证码共享_c4e198a1.md",
       "filename": "验证码共享_c4e198a1.md",
       "instances": 2,
       "risk_distribution": "中危:1, 高危:1",
@@ -69,7 +69,7 @@
     },
     {
       "title": "验证码回显",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/验证码回显_c5023300.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/验证码回显_c5023300.md",
       "filename": "验证码回显_c5023300.md",
       "instances": 1,
       "risk_distribution": "中危:1",
@@ -77,7 +77,7 @@
     },
     {
       "title": "验证码未作失效处理",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/验证码未作失效处理_4b59c57a.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/验证码未作失效处理_4b59c57a.md",
       "filename": "验证码未作失效处理_4b59c57a.md",
       "instances": 2,
       "risk_distribution": "中危:2",
@@ -85,7 +85,7 @@
     },
     {
       "title": "验证码未做失效处理",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/验证码未做失效处理_ad5fea47.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/验证码未做失效处理_ad5fea47.md",
       "filename": "验证码未做失效处理_ad5fea47.md",
       "instances": 1,
       "risk_distribution": "高危:1",
@@ -93,7 +93,7 @@
     },
     {
       "title": "验证码没有做失效处理",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/验证码没有做失效处理_836230ad.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/验证码没有做失效处理_836230ad.md",
       "filename": "验证码没有做失效处理_836230ad.md",
       "instances": 1,
       "risk_distribution": "中危:1",
@@ -101,7 +101,7 @@
     },
     {
       "title": "验证码绕过",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/验证码绕过_91dd9037.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/验证码绕过_91dd9037.md",
       "filename": "验证码绕过_91dd9037.md",
       "instances": 6,
       "risk_distribution": "高危:4, 中危:1, 未标注:1",

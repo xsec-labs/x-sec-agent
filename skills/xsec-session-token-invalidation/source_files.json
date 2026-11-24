@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "Cookie不失效",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/Cookie不失效_a2761746.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/Cookie不失效_a2761746.md",
       "filename": "Cookie不失效_a2761746.md",
       "instances": 3,
       "risk_distribution": "未标注:2, 中危:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "Token未正确失效",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/Token未正确失效_bc31831f.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/Token未正确失效_bc31831f.md",
       "filename": "Token未正确失效_bc31831f.md",
       "instances": 1,
       "risk_distribution": "未标注:1",
@@ -21,7 +21,7 @@
     },
     {
       "title": "Token退出不失效",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/Token退出不失效_55704fc0.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/Token退出不失效_55704fc0.md",
       "filename": "Token退出不失效_55704fc0.md",
       "instances": 2,
       "risk_distribution": "中危:2",
@@ -29,7 +29,7 @@
     },
     {
       "title": "Token退出不失效中",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/Token退出不失效中_5a354de3.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/Token退出不失效中_5a354de3.md",
       "filename": "Token退出不失效中_5a354de3.md",
       "instances": 1,
       "risk_distribution": "未标注:1",
@@ -37,7 +37,7 @@
     },
     {
       "title": "退出登录后Token不失效",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/退出登录后Token不失效_332f1d86.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/退出登录后Token不失效_332f1d86.md",
       "filename": "退出登录后Token不失效_332f1d86.md",
       "instances": 1,
       "risk_distribution": "中危:1",

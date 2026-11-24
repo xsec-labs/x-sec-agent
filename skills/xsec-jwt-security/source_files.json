@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "JWT未设置过期时间",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/JWT未设置过期时间_7d016a26.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/JWT未设置过期时间_7d016a26.md",
       "filename": "JWT未设置过期时间_7d016a26.md",
       "instances": 1,
       "risk_distribution": "低危:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "JWT未设置过期时间低",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/JWT未设置过期时间低_29b41f35.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/JWT未设置过期时间低_29b41f35.md",
       "filename": "JWT未设置过期时间低_29b41f35.md",
       "instances": 1,
       "risk_distribution": "未标注:1",

@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "Cookie缺少安全标志",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/Cookie缺少安全标志_1553c3b7.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/Cookie缺少安全标志_1553c3b7.md",
       "filename": "Cookie缺少安全标志_1553c3b7.md",
       "instances": 5,
       "risk_distribution": "低危:3, 未标注:2",

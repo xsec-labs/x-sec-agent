@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "SSRF",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/SSRF_496c0ddb.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/SSRF_496c0ddb.md",
       "filename": "SSRF_496c0ddb.md",
       "instances": 3,
       "risk_distribution": "高危:2, 未标注:1",

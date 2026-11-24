@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "AK/SK密钥泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/AK_SK密钥泄露_2b53a2f5.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/AK_SK密钥泄露_2b53a2f5.md",
       "filename": "AK_SK密钥泄露_2b53a2f5.md",
       "instances": 1,
       "risk_distribution": "高危:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "云主机密钥泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/云主机密钥泄露_9ad3c54e.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/云主机密钥泄露_9ad3c54e.md",
       "filename": "云主机密钥泄露_9ad3c54e.md",
       "instances": 3,
       "risk_distribution": "高危:3",
@@ -21,7 +21,7 @@
     },
     {
       "title": "私钥泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/私钥泄露_9fc1e698.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/私钥泄露_9fc1e698.md",
       "filename": "私钥泄露_9fc1e698.md",
       "instances": 1,
       "risk_distribution": "高危:1",

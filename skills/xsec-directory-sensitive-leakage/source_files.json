@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "敏感目录泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/敏感目录泄露_69e66ed2.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/敏感目录泄露_69e66ed2.md",
       "filename": "敏感目录泄露_69e66ed2.md",
       "instances": 19,
       "risk_distribution": "中危:14, 高危:2, 低危:2, 未标注:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "目录泄露",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/目录泄露_54868ce4.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/目录泄露_54868ce4.md",
       "filename": "目录泄露_54868ce4.md",
       "instances": 4,
       "risk_distribution": "中危:4",
@@ -21,7 +21,7 @@
     },
     {
       "title": "目录浏览",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/目录浏览_1a785ceb.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/目录浏览_1a785ceb.md",
       "filename": "目录浏览_1a785ceb.md",
       "instances": 3,
       "risk_distribution": "中危:3",

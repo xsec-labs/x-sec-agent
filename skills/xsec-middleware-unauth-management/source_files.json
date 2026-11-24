@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "SpringBoot未授权",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/SpringBoot未授权_509c7192.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/SpringBoot未授权_509c7192.md",
       "filename": "SpringBoot未授权_509c7192.md",
       "instances": 1,
       "risk_distribution": "中危:1",
@@ -13,7 +13,7 @@
     },
     {
       "title": "发现开放8848端口，存在nacos",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/发现开放8848端口，存在nacos_0ce49121.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/发现开放8848端口，存在nacos_0ce49121.md",
       "filename": "发现开放8848端口，存在nacos_0ce49121.md",
       "instances": 1,
       "risk_distribution": "未标注:1",

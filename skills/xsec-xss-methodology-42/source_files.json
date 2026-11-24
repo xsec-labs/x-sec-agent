@@ -5,7 +5,7 @@
   "source_files": [
     {
       "title": "XSS",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/XSS_1033a063.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/XSS_1033a063.md",
       "filename": "XSS_1033a063.md",
       "instances": 85,
       "risk_distribution": "高危:70, 未标注:15",
@@ -13,7 +13,7 @@
     },
     {
       "title": "提示框XSS",
-      "file": "/Users/xiaosong/dev/xSecAgent/output/doc/漏洞转换/2_按漏洞名称/提示框XSS_497db281.md",
+      "file": "output/doc/漏洞转换/2_按漏洞名称/提示框XSS_497db281.md",
       "filename": "提示框XSS_497db281.md",
       "instances": 1,
       "risk_distribution": "高危:1",
