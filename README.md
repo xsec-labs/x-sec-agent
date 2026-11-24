@@ -57,7 +57,7 @@
 
 ## 渐进式披露
 
-- 主 Agent 读 `references/main-agent.md`。
+- 主 Agent 读 `references/main-agent.md` 和 `references/routing-index.md`（信号 → Skill 一行一个，由 `python3 scripts/build_routing_index.py` 从 `config/vulnerability-skills.yaml` 生成；改 yaml 后重新生成，`python3 -m unittest discover -s scripts -p 'test_*.py'` 校验一致）。
 - 漏洞测试子 Agent 读 `references/vulnerability-subagent.md`。
 - 浏览器操作直接用 MCP 浏览器工具（带 `page_group_id`），无需读额外 adapter 文档。
 
