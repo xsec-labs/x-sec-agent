@@ -1,4 +1,5 @@
 """路由索引生成器的测试：python3 -m unittest discover -s scripts -p 'test_*.py'"""
+import re
 import sys
 import unittest
 from pathlib import Path
@@ -23,7 +24,9 @@ class RoutingIndexTest(unittest.TestCase):
         for entry in reg["vulnerability_skills"] + (reg.get("post_processors") or []):
             if not entry.get("enabled") or entry.get("status") == "not_installed":
                 continue
-            self.assertIn("→ " + entry["id"], index, entry["id"])
+            lines = [ln for ln in index.splitlines() if " → " in ln]
+            ids = {ln.split(" → ", 1)[1].split(" ", 1)[0] for ln in lines}
+            self.assertIn(entry["id"], ids, entry["id"])
             self.assertTrue((ROOT / entry["path"]).is_dir(), f'{entry["id"]} 的目录 {entry["path"]} 不存在')
 
     def test_render_skips_unavailable_entries(self):
@@ -66,6 +69,21 @@ vulnerability_skills:
         out = gen.render(src)
         self.assertIn("- s → a\n", out)
         self.assertIn("- t → b other\n", out)
+
+
+class DocLinksTest(unittest.TestCase):
+    """SKILL.md / AGENT.md / README.md 里指向 references/、config/、scripts/ 的链接都要解析到真实文件。"""
+
+    PATTERN = re.compile(r"(?:\]\(|`)((?:references|config|scripts)/[A-Za-z0-9_./-]+?\.[A-Za-z0-9]+)(?:\)|`)")
+
+    def test_doc_links_resolve(self):
+        missing = []
+        for doc in ("SKILL.md", "AGENT.md", "README.md"):
+            text = (ROOT / doc).read_text(encoding="utf-8")
+            for target in sorted(set(self.PATTERN.findall(text))):
+                if not (ROOT / target).is_file():
+                    missing.append(f"{doc} -> {target}")
+        self.assertEqual(missing, [], "文档里的链接指向不存在的文件")
 
 
 if __name__ == "__main__":

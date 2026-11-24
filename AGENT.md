@@ -21,10 +21,16 @@ xSecAgent 是一套面向 Web 安全测试的 skill 编排项目。它不是“�
   顶层专项 skill 目录。每个 skill 负责一类漏洞或一个处理入口。
 
 - `SKILL.md`
-  项目根目录的上级编排 skill 入口。负责读取注册表、维护状态账本、按观察信号派发子代理、汇总报告。
+  项目根目录的上级编排 skill 入口。负责读取路由索引和注册表、维护状态账本、按观察信号派发子代理、汇总报告。
 
 - `config/vulnerability-skills.yaml`
   编排注册表。定义场景 playbook、侦查任务、漏洞 skill 激活条件、收尾处理器；`adapters.browser` 声明浏览器由 MCP 接管；`mcp_tools` 声明主 Agent 专属与共享工具。
+
+- `references/routing-index.md`
+  给模型读的路由索引，一行一个 Skill（信号 → Skill id）。由 `scripts/build_routing_index.py` 从 `config/vulnerability-skills.yaml` 生成，不要手改。
+
+- `scripts/`
+  `build_routing_index.py` 生成路由索引（`--check` 只检查是否过期），`test_build_routing_index.py` 是它和文档链接的测试。
 
 - `references/main-agent.md`
   主 Agent 执行指南。描述如何用 MCP 管理测试树、recon、建节点、派子 Agent、页面分组归因和收尾。

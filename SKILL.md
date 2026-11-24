@@ -9,7 +9,7 @@ description: 按树状任务组织 Web 安全审查，由主/子 Agent 分工，
 
 ## 执行边界
 
-先读 [运行边界与证据口径](references/security-boundaries.md)。主 Agent 的浏览器、被动扫描、证据、报告、审批、CLI、产品问题与 Fake IP 细则在 [运行细则](references/runbook.md)，用到时读对应章节。`scope_policy` 只做资产归因，不是访问边界；
+先读 [运行边界与证据口径](references/security-boundaries.md)。`scope_policy` 只做资产归因，不是访问边界；
 共享浏览器不提供隔离或额外权限。xSec 不做自动脱敏：任务 payload、共享发现与报告保留
 观察到的原始值，只选取证明问题所需的最小片段。
 
