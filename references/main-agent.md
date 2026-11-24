@@ -68,7 +68,7 @@ root: <目标>
 
 ## 初期侦查与 DirSearch
 
-初期侦查是建议的前置阶段，所有 HTTP(S) 观察走 MCP 浏览器 + network。推荐的侦查子 Agent（可增减）：
+初期侦查是建议的前置阶段，页面访问和被动流量观察走 MCP 浏览器 + network；DirSearch 的批量路径探测走系统终端（见下），不逐条经浏览器模拟。推荐的侦查子 Agent（可增减）：
 
 - `site-profile-classifier`：读 headers、HTML/JS 短摘录、静态资源路径、server header、路由模式，输出 `site_profile.kind`。
 - `api-path-discovery`：从 JS 短摘录、source map、forms/actions、请求语料、route-map 提取 API base path、接口路径、认证 API、文档路径。
@@ -77,7 +77,7 @@ root: <目标>
 
 产物写 `evidence/recon/`（`site-profile.json`、`api-paths.json`、`login-surfaces.json`、`dirsearch-*.jsonl`），高价值命中同时 `attack_path_finding_add`。
 
-DirSearch：`server_script` 和 `unknown` 站点执行一次受控 Web 根路径 DirSearch；`spa_template` 通常跳过，但判断前端可能有隐藏路由或配置文件时可自行跑一轮；API DirSearch 对 base path 或文档路径做，不因 SPA 跳过。覆盖本节点分配的 host/scheme/端口/path，页面里自然发现的 HTTP(S) 目标记录来源后可继续；低影响、低速率、有限字典。命中 `admin`、`backend`、`login`、`swagger`、`api-docs`、`backup`、`config`、`.env`、source map 等路径时 `attack_path_finding_add` 记录并判断是否建节点；新发现的 host 记录来源和资产归因，不因 `in_scope=false` 停止。
+DirSearch：`server_script` 和 `unknown` 站点执行一次受控 Web 根路径 DirSearch；`spa_template` 通常跳过，但判断前端可能有隐藏路由或配置文件时可自行跑一轮；API DirSearch 对 base path 或文档路径做，不因 SPA 跳过。路径探测本身用系统终端 MCP 执行（`terminal_open` 起一个 Shell 跑 dirsearch 类工具，`terminal_write` 送命令，`terminal_read` 分页取结果），不逐条经 MCP 浏览器模拟请求；参数、速率和字典范围见 `dirsearch_policy`。覆盖本节点分配的 host/scheme/端口/path，页面里自然发现的 HTTP(S) 目标记录来源后可继续；低影响、低速率、有限字典。命中 `admin`、`backend`、`login`、`swagger`、`api-docs`、`backup`、`config`、`.env`、source map 等路径时先 `attack_path_finding_add` 记录，再用 MCP 浏览器单独访问一次高价值命中确认响应内容（必要时截图或触发 passive 落盘），并判断是否建节点；新发现的 host 记录来源和资产归因，不因 `in_scope=false` 停止。
 
 ## 登录与凭据
 
@@ -98,7 +98,7 @@ DirSearch：`server_script` 和 `unknown` 站点执行一次受控 Web 根路径
 - 前后端跨域不构成阻断；`frontend_endpoint_path_candidate_detected` 先启动 `unauth-access` 做未登录 path 拼接、低影响参数补全和匿名读取验证。
 - DirSearch 发现后台/console/admin login 时记 `admin_login_form_detected`，解锁登录面测试和 `middleware-unauth-management`/`unauth-access` 的最小化复核。
 - 用户名枚举默认放后期。发现多角色账号、用户切换入口、ID 型资源路径、403/401 边界时，环境满足再启动 `access-control-idor`、`file-download-access-control` 或登录后 `unauth-access` 对照。
-- 只有 Cookie 里出现 `rememberMe`/`deleteMe`（`passive_shiro_cookie_detected`）才解锁 `shiro-attack-detection`；先验证弱 Key，命中再做低影响利用链检测。
+- Cookie 里出现 `rememberMe`/`deleteMe`（`passive_shiro_cookie_detected`）是 `shiro-attack-detection` 最常见的触发信号，但不是前置门槛；技术栈判断目标可能是 Java + Shiro，或用户直接要求测试 Shiro 时，没有该 Cookie 命中也可以派发。真正的技术依赖在 skill 内部：先验证弱 Key，命中再做低影响利用链检测。
 - 先命中 SQL 报错时，先由 `sql-error-info-leak` 复核再解锁 `sql-injection`；`ssrf` 只有具备回连监听或测试目标才派发；`csrf-protection-missing` 需要可逆低影响动作和受控跨站页面；`cors-misconfiguration` 需要受控测试 Origin 和敏感响应对照。
 - API 返回客户/订单/用户/手机号/邮箱/证件号等敏感字段时记 `sensitive_data_exposure_candidate`；有对象 ID/角色边界解锁 `access-control-idor`，有 CORS 头解锁 `cors-misconfiguration`。
 - 文件面：上传初始化返回对象存储凭据时再解锁 `cloud-secret-leakage`；上传后 URL/文件名回显再解锁下载、`xss`、`path-traversal`。AI 对话面：模型输出进入 HTML/富文本渲染再追加 `xss`。

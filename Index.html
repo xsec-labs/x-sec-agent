@@ -526,12 +526,12 @@
       <div class="eyebrow">Authorized Web Pentest Orchestration</div>
       <h1>xSecAgent Skills 从观察到解锁的纵向编排图</h1>
       <p class="hero-copy">
-        这张图把仓库中的 37 个 skill 放入同一条自上而下的测试流水线：
+        这张图把仓库中的 38 个 skill 放入同一条自上而下的测试流水线：
         先用 MCP 共享浏览器做环境发现和 network 抓包，再根据登录、API、文件、AI、敏感信息等观察信号在测试树上建节点、派专项子 Agent，
         每个子 Agent 只测试一个节点一个 skill，结果回填共享发现并扩展树。
       </p>
       <div class="metrics" aria-label="流程摘要">
-        <div class="metric"><strong>37</strong><span>全部 skills 已纳入流程图</span></div>
+        <div class="metric"><strong>38</strong><span>全部 skills 已纳入流程图</span></div>
         <div class="metric"><strong>7</strong><span>阶段从侦查到报告自上而下展开</span></div>
         <div class="metric"><strong>1:1</strong><span>一个触发 skill 对应一个子代理</span></div>
         <div class="metric"><strong>Gate</strong><span>必须满足工件、环境条件</span></div>
@@ -668,7 +668,7 @@
         skills: [
           ["xsec-passive-scanning", "被动扫描总入口", "passive findings 已落盘，需要分组路由", "request_id、pattern_id、match_hash、完整原始命中值与 headers"],
           ["xsec-object-storage-bucket", "对象存储桶安全检测", "passive_object_storage_bucket_detected、OSS/COS/OBS/S3 host", "写入 canary 需单独确认"],
-          ["xsec-shiro-attack-detection", "Shiro 弱 Key 与利用链检测", "passive_shiro_cookie_detected", "仅 passive 发现 rememberMe/deleteMe 后触发"],
+          ["xsec-shiro-attack-detection", "Shiro 弱 Key 与利用链检测", "passive_shiro_cookie_detected", "最常见触发信号，非唯一前置条件；技术栈判断为 Java+Shiro 也可派发"],
           ["xsec-cloud-secret-leakage", "云密钥与私钥泄露", "AK/SK、STS、私钥、对象存储凭据、Webhook", "疑似凭据和来源证据；只读或隔离验证"]
         ]
       },
@@ -682,6 +682,7 @@
         environment: "status ledger、报告索引、已验证或强候选问题",
         unlock: "输出组合链路报告、优先整改建议和最终 evidence pack。",
         skills: [
+          ["xsec-code-audit-bridge", "已泄露源码审计桥接", "source_code_leakage_candidate", "已还原完整本地源码树；仅主 Agent 执行，不派子 Agent"],
           ["xsec-vulnerability-chain-analysis", "组合漏洞链路与风险升级", "弱认证、信息泄露、未授权、越权、会话问题可串联", "status.json、report_index、wins、validated issues"]
         ]
       }
