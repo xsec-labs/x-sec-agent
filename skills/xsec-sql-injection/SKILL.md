@@ -1,18 +1,20 @@
 ---
 name: xsec-sql-injection
-description: 针对 SQL 注入的授权渗透测试方法论。用户需要分析、验证、复测或撰写 SQL 注入相关问题时应使用本 skill，尤其是涉及 查询参数、表单或 JSON 字段、排序分页、动态列名或表名、报错回显、盲注差异、鉴权后接口、全站同类接口排查、修复复测、流量钩挂自动检测、BurpSuite 插件辅助扫描、DetSql 流量重放、相似度差异判断 等场景。
+description: 针对 SQL 注入的渗透测试方法论。用户需要分析、验证、复测或撰写 SQL 注入相关问题时应使用本 skill，尤其是涉及 查询参数、表单或 JSON 字段、排序分页、动态列名或表名、报错回显、盲注差异、鉴权后接口、全站同类接口排查、修复复测、流量钩挂自动检测、BurpSuite 插件辅助扫描、DetSql 流量重放、相似度差异判断 等场景。
 ---
 
 # SQL注入测试方法论
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：请求语料中存在查询、筛选、分页、排序、报表、导出、详情、字典等带参数接口，或 SQLi hook/报错提示存在注入候选。
 - 触发信号：`parameterized_request_detected`、`search_or_filter_form_detected`、`sort_or_page_param_detected`、`sqli_hook_candidate`、`passive_sql_error_match`、`sql_injection_candidate`。
-- 测试前置环境：必须有可重放的低影响请求和参数基线；所有探测通过 proxy/passive hook，避免写操作和高并发。
-- 必需工件：`request_corpus`、`api_inventory`、`forms/actions`、`sqli_hook_findings`、`baseline_responses`。
+- 测试前置环境：通常需要有可重放的低影响请求和参数基线；所有探测经 MCP 浏览器 network 抓包，避免写操作和高并发。
+- 参考工件：`request_corpus`、`api_inventory`、`forms/actions`、`sqli_hook_findings`、`baseline_responses`。
 - 解锁输出：`sql_injection_validated`、`sql_error_info_leak_confirmed`、`sensitive_data_exposure_candidate`、`vulnerability_chain_input`。
-- 阻断条件：无可控参数、仅有写操作/高风险业务动作、响应不可比较、scope 或 WAF/challenge 不允许探测。
+- 建议阻断（可低影响补齐时先补证再测）：无可控参数、仅有写操作/高风险业务动作、响应不可比较、WAF/challenge 不允许探测。
 
 ## 适用场景
 
@@ -22,48 +24,33 @@ description: 针对 SQL 注入的授权渗透测试方法论。用户需要分�
 - 页面或接口出现异常堆栈、数据库错误关键字、响应长度异常、结果集突变、条件分支差异或处理时间异常。
 - 漏洞已在单个接口被发现，需要判断是否属于同一查询构造模式并扩展到同模块、同服务、同框架接口。
 - 修复后需要确认是否只是封堵了单一参数，还是已经覆盖动态 SQL 生成链路和同源接口。
-## 流量钩挂与重放检测
+## 流量捕获与重放检测
 
-手工逐参测试效率较低，推荐采用**流量钩挂（Hook）+ 全参重放**模式，对所有经过代理的 HTTP 请求自动进行注入探测，与人工浏览操作形成互补。测试人员只需正常点击、填写、查询，代理后端自动对每个新请求的所有参数进行五类注入探测，已测过的请求指纹自动跳过，不重复发包。
+手工逐参测试效率较低，推荐采用**捕获 + 全参重放**模式：对 MCP 浏览器 network 捕获到的每个 HTTP 请求做注入探测，与人工浏览操作形成互补。子 Agent 只需在自己的 `page_group_id` 里正常点击、填写、查询，浏览器 network 工具自动记录每个请求；再对每个新请求的所有参数做基于重放的五类注入探测，已测过的请求指纹自动跳过，不重复发包。
 
 ### 接入方式
 
-使用项目内置的 `mitm_sqli_hook.py` mitmproxy addon，与现有流量采集 addon 叠加加载即可：
+浏览器与抓包已由本系统 MCP 接管，**不需要 mitmproxy 或独立代理**：
 
-```bash
-# 进入 web-pentest-browser-flow 目录
-cd web-pentest-browser-flow
+1. 用 MCP 浏览器工具（带仅用于归因的 `page_group_id`）访问目标并正常操作；用 `browser_network_requests` 读取共享会话中全部 Agent 产生的完整请求语料（method、URL、完整 headers、参数、Cookie、body）。
+2. 对每个新捕获的请求，按下方「五类注入探测算法」逐参数生成重放请求：通过 MCP 浏览器或重放脚本向任意自然发现的 API host 发送，对比响应差异，不按同源或初始 host 收缩。
+3. 用请求指纹（method + 归一化 path + 参数名集合）去重，已测过的跳过。
+4. 探测结果写入 `evidence/sqli/findings.jsonl`；命中作为 `attack_path_finding_add`（kind=vuln 或 error）回填共享知识库。
 
-# 启动 mitmproxy，同时加载三个 addon
-# Agent 手动把 MANUAL_SQLI_PORT 设置为当前未占用的 20000-60999 端口。
-SQLI_MITM_PORT="$MANUAL_SQLI_PORT"
-SQLI_TARGET_HOST=192.168.1.100 \
-SQLI_OUT_DIR=evidence/sqli \
-mitmdump \
-  -s scripts/mitm_noise_filter.py \
-  -s scripts/mitm_passive_hook.py \
-  -s scripts/mitm_sqli_hook.py \
-  --listen-port "$SQLI_MITM_PORT"
+重放探测的可调参数（在脚本或调用里设置，非环境依赖）：
 
-# SQLI_MITM_PORT 由 Agent 手动在 20000-60999 中选择；被占用时手动换另一个。
-# 将浏览器或系统代理设置为 127.0.0.1:$SQLI_MITM_PORT
-# 安装 mitmproxy 根证书（第一次使用时访问 mitm.it）
-```
-
-常用环境变量：
-
-| 变量 | 默认值 | 说明 |
+| 参数 | 建议值 | 说明 |
 |------|--------|------|
-| `SQLI_TARGET_HOST` | 空（全测） | 仅测试该主机，建议填目标 IP 或域名 |
-| `SQLI_OUT_DIR` | `evidence/sqli` | findings.jsonl 输出目录 |
-| `SQLI_THREADS` | `3` | 并发测试线程数（建议 2–5） |
-| `SQLI_TIMEOUT` | `10` | 每个探测请求超时秒数 |
-| `SQLI_TEST_COOKIES` | `false` | 是否一并测试 Cookie 参数 |
-| `SQLI_MAX_BODY` | `50000` | 响应体超过此字节数跳过 |
+| `target_hosts` | 本节点分配的 host 集合 | 新发现的目标记录来源与资产归因，作为共享发现回填；不因 `in_scope=false` 停止，仍受低影响与预算约束 |
+| `out_dir` | `evidence/sqli` | findings.jsonl 输出目录 |
+| `threads` | `2–5` | 并发重放数，保持低影响 |
+| `timeout` | `10` | 每个探测请求超时秒数 |
+| `test_cookies` | `false` | 是否一并测试 Cookie 参数 |
+| `max_body` | `50000` | 响应体超过此字节数跳过 |
 
 ### 如何最大化覆盖面（手动操作策略）
 
-代理钩挂只能观察到浏览器实际发出的请求。要尽可能多地发现问题，测试人员应系统地触发所有带参数的功能：
+network 捕获只能观察到浏览器实际发出的请求。要尽可能多地发现问题，测试人员应系统地触发所有带参数的功能：
 
 **优先操作列表（按覆盖价值排序）**
 
@@ -214,7 +201,7 @@ poc1: value'||EXP(710)||'   →  respbody1
 
 ## 操作流程
 
-1. 明确授权边界、测试账号、业务时段和允许的影响范围，优先选择低峰期与低敏数据路径。
+1. 明确测试边界、测试账号、业务时段和允许的影响范围，优先选择低峰期与低敏数据路径。
 2. 盘点入口，优先关注检索、列表、报表、导出、树形查询、动态筛选、分页排序、详情联查等与数据库交互密集的功能。
 3. 固定基线请求，记录原始参数、身份态、返回码、响应长度、关键字段、页面结果和响应时间。
 4. 从语义上挑选可疑参数，优先测试搜索词、编号、名称、时间范围、排序字段、排序方向、页码、表标识、字典编码等。
@@ -278,7 +265,7 @@ poc1: value'||EXP(710)||'   →  respbody1
 
 - 漏洞标题：SQL注入
 - 漏洞概述：在 `<功能/接口类型>` 的 `<参数位置>` 中，外部输入参与了后端 SQL 条件或结构拼接，导致查询逻辑可被非预期影响。
-- 触发条件：攻击者在已授权、低影响测试条件下，对 `<suspect-param>` 进行最小化构造后，接口返回出现可稳定复现的 `<报错差异/结果差异/时间差异>`。
+- 触发条件：攻击者在低影响测试条件下，对 `<suspect-param>` 进行最小化构造后，接口返回出现可稳定复现的 `<报错差异/结果差异/时间差异>`。
 - 验证结论：通过基线请求与对照请求比较，可确认差异并非由缓存、权限切换、前端校验或随机抖动引起，而是与数据库查询处理逻辑相关。
 - 影响范围：已验证 `<已验证接口数量或模块>` 存在问题；结合相同查询组件、动态 SQL 模式或同类参数设计，开发侧需继续排查 `<同源范围>`。
 - 风险评价：该问题可影响 `<数据类型或业务能力>` 的查询安全性。若同源接口广泛复用，实际影响面可能大于当前已验证范围。

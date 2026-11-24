@@ -7,12 +7,14 @@ description: JWT 安全整体测试方法论。只要用户登录成功、截获
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：登录成功、请求/响应/Cookie/LocalStorage 中发现 JWT 或 Bearer Token，需要测试算法、签名校验、弱密钥、有效期与撤销。
 - 触发信号：`jwt_token_detected`、`bearer_token_detected`、`authenticated_session_obtained`、`authorization_header_observed`、`storage_token_detected`。
-- 测试前置环境：必须有完整 JWT 和低影响受保护接口；HMAC 弱密钥测试需要 hashcat/john 或等价工具，伪造验证必须限定测试账号和只读接口。
-- 必需工件：`token_sample`、`request_corpus`、`browser_state`、`protected_endpoint_baseline`、`jwt_wordlists`。
+- 测试前置环境：通常需要有完整 JWT 和低影响受保护接口；HMAC 弱密钥测试需要 hashcat/john 或等价工具，伪造验证建议限定测试账号和只读接口。
+- 参考工件：`token_sample`、`request_corpus`、`browser_state`、`protected_endpoint_baseline`、`jwt_wordlists`。
 - 解锁输出：`jwt_weak_secret_detected`、`token_forgery_candidate`、`session_token_invalidation_candidate`、`access_control_review_needed`、`browser_storage_review_needed`。
-- 阻断条件：无 JWT、令牌不完整/已过期且无法刷新、scope 禁止令牌重放或缺少安全的验证接口。
+- 建议阻断（可低影响补齐时先补证再测）：无 JWT、令牌不完整/已过期且无法刷新、缺少安全的验证接口。
 
 ## 测试全景
 
@@ -221,7 +223,7 @@ print(f'{header}.{payload}.')
 2. **异常证据**：异常令牌 + 服务端仍接受的响应，说明变化了什么、服务端如何响应
 3. **差异对比**：两次请求的关键字段对比（令牌结构差异、响应内容差异、时间差/状态变化）
 
-证据全部脱敏：不保留完整 Token 原文、不保留真实 IP/域名、不保留真实账号标识。
+证据全部保留原文：保存完整 Token、真实 IP/域名和真实账号标识，供后续 Agent 直接复用。
 
 ---
 

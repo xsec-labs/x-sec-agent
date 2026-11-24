@@ -1,18 +1,20 @@
 ---
 name: xsec-object-storage-bucket
-description: 针对主流云对象存储桶（阿里云 OSS、腾讯云 COS、华为云 OBS、AWS S3）的授权被动发现与低影响安全检测方法论。用户需要根据 passive hook、浏览器流量、对象存储直链、OSS/COS/OBS/S3 域名、NoSuchBucket、ListBucketResult、ACL/Policy 暴露、匿名上传、桶接管候选或 BucketTool 风格检测结果来验证存储桶安全问题时，应使用本 skill。尤其适用于被动扫描发现 bucket host 后，按 host 去重并检查桶遍历、未授权上传、ACL/Policy 配置暴露、桶接管候选和对象存储访问控制边界。
+description: 针对主流云对象存储桶（阿里云 OSS、腾讯云 COS、华为云 OBS、AWS S3）的被动发现与低影响安全检测方法论。用户需要根据 passive hook、浏览器流量、对象存储直链、OSS/COS/OBS/S3 域名、NoSuchBucket、ListBucketResult、ACL/Policy 暴露、匿名上传、桶接管候选或 BucketTool 风格检测结果来验证存储桶安全问题时，应使用本 skill。尤其适用于被动扫描发现 bucket host 后，按 host 去重并检查桶遍历、未授权上传、ACL/Policy 配置暴露、桶接管候选和对象存储访问控制边界。
 ---
 
 # 对象存储桶安全检测方法论
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：passive hook、浏览器流量、上传/下载/预览链路或前端资源中出现 OSS/COS/OBS/S3 bucket host，需要对对象存储桶做专项复核。
 - 触发信号：`passive_object_storage_bucket_detected`、`object_storage_bucket_detected`、`object_storage_listing_detected`、`object_storage_upload_allowed`、`object_storage_acl_policy_exposed`、`bucket_takeover_candidate`。
-- 测试前置环境：必须有 bucket host 或对象存储自定义域名；
-- 必需工件：`passive_findings`、`bucket_host`、`bucket_provider`、`request_corpus`、`flow`、`allowed_bucket_verification_scope`。
+- 测试前置环境：通常需要有 bucket host 或对象存储自定义域名；
+- 参考工件：`passive_findings`、`bucket_host`、`bucket_provider`、`request_corpus`、`flow`。
 - 解锁输出：`object_storage_listing_detected`、`object_storage_upload_allowed`、`object_storage_acl_policy_exposed`、`bucket_takeover_candidate`、`cloud_storage_issue_validated`、`vulnerability_chain_input`。
-- 阻断条件：只能证明普通 CDN/静态资源访问、写入探测未授权、检测会访问真实敏感对象或需要修改 ACL/Policy 配置。
+- 建议阻断（可低影响补齐时先补证再测）：只能证明普通 CDN/静态资源访问、写入探测未授权、检测会访问真实敏感对象或需要修改 ACL/Policy 配置。
 
 本 skill 借鉴 BucketTool 的检测思路：先识别云厂商和 bucket，再检查匿名列表、匿名上传、ACL/Policy 暴露和 NoSuchBucket 接管候选。项目内实现使用 `scripts/bucket_check.py`，默认只做匿名只读检查；`--allow-write-probes` 才会创建一个小型 canary 文件并尝试清理。
 
@@ -61,7 +63,7 @@ python3 skills/xsec-object-storage-bucket/scripts/bucket_check.py \
 4. 明确允许时，执行匿名 PUT canary：
    - 上传 `xsec-passive-bucket-check/<random>.txt`。
    - 2xx 视为匿名上传候选。
-   - 上传成功后尝试 DELETE 清理；如果清理失败，在报告中说明残留路径并交给授权方清理。
+   - 上传成功后尝试 DELETE 清理；如果清理失败，在报告中说明残留路径并标记需手动清理。
 5. 不执行 ACL/Policy 写入探测，除非明确允许并另行指定专门测试窗口。写 ACL/Policy 会修改云资源配置，不能作为默认被动扫描动作。
 
 ## 判断边界
@@ -75,7 +77,7 @@ python3 skills/xsec-object-storage-bucket/scripts/bucket_check.py \
 ## 证据要求
 
 - 被动发现证据：`passive-findings.jsonl` 中的 host、provider、request_id、status、path。
-- 验证证据：`bucket-check-results.json` 中每个 check 的 Burp Raw 风格请求/响应、状态码、短响应 preview。
+- 验证证据：`bucket-check-results.json` 中每个 check 的 Burp Raw 风格完整原始请求/响应和状态码；仅在 body 体积受限时截断并注明。
 - 截图证据：优先截图对象存储 XML/错误页面或报告中的响应展示面；纯 API 证据无法截图时说明原因。
 - 写入证据：只展示 canary 对象路径、PUT 状态码和清理状态，不保留敏感对象内容。
 - 报告中所有 bucket 名、对象 key、域名可按客户要求输出，但要保留 provider、风险类型和证据链。

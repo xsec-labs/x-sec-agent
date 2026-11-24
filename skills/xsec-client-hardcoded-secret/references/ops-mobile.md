@@ -5,7 +5,7 @@
 ### 1. 获取 APK
 
 ```bash
-# 方式一：从授权测试设备通过 ADB 提取
+# 方式一：从测试设备通过 ADB 提取
 adb shell pm list packages | grep target_app
 adb shell pm path com.target.app        # 获取 APK 路径
 adb pull /data/app/com.target.app-1/base.apk /tmp/target.apk
@@ -72,7 +72,7 @@ done
 pip install ipatool
 ipatool download -b com.target.app -o /tmp/target.ipa
 
-# 方式二：从已授权越狱测试设备导出
+# 方式二：从越狱测试设备导出
 ssh root@<device> "zip -r /tmp/app.ipa /var/containers/Bundle/Application/<UUID>/<App>.app"
 scp root@<device>:/tmp/app.ipa /tmp/
 ```
@@ -118,7 +118,7 @@ find . \( -name "*.json" -o -name "*.yaml" -o -name "*.yml" \) | \
 ### 获取与解包
 
 ```bash
-# 从授权 rooted Android 设备提取微信小程序缓存包
+# 从 rooted Android 设备提取微信小程序缓存包
 # 路径：/data/data/com.tencent.mm/MicroMsg/<hash>/appbrand/pkg/
 adb pull /data/data/com.tencent.mm/MicroMsg/<hash>/appbrand/pkg/ /tmp/wxapkg/
 

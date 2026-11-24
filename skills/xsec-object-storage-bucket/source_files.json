@@ -1,7 +1,7 @@
 {
   "slug": "object-storage-bucket",
   "title": "对象存储桶安全配置缺陷",
-  "description": "基于 passive hook 发现的 OSS/COS/OBS/S3 bucket host，对桶遍历、匿名上传、ACL/Policy 暴露和桶接管候选进行授权低影响验证。",
+  "description": "基于 passive hook 发现的 OSS/COS/OBS/S3 bucket host，对桶遍历、匿名上传、ACL/Policy 暴露和桶接管候选进行低影响验证。",
   "source_files": [
     {
       "title": "BucketTool",

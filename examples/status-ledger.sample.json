@@ -75,7 +75,7 @@
       "id": "not-found-001",
       "title": "默认密码未命中",
       "status": "not_found",
-      "reason": "授权字典内的默认凭据均未登录成功，未产生有效 session。",
+      "reason": "字典内的默认凭据均未登录成功，未产生有效 session。",
       "report": "reports/测试系统/not-found/默认密码未命中.md",
       "screenshots": [
         "reports/测试系统/not-found/默认密码未命中.assets/状态截图.png"

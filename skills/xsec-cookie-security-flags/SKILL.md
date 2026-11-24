@@ -1,18 +1,20 @@
 ---
 name: xsec-cookie-security-flags
-description: 针对 Cookie 安全属性缺失的授权渗透测试方法论。用户需要分析、验证、复测或撰写 Cookie 安全属性缺失相关问题时应使用本 skill，尤其是涉及 Set-Cookie、登录态 Cookie、HttpOnly、Secure、SameSite、会话保持、跨站请求、会话保护或 Cookie 基线加固时。
+description: 针对 Cookie 安全属性缺失的渗透测试方法论。用户需要分析、验证、复测或撰写 Cookie 安全属性缺失相关问题时应使用本 skill，尤其是涉及 Set-Cookie、登录态 Cookie、HttpOnly、Secure、SameSite、会话保持、跨站请求、会话保护或 Cookie 基线加固时。
 ---
 
 # Cookie安全属性缺失测试方法论
 
 ## 编排适配
 
+先读 [运行边界与证据口径](../../references/security-boundaries.md)。在分配的节点、预算和低影响约束内执行；`scope_policy` 只做资产归因，新发现的目标记录来源即可，不因 `in_scope=false` 停止；证据保留观察到的原始值，报告与委派只取证明问题所需的最小片段。
+
 - 适用场景：目标下发 Cookie，尤其是登录态、SSO、后台、刷新令牌、验证码或 rememberMe Cookie，需要检查 HttpOnly/Secure/SameSite/Path/Domain。
 - 触发信号：`set_cookie_observed`、`session_cookie_detected`、`auth_cookie_detected`、`remember_me_detected`、`sso_callback_detected`。
-- 测试前置环境：必须捕获到 Set-Cookie 响应；登录态 Cookie 检查需要可登录或可访问会话下发入口。
-- 必需工件：`response_headers`、`request_corpus`、`cookie_snapshot`、`browser_state`。
+- 测试前置环境：通常需要捕获到 Set-Cookie 响应；登录态 Cookie 检查需要可登录或可访问会话下发入口。
+- 参考工件：`response_headers`、`request_corpus`、`cookie_snapshot`、`browser_state`。
 - 解锁输出：`csrf_review_needed`、`session_cookie_weakness_detected`、`transport_security_review_needed`、`browser_storage_review_needed`。
-- 阻断条件：目标未下发 Cookie、Cookie 来自第三方非目标域或代理/测试工具噪声。
+- 建议阻断（可低影响补齐时先补证再测）：目标未下发 Cookie、Cookie 来自第三方非目标域或代理/测试工具噪声。
 
 ## 适用场景
 
@@ -32,8 +34,8 @@ description: 针对 Cookie 安全属性缺失的授权渗透测试方法论。�
 ## 操作流程
 
 1. 识别入口
-- 在授权环境中优先检查登录、SSO 回调、验证码校验、会话刷新、退出登录、后台入口、个人中心等易下发 Cookie 的响应。
-- 记录每次响应中的 `Set-Cookie`，仅保留脱敏后的 Cookie 名称、路径、域和属性组合。
+- 在测试环境中优先检查登录、SSO 回调、验证码校验、会话刷新、退出登录、后台入口、个人中心等易下发 Cookie 的响应。
+- 记录每次响应中完整原始 `Set-Cookie`，包括 Cookie 名称、值、路径、域和属性组合。
 
 2. 建立 Cookie 台账
 - 对每个 Cookie 标注用途：认证态、会话标识、偏好设置、跟踪统计、前端脚本可读数据。
@@ -48,7 +50,7 @@ description: 针对 Cookie 安全属性缺失的授权渗透测试方法论。�
 4. 最小化验证
 - 以报文验证为主，证明安全关键 Cookie 在下发时缺少必要属性。
 - 对 `HttpOnly`，只需确认认证或会话 Cookie 缺少脚本访问限制，不需要额外构造脚本利用。
-- 对 `Secure`，只需确认关键 Cookie 未显式声明仅通过 HTTPS 传输；是否进一步上调风险，再看是否存在授权范围内的 HTTP 暴露面。
+- 对 `Secure`，只需确认关键 Cookie 未显式声明仅通过 HTTPS 传输；是否进一步上调风险，再看是否存在测试范围内的 HTTP 暴露面。
 - 对 `SameSite`，只需确认跨站携带限制未声明或配置不当；不要在未验证配套条件时直接下结论为“可成功 CSRF”。
 
 5. 影响面扩展
@@ -83,12 +85,12 @@ description: 针对 Cookie 安全属性缺失的授权渗透测试方法论。�
 - 缺少 `HttpOnly` 往往会放大脚本注入类问题影响。
 - 缺少 `SameSite` 往往会放大跨站请求伪造风险面。
 - 缺少 `Secure` 往往会放大明文传输或链路降级风险。
-- 若组合前提未在本次授权测试中验证，不要把链式利用写成既成事实。
+- 若组合前提未在本次测试中验证，不要把链式利用写成既成事实。
 
 ## 证据链要求
 
 - 必须有响应侧证据：
-- 脱敏后的 `Set-Cookie` 片段。
+- 完整原始 `Set-Cookie` 头。
 - Cookie 名称、路径、域、是否认证态、缺失的具体属性。
 
 - 必须有上下文说明：
@@ -118,7 +120,7 @@ description: 针对 Cookie 安全属性缺失的授权渗透测试方法论。�
 - 会话或认证 Cookie 缺少 `SameSite`，且敏感操作缺少独立 CSRF 防护。
 - 会话或认证 Cookie 缺少 `HttpOnly`，且同系统已确认存在脚本注入面。
 
-- 不要仅凭“理论上可被利用”直接定高危，除非授权范围内已有充分链路证据支撑。
+- 不要仅凭“理论上可被利用”直接定高危，除非已有充分链路证据支撑。
 
 ## 修复与复测
 
@@ -133,7 +135,7 @@ description: 针对 Cookie 安全属性缺失的授权渗透测试方法论。�
 2. 复测不同角色、不同子域、不同网关入口，确认策略一致。
 3. 对同名 Cookie 检查每一次 `Set-Cookie` 是否都带齐属性，避免“首次正确、续期遗漏”。
 4. 若修复涉及 `SameSite`，确认关键业务流程未因跨站限制异常失效。
-5. 仅在授权、低影响前提下验证功能可用性，不做额外攻击性验证。
+5. 仅在低影响前提下验证功能可用性，不做额外攻击性验证。
 
 ## 报告表达模板
 
@@ -141,7 +143,7 @@ description: 针对 Cookie 安全属性缺失的授权渗透测试方法论。�
 - “系统在 `<功能点>` 下发的关键 Cookie 未显式设置 `<缺失属性>`，导致该 Cookie 的会话保护边界弱于推荐安全基线。”
 
 - 判断依据
-- “在授权测试中，使用 `<角色类型>` 访问 `<功能类型>` 后，响应头返回脱敏后的 `Set-Cookie`。从 Cookie 用途及其与登录态的关联可判断其承载 `<会话/认证/跨站状态>` 功能，但未包含 `<属性名>`。”
+- "在测试中，使用 `<角色类型>` 访问 `<功能类型>` 后，响应头返回原始 `Set-Cookie`。从 Cookie 用途及其与登录态的关联可判断其承载 `<会话/认证/跨站状态>` 功能，但未包含 `<属性名>`。"
 
 - 影响描述
 - “该问题通常作为会话保护薄弱项存在，会放大 `<明文传输风险/XSS 后 Cookie 可读风险/跨站请求携带风险>`。若缺少相应补偿控制，可能进一步影响认证态安全。”
